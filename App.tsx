@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { setTheme, getTheme, Theme } from './theme';
+import AnalyticsIcon from './icons/AnalyticsIcon';
+import CreativesIcon from './icons/CreativesIcon';
+import AutopilotIcon from './icons/AutopilotIcon';
+import RecommendationsIcon from './icons/RecommendationsIcon';
 
 interface Campaign {
   id: number;
@@ -19,6 +23,9 @@ export default function App() {
   const [showUpload, setShowUpload] = useState(false);
   const [showAutopilot, setShowAutopilot] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [autopilotEnabled, setAutopilotEnabled] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     setTheme(theme);
@@ -78,7 +85,10 @@ export default function App() {
               <label className="form-label">Выберите файл</label>
               <input className="form-input" type="file" accept="image/*,video/*" />
             </div>
-            <button className="btn btn-primary">Загрузить</button>
+            <button className={`btn btn-primary${uploadLoading ? ' loading' : ''}`} disabled={uploadLoading} onClick={() => {
+              setUploadLoading(true);
+              setTimeout(() => { setUploadLoading(false); setShowUpload(false); }, 1800);
+            }}>Загрузить</button>
           </div>
         </div>
       )}
@@ -91,12 +101,13 @@ export default function App() {
             </div>
             <div className="autopilot-controls">
               <label className="switch">
-                <input type="checkbox" />
+                <input type="checkbox" checked={autopilotEnabled} onChange={e => setAutopilotEnabled(e.target.checked)} />
                 <span className="slider"></span>
               </label>
-              <span className="autopilot-status">Автопилот выключен</span>
+              <span className="autopilot-status">{autopilotEnabled ? 'Автопилот включен' : 'Автопилот выключен'}</span>
             </div>
-            <button className="btn btn-primary">Включить</button>
+            <div className="progress-bar"><div className="progress-bar-inner" style={{width: autopilotEnabled ? '100%' : '0%'}} /></div>
+            <button className="btn btn-primary" onClick={() => setAutopilotEnabled(v => !v)}>{autopilotEnabled ? 'Выключить' : 'Включить'}</button>
           </div>
         </div>
       )}
@@ -115,10 +126,10 @@ export default function App() {
         </div>
       )}
       <nav className="bottom-nav">
-        <div className="nav-item active"><span className="nav-icon">📊</span><span>Кампании</span></div>
-        <div className="nav-item"><span className="nav-icon">📤</span><span>Креативы</span></div>
-        <div className="nav-item"><span className="nav-icon">🤖</span><span>Автопилот</span></div>
-        <div className="nav-item"><span className="nav-icon">💡</span><span>Рекомендации</span></div>
+        <div className="nav-item active"><AnalyticsIcon className="nav-icon" /><span>Кампании</span></div>
+        <div className="nav-item"><CreativesIcon className="nav-icon" /><span>Креативы</span></div>
+        <div className="nav-item"><AutopilotIcon className="nav-icon" /><span>Автопилот</span></div>
+        <div className="nav-item"><RecommendationsIcon className="nav-icon" /><span>Рекомендации</span></div>
       </nav>
     </div>
   );
