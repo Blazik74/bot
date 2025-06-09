@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { setTheme, getTheme, Theme } from './theme';
-import AnalyticsIcon from './icons/AnalyticsIcon';
-import CreativesIcon from './icons/CreativesIcon';
-import AutopilotIcon from './icons/AutopilotIcon';
-import RecommendationsIcon from './icons/RecommendationsIcon';
+import AnalyticsIcon from './AnalyticsIcon';
+import CreativesIcon from './CreativesIcon';
+import AutopilotIcon from './AutopilotIcon';
+import RecommendationsIcon from './RecommendationsIcon';
 
 interface Campaign {
   id: number;
