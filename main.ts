@@ -1,3 +1,9 @@
+interface Window {
+    Telegram: any;
+    app: any;
+}
+declare var window: Window;
+
 interface Campaign {
     id: number;
     name: string;
@@ -166,13 +172,6 @@ class App {
         } catch (error) {
             console.error('Error toggling campaign status:', error);
         }
-    }
-}
-
-declare global {
-    interface Window {
-        Telegram: any;
-        app: App;
     }
 }
 
