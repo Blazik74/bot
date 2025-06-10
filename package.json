@@ -1,0 +1,17 @@
+{
+    "name": "ai-targetologist-frontend",
+    "version": "1.0.0",
+    "description": "Frontend for AI Targetologist Telegram Mini App",
+    "scripts": {
+        "build": "tsc main.ts --outFile main.js",
+        "watch": "tsc main.ts --outFile main.js --watch",
+        "dev": "tsc main.ts --outFile main.js && serve ."
+    },
+    "dependencies": {
+        "typescript": "^5.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "serve": "^14.0.0"
+    }
+} 

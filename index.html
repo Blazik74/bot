@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ Таргетолог</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div id="app">
+        <div class="campaigns-container">
+            <h1>Мои кампании</h1>
+            <div id="campaigns-list"></div>
+        </div>
+        
+        <div class="creatives-container">
+            <h2>Креативы</h2>
+            <div class="upload-section">
+                <input type="file" id="creative-upload" accept="image/*,video/*" hidden>
+                <button id="upload-btn" class="primary-btn">Загрузить креатив</button>
+            </div>
+            <div id="creatives-list"></div>
+        </div>
+
+        <div class="autopilot-container">
+            <h2>ИИ Автопилот</h2>
+            <div class="toggle-switch">
+                <input type="checkbox" id="autopilot-toggle">
+                <label for="autopilot-toggle"></label>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html> 
