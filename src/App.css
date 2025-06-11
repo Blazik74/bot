@@ -1,0 +1,12 @@
+/* Стили для мобильного приложения */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F8F8F8;
+}
+
+.page-content {
+  flex: 1 1 auto;
+  padding-bottom: 70px; /* для нижней панели */
+}
