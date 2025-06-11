@@ -1,24 +1,16 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import AiCenterPage from './pages/AiCenterPage';
 import TargetologPage from './pages/TargetologPage';
 import ProfilePage from './pages/ProfilePage';
 import TariffsPage from './pages/TariffsPage';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <motion.div
-    className="page-content"
-    initial={{ opacity: 0, x: 40 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -40 }}
-    transition={{ duration: 0.25 }}
-  >
-    {children}
-  </motion.div>
+  <div className="page-content">{children}</div>
 );
 
-const AppRoutes: React.FC = () => {
+const AppRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
