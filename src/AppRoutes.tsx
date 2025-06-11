@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-// import { AnimatePresence } from 'framer-motion'; // закомментируй или удали
+import { AnimatePresence, motion } from 'framer-motion';
 import AiCenterPage from './pages/AiCenterPage';
 import TargetologPage from './pages/TargetologPage';
 import ProfilePage from './pages/ProfilePage';
