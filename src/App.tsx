@@ -1,26 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { BottomNavBar } from './components/BottomNavBar';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import AiCenterPage from './pages/AiCenterPage';
 import TargetologPage from './pages/TargetologPage';
 import ProfilePage from './pages/ProfilePage';
 import TariffsPage from './pages/TariffsPage';
-import './App.css';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <motion.div
-    className="page-content"
-    initial={{ opacity: 0, x: 40 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -40 }}
-    transition={{ duration: 0.25 }}
-  >
-    {children}
-  </motion.div>
+  <div className="page-content">{children}</div>
 );
 
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
@@ -35,15 +25,4 @@ const AppRoutes = () => {
   );
 };
 
-function App() {
-  return (
-    <div className="app-container">
-      <Router>
-        <AppRoutes />
-        <BottomNavBar />
-      </Router>
-    </div>
-  );
-}
-
-export default App;
+export default AppRoutes;
