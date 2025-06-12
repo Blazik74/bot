@@ -1,37 +1,26 @@
-import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import AiCenterPage from './pages/AiCenterPage';
-import TargetologPage from './pages/TargetologPage';
-import ProfilePage from './pages/ProfilePage';
-import TariffsPage from './pages/TariffsPage';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { AICenter } from './pages/AICenter';
+import { Targetolog } from './pages/Targetolog';
+import { Tariffs } from './pages/Tariffs';
+import { Profile } from './pages/Profile';
+import { BottomNavigation } from './components/BottomNavigation';
+import { Notifications } from './components/Notifications';
 
-const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <motion.div
-    className="page-content"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.3 }}
-  >
-    {children}
-  </motion.div>
-);
-
-const AppRoutes = () => {
-  const location = useLocation();
-  
+export const AppRoutes = () => {
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageWrapper><AiCenterPage /></PageWrapper>} />
-        <Route path="/targetolog" element={<PageWrapper><TargetologPage /></PageWrapper>} />
-        <Route path="/profile" element={<PageWrapper><ProfilePage /></PageWrapper>} />
-        <Route path="/tariffs" element={<PageWrapper><TariffsPage /></PageWrapper>} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </AnimatePresence>
+    <>
+      <Notifications />
+      <AnimatePresence mode="wait">
+        <Routes>
+          <Route path="/" element={<Navigate to="/ai-center" replace />} />
+          <Route path="/ai-center" element={<AICenter />} />
+          <Route path="/targetolog" element={<Targetolog />} />
+          <Route path="/tariffs" element={<Tariffs />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </AnimatePresence>
+      <BottomNavigation />
+    </>
   );
 };
-
-export default AppRoutes;
