@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import useStore from '../store';
-import profileGreyIcon from '../assets/icons/profile-grey.svg';
-import facebookIcon from '../assets/icons/facebook.svg';
+import profileGrayIcon from '../assets/icons/profile-gray.svg';
+import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -78,7 +78,7 @@ const ThemeSelect = styled.select`
   color: #222;
 `;
 
-const FacebookButton = styled.button`
+const MegaphoneButton = styled.button`
   width: 100%;
   padding: 14px 0;
   background: #005EFF;
@@ -174,7 +174,7 @@ const Profile = () => {
         {user.avatar ? (
           <AvatarImg src={user.avatar} alt="avatar" />
         ) : (
-          <img src={profileGreyIcon} alt="avatar" width={64} height={64} />
+          <img src={profileGrayIcon} alt="avatar" width={64} height={64} />
         )}
       </AvatarCircle>
       <Username>{user.username || 'User'}</Username>
@@ -190,16 +190,16 @@ const Profile = () => {
             <option value="dark">Темная</option>
           </ThemeSelect>
         </ThemeRow>
-        <FacebookButton onClick={() => setModal(true)}>
-          <img src={facebookIcon} alt="Facebook" width={12} height={23} />
-          Подключить Facebook
-        </FacebookButton>
+        <MegaphoneButton onClick={() => setModal(true)}>
+          <img src={megaphoneIcon} alt="Громкоговоритель" width={20} height={20} />
+          Подключить рекламный аккаунт
+        </MegaphoneButton>
       </Section>
       {modal && (
         <ModalOverlay onClick={() => setModal(false)}>
           <ModalBox onClick={e => e.stopPropagation()}>
             <MegaphoneCircle>
-              <img src={facebookIcon} alt="Facebook" width={40} height={40} />
+              <MegaphoneIcon src={megaphoneIcon} alt="Громкоговоритель" />
             </MegaphoneCircle>
             <ModalTitle>Подключение рекламного аккаунта</ModalTitle>
             <ModalText>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
