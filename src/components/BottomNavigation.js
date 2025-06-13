@@ -1,130 +1,99 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import useStore from '../store';
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
-const navItems = [
-  {
-    path: '/ai-center',
-    label: 'AI Center',
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    path: '/targetolog',
-    label: 'Targetolog',
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    path: '/tariffs',
-    label: 'Tariffs',
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    path: '/profile',
-    label: 'Profile',
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-        />
-      </svg>
-    ),
-  },
-];
+const NavigationContainer = styled.nav`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: ${props => props.theme.background};
+  border-top: 1px solid ${props => props.theme.border};
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
 
-export const BottomNavigation = () => {
-  const location = useLocation();
+const NavButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: ${props => props.active ? props.theme.primary : props.theme.text};
+  opacity: ${props => props.active ? 1 : 0.7};
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const IconWrapper = styled.div`
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const Label = styled.span`
+  font-size: 12px;
+  text-align: center;
+`;
+
+const BottomNavigation = () => {
   const navigate = useNavigate();
-  const theme = useStore((state) => state.theme);
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   return (
-    <nav
-      className={`fixed bottom-0 left-0 right-0 h-16 ${
-        theme === 'dark' ? 'bg-gray-900' : 'bg-white'
-      } border-t ${
-        theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
-      } flex items-center justify-around px-4`}
-    >
-      {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
-        return (
-          <button
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={`relative flex flex-col items-center justify-center w-full h-full ${
-              isActive
-                ? theme === 'dark'
-                  ? 'text-blue-400'
-                  : 'text-blue-600'
-                : theme === 'dark'
-                ? 'text-gray-400'
-                : 'text-gray-600'
-            }`}
-          >
-            {isActive && (
-              <motion.div
-                layoutId="activeTab"
-                className={`absolute top-0 left-0 right-0 h-1 ${
-                  theme === 'dark' ? 'bg-blue-400' : 'bg-blue-600'
-                }`}
-                initial={false}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              />
-            )}
-            {item.icon}
-            <span className="text-xs mt-1">{item.label}</span>
-          </button>
-        );
-      })}
-    </nav>
+    <NavigationContainer>
+      <NavButton 
+        active={isActive('/')} 
+        onClick={() => navigate('/')}
+      >
+        <IconWrapper>
+          <svg width="33" height="34" viewBox="0 0 33 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.6718 1.46052C20.009 1.70984 20.3169 1.98796 20.6211 2.27594C20.6772 2.32707 20.7332 2.37819 20.791 2.43086C21.6454 3.23944 22.2553 4.24337 22.828 5.26177C22.8773 5.3481 22.9265 5.4344 22.9759 5.52065C23.0312 5.61742 23.0312 5.61742 23.0877 5.71614C23.1644 5.71461 23.1644 5.71461 23.2427 5.71305C25.3322 5.67712 27.4461 5.79576 29.2257 7.01838C29.504 7.17525 29.5951 7.14489 29.9032 7.07924C30.6796 7.01943 31.3089 7.15386 31.9149 7.65987C32.3668 8.12233 32.5648 8.66471 32.5888 9.30238C32.5769 9.94924 32.3612 10.5012 31.9154 10.9738C31.6817 11.1685 31.6817 11.1685 31.5259 11.1685C31.5374 11.2212 31.549 11.2738 31.5609 11.328C31.7761 12.9824 30.923 14.9384 30.0601 16.3073C30.0189 16.373 30.0189 16.373 29.9768 16.44C29.9235 16.5236 29.8691 16.6065 29.8135 16.6885C29.7292 16.814 29.7292 16.814 29.6435 17.0104C29.712 17.2321 29.8188 17.4233 29.9382 17.6214C30.802 19.0784 31.4524 20.5933 31.5705 22.3005C31.5737 22.3456 31.5768 22.3908 31.5801 22.4373C31.5918 22.6414 31.5912 22.7861 31.5259 22.982C31.5634 22.9983 31.6009 23.0145 31.6395 23.0312C32.0461 23.2557 32.311 23.6491 32.4671 24.0774C32.6393 24.6805 32.6248 25.2604 32.3697 25.838C32.0411 26.4031 31.5649 26.8265 30.942 27.0292C30.5199 27.1203 30.0856 27.1185 29.6679 27.0105C29.3526 27.0046 29.185 27.1581 28.9298 27.3327C27.4986 28.2726 25.7151 28.4272 24.0532 28.4709C23.953 28.4737 23.8527 28.4766 23.7525 28.4794C23.5093 28.4863 23.266 28.4929 23.0228 28.4993C22.9889 28.5669 22.955 28.6345 22.9201 28.7042C21.9067 30.6912 20.418 32.6042 18.2844 33.4324C18.2123 33.4606 18.1401 33.4888 18.0658 33.5179C16.769 33.9399 15.3177 33.7752 14.1099 33.185C13.4317 32.8356 12.8658 32.3989 12.3127 31.8746C12.2519 31.8187 12.1911 31.7628 12.1284 31.7052C11.1659 30.801 10.4949 29.6734 9.91108 28.4993C9.82446 28.4979 9.82446 28.4979 9.73608 28.4965C7.50153 28.4557 7.50153 28.4557 6.40598 28.2397C6.35966 28.2307 6.31335 28.2218 6.26564 28.2126C5.3404 28.0268 4.50776 27.6585 3.7092 27.1611C3.45077 27.0154 3.31271 26.9942 3.03069 27.0713C2.38636 27.1252 1.82823 27.0705 1.29563 26.6826C0.749669 26.2157 0.415986 25.7421 0.355206 25.0203C0.332263 24.3406 0.497651 23.814 0.953589 23.3066C1.0373 23.2429 1.0373 23.2429 1.12271 23.178C1.35982 22.879 1.34529 22.5752 1.37144 22.2031C1.5304 20.5181 2.13969 19.0287 3.01218 17.5885C3.06173 17.504 3.11119 17.4195 3.16051 17.3349C3.19389 17.2791 3.22728 17.2233 3.26168 17.1658C3.30711 16.9193 3.17178 16.7643 3.0388 16.5682C2.98348 16.4814 2.92846 16.3944 2.87374 16.3073C2.8456 16.2626 2.81745 16.218 2.78845 16.172C1.96166 14.8135 1.47364 13.3135 1.35935 11.7321C1.33721 11.3316 1.33721 11.3316 1.12474 11.0111C1.06826 10.9774 1.01178 10.9436 0.953589 10.9089C0.467047 10.2722 0.295754 9.69474 0.369405 8.8967C0.494175 8.32888 0.77211 7.83173 1.24112 7.48036C1.82788 7.11118 2.34525 7.04261 3.03069 7.07924C3.14716 7.10936 3.14716 7.10936 3.26599 7.14009C3.57865 7.14588 3.73844 6.99531 3.99165 6.82213C5.72599 5.71538 7.86031 5.67656 9.84617 5.71614C9.90742 5.60318 9.90742 5.60318 9.96991 5.48794C10.5999 4.33432 11.2894 3.25123 12.2478 2.34085C12.3004 2.28772 12.3529 2.23459 12.4071 2.17985C14.4259 0.182625 17.3125 -0.127121 19.6718 1.46052Z" fill={isActive('/') ? "#005EFF" : "#949CA9"}/>
+          </svg>
+        </IconWrapper>
+        <Label>ИИ Центр</Label>
+      </NavButton>
+
+      <NavButton 
+        active={isActive('/targetolog')} 
+        onClick={() => navigate('/targetolog')}
+      >
+        <IconWrapper>
+          <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.2753 0.369507C21.0259 0.369507 21.7659 0.410174 22.4953 0.491507C22.7563 0.520398 23.0092 0.600427 23.2393 0.727025C23.4694 0.853623 23.6724 1.02431 23.8366 1.22934C24.0007 1.43437 24.1229 1.66973 24.1961 1.92199C24.2693 2.17424 24.2922 2.43844 24.2633 2.69951C24.2344 2.96057 24.1543 3.2134 24.0278 3.44353C23.9012 3.67367 23.7305 3.87662 23.5254 4.0408C23.3204 4.20497 23.085 4.32715 22.8328 4.40037C22.5805 4.47358 22.3163 4.4964 22.0553 4.46751C18.7594 4.0988 15.4303 4.76339 12.5286 6.36935C9.62692 7.97532 7.29598 10.4433 5.8582 13.4319C4.42042 16.4205 3.94687 19.782 4.50305 23.0515C5.05923 26.321 6.61765 29.3369 8.96275 31.682C11.3078 34.0271 14.3237 35.5855 17.5932 36.1417C20.8627 36.6979 24.2243 36.2244 27.2129 34.7866C30.2015 33.3488 32.6695 31.0179 34.2754 28.1162C35.8814 25.2145 36.546 21.8854 36.1773 18.5895C36.1484 18.3284 36.1712 18.0642 36.2444 17.812C36.3176 17.5597 36.4398 17.3244 36.604 17.1193C36.9355 16.7053 37.418 16.4399 37.9453 16.3815C38.4725 16.3232 39.0014 16.4767 39.4154 16.8082C39.6205 16.9724 39.7912 17.1753 39.9178 17.4055C40.0443 17.6356 40.1244 17.8884 40.1533 18.1495C40.2333 18.8788 40.2739 19.6188 40.2753 20.3695C40.2753 31.4155 31.3213 40.3695 20.2753 40.3695C9.22927 40.3695 0.275269 31.4155 0.275269 20.3695C0.275269 9.32351 9.22927 0.369507 20.2753 0.369507Z" fill={isActive('/targetolog') ? "#005EFF" : "#949CA9"}/>
+          </svg>
+        </IconWrapper>
+        <Label>ИИ Таркетолог</Label>
+      </NavButton>
+
+      <NavButton 
+        active={isActive('/profile')} 
+        onClick={() => navigate('/profile')}
+      >
+        <IconWrapper>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill={isActive('/profile') ? "#005EFF" : "#949CA9"}/>
+          </svg>
+        </IconWrapper>
+        <Label>Профиль</Label>
+      </NavButton>
+    </NavigationContainer>
   );
-}; 
+};
+
+export default BottomNavigation; 
