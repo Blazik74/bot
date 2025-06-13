@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store';
-import profileGrayIcon from '../assets/icons/profile-gray.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
 
 const Container = styled.div`
