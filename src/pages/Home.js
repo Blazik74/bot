@@ -35,7 +35,8 @@ const Home = () => {
     <Container theme={theme}>
       <Title theme={theme}>Добро пожаловать</Title>
       <PaymentText theme={theme}>
-        Для продолжения работы необходимо оплатить подписку и подключить счета.
+        Для продолжения работы оплатите подписку и подключите счета.<br/>
+        Перейдите в раздел "Тарифы и оплата" для активации.
       </PaymentText>
       <BottomNav />
     </Container>
