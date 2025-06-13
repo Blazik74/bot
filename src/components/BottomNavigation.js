@@ -2,8 +2,11 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import aiCenterIcon from '../assets/icons/ai-center.svg';
+import aiCenterIconActive from '../assets/icons/ai-center-active.svg';
 import targetologIcon from '../assets/icons/targetolog.svg';
+import targetologIconActive from '../assets/icons/targetolog-active.svg';
 import profileIcon from '../assets/icons/profile.svg';
+import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
@@ -56,17 +59,20 @@ const navigationItems = [
   {
     path: '/',
     label: 'ИИ центр',
-    icon: aiCenterIcon
+    icon: aiCenterIcon,
+    iconActive: aiCenterIconActive
   },
   {
     path: '/targetolog',
     label: 'ИИ таргетолог',
-    icon: targetologIcon
+    icon: targetologIcon,
+    iconActive: targetologIconActive
   },
   {
     path: '/profile',
     label: 'Профиль',
-    icon: profileIcon
+    icon: profileIcon,
+    iconActive: profileIconActive
   }
 ];
 
@@ -76,19 +82,22 @@ export const BottomNavigation = () => {
   const theme = useTheme().theme || 'light';
   return (
     <Navigation theme={theme}>
-      {navigationItems.map((item) => (
-        <NavButton
-          key={item.path}
-          onClick={() => navigate(item.path)}
-          active={location.pathname === item.path || (item.path === '/' && location.pathname === '/ai-center')}
-          theme={theme}
-        >
-          <IconWrapper>
-            <img src={item.icon} alt={item.label} />
-          </IconWrapper>
-          <Label>{item.label}</Label>
-        </NavButton>
-      ))}
+      {navigationItems.map((item) => {
+        const isActive = location.pathname === item.path || (item.path === '/' && location.pathname === '/ai-center');
+        return (
+          <NavButton
+            key={item.path}
+            onClick={() => navigate(item.path)}
+            active={isActive}
+            theme={theme}
+          >
+            <IconWrapper>
+              <img src={isActive ? item.iconActive : item.icon} alt={item.label} />
+            </IconWrapper>
+            <Label>{item.label}</Label>
+          </NavButton>
+        );
+      })}
     </Navigation>
   );
 }; 
