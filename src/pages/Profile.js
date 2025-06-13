@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import useStore from '../store';
 import profileGrayIcon from '../assets/icons/profile-gray.svg';
-import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
+import facebookIcon from '../assets/icons/facebook.svg';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: #fff;
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,10 +14,10 @@ const Container = styled.div`
 `;
 
 const AvatarCircle = styled.div`
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  background: #F3F4F6;
+  background: #E0E0E0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,197 +25,140 @@ const AvatarCircle = styled.div`
 `;
 
 const AvatarImg = styled.img`
-  width: 64px;
-  height: 64px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
 `;
 
 const Username = styled.div`
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 8px;
-`;
-
-const TariffBlock = styled.div`
-  font-size: 15px;
-  color: #949CA9;
+  font-size: 26px;
+  font-weight: 500;
   text-align: center;
   margin-bottom: 24px;
-  cursor: pointer;
-  &:hover { text-decoration: underline; }
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
 `;
 
-const Section = styled.div`
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto 24px auto;
-  background: #F6F6F6;
-  border-radius: 14px;
-  padding: 20px 20px 12px 20px;
-`;
-
-const SectionTitle = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-`;
-
-const ThemeRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-`;
-
-const ThemeSelect = styled.select`
-  font-size: 15px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #E5E8EB;
-  background: #fff;
-  color: #222;
-`;
-
-const MegaphoneButton = styled.button`
-  width: 100%;
-  padding: 14px 0;
-  background: #005EFF;
-  color: #fff;
-  border: none;
+const Table = styled.div`
+  width: 90%;
+  max-width: 370px;
+  background: ${({ theme }) => theme === 'dark' ? '#23272A' : '#E0E0E0'};
   border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-`;
-
-const ModalBox = styled.div`
-  background: #fff;
-  border-radius: 18px;
-  padding: 32px 24px 24px 24px;
-  max-width: 360px;
-  width: 100%;
-  text-align: center;
-`;
-
-const MegaphoneCircle = styled.div`
-  width: 81px;
-  height: 81px;
-  border-radius: 50%;
-  background: #005EFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 24px auto;
-`;
-
-const MegaphoneIcon = styled.img`
-  width: 40px;
-  height: 40px;
-`;
-
-const ModalTitle = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 16px;
-`;
-
-const ModalText = styled.div`
-  font-size: 16px;
-  color: #222;
   margin-bottom: 18px;
+  overflow: hidden;
 `;
 
-const ModalList = styled.ul`
-  text-align: left;
-  margin: 0 0 24px 0;
-  padding-left: 18px;
-  color: #222;
-  font-size: 16px;
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  height: 48px;
+  border-bottom: 1px solid #D1D5DB;
+  font-size: 17px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  &:last-child { border-bottom: none; }
 `;
 
-const ModalButton = styled.button`
-  width: 100%;
+const CellTitle = styled.div`
+  flex: 0 0 110px;
+  font-weight: 600;
+`;
+
+const CellValue = styled.div`
+  flex: 1;
+  text-align: right;
+  font-weight: 400;
+`;
+
+const Arrow = styled.span`
+  margin-left: 8px;
+  color: #949CA9;
+`;
+
+const FacebookButton = styled.button`
+  width: 90%;
+  max-width: 370px;
   padding: 14px 0;
   background: #005EFF;
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+`;
+
+const ExitButton = styled.button`
+  width: 90%;
+  max-width: 370px;
+  padding: 14px 0;
+  background: #E0E0E0;
+  color: #005EFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
 `;
 
 const Profile = () => {
   const user = useStore((state) => state.user) || { username: 'User', avatar: '', tariff: null };
   const setTheme = useStore((state) => state.setTheme);
   const theme = useStore((state) => state.theme);
-  const [modal, setModal] = useState(false);
+  const themeHook = useTheme && useTheme().theme ? useTheme().theme : theme;
 
   return (
-    <Container>
+    <Container theme={themeHook}>
       <AvatarCircle>
         {user.avatar ? (
           <AvatarImg src={user.avatar} alt="avatar" />
         ) : (
-          <img src={profileGrayIcon} alt="avatar" width={64} height={64} />
+          <img src={profileGrayIcon} alt="avatar" width={90} height={90} />
         )}
       </AvatarCircle>
-      <Username>{user.username || 'User'}</Username>
-      <TariffBlock onClick={() => window.location.href = '/tariffs'}>
-        {user.tariff === 'company' ? 'Компания' : user.tariff === 'freelancer' ? 'Фрилансер' : 'Нет'}
-      </TariffBlock>
-      <Section>
-        <SectionTitle>Тема</SectionTitle>
-        <ThemeRow>
-          <span>Выберите тему:</span>
-          <ThemeSelect value={theme} onChange={e => setTheme(e.target.value)}>
-            <option value="light">Белая</option>
-            <option value="dark">Темная</option>
-          </ThemeSelect>
-        </ThemeRow>
-        <MegaphoneButton onClick={() => setModal(true)}>
-          <img src={megaphoneIcon} alt="Громкоговоритель" width={20} height={20} />
-          Подключить рекламный аккаунт
-        </MegaphoneButton>
-      </Section>
-      {modal && (
-        <ModalOverlay onClick={() => setModal(false)}>
-          <ModalBox onClick={e => e.stopPropagation()}>
-            <MegaphoneCircle>
-              <MegaphoneIcon src={megaphoneIcon} alt="Громкоговоритель" />
-            </MegaphoneCircle>
-            <ModalTitle>Подключение рекламного аккаунта</ModalTitle>
-            <ModalText>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
-            <ModalText>Это позволяет вам:</ModalText>
-            <ModalList>
-              <li>Использовать ИИ автопилот</li>
-              <li>Получать советы и диагностику от ИИ</li>
-              <li>Просматривать метрики</li>
-              <li>Загружать креативы</li>
-            </ModalList>
-            <ModalButton onClick={() => setModal(false)}>
-              Подключить рекламный аккаунт
-            </ModalButton>
-          </ModalBox>
-        </ModalOverlay>
-      )}
+      <Username theme={themeHook}>{user.username || 'Имя пользователя'}</Username>
+      <Table theme={themeHook}>
+        <Row theme={themeHook}>
+          <CellTitle>Аккаунт</CellTitle>
+          <CellValue>{user.username || 'Имя пользователя'}</CellValue>
+        </Row>
+        <Row theme={themeHook} style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/tariffs'}>
+          <CellTitle>Тариф</CellTitle>
+          <CellValue>{user.tariff === 'company' ? 'Компания' : user.tariff === 'freelancer' ? 'Фрилансер' : 'Нет'}<Arrow>&#8250;</Arrow></CellValue>
+        </Row>
+        <Row theme={themeHook}>
+          <CellTitle>Тема</CellTitle>
+          <CellValue>
+            <select
+              value={theme}
+              onChange={e => setTheme(e.target.value)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                fontSize: '16px',
+                color: themeHook === 'dark' ? '#fff' : '#222',
+                outline: 'none',
+                fontWeight: 400
+              }}
+            >
+              <option value="light">Светлая</option>
+              <option value="dark">Темная</option>
+            </select>
+            <Arrow>&#8250;</Arrow>
+          </CellValue>
+        </Row>
+      </Table>
+      <FacebookButton>
+        <img src={facebookIcon} alt="Facebook" width={22} height={22} />
+        Подключить Facebook Ads Account
+      </FacebookButton>
+      <ExitButton>Выйти</ExitButton>
     </Container>
   );
 };
