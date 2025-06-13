@@ -1,80 +1,89 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import aiCenterIcon from '../assets/icons/ai-center.svg';
+import targetologIcon from '../assets/icons/targetolog.svg';
+import buhgalterIcon from '../assets/icons/buhgalter.svg';
+import sellerIcon from '../assets/icons/seller.svg';
+import consultantIcon from '../assets/icons/consultant.svg';
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+  padding: 20px;
   min-height: 100vh;
   background-color: ${props => props.theme.background};
   color: ${props => props.theme.text};
 `;
 
 const Header = styled.div`
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid ${props => props.theme.border};
+  margin-bottom: 24px;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
+  font-weight: 600;
   margin: 0;
-  color: ${props => props.theme.text};
 `;
 
 const TabsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  padding: 20px;
+  margin-bottom: 24px;
 `;
 
-const Tab = styled.div`
+const Tab = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  padding: 16px;
+  background: ${props => props.theme.card};
+  border: 1px solid ${props => props.theme.border};
   border-radius: 12px;
-  background-color: ${props => props.active ? props.theme.primary : props.theme.card};
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  opacity: ${props => props.disabled ? 0.7 : 1};
-  position: relative;
-`;
+  cursor: ${props => props.disabled ? 'default' : 'pointer'};
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  transition: all 0.2s ease;
 
-const TabIcon = styled.div`
-  width: 41px;
-  height: 41px;
-  margin-bottom: 12px;
-  svg {
-    width: 100%;
-    height: 100%;
+  &:hover {
+    transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
+    box-shadow: ${props => props.disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.1)'};
   }
 `;
 
+const TabIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-bottom: 8px;
+`;
+
 const TabTitle = styled.span`
-  font-size: 16px;
-  color: ${props => props.active ? props.theme.primary : props.theme.text};
+  font-size: 14px;
+  font-weight: 500;
   text-align: center;
 `;
 
 const ComingSoon = styled.span`
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
   font-size: 12px;
-  color: ${props => props.theme.text};
+  color: ${props => props.theme.textSecondary};
+  margin-top: 4px;
 `;
 
 const TariffsButton = styled.button`
-  margin: 20px auto;
-  padding: 12px 24px;
-  border-radius: 8px;
-  background-color: ${props => props.theme.primary};
+  width: 100%;
+  padding: 16px;
+  background: ${props => props.theme.primary};
   color: white;
   border: none;
-  cursor: pointer;
+  border-radius: 12px;
   font-size: 16px;
-  display: block;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const AICenter = () => {
@@ -95,42 +104,25 @@ const AICenter = () => {
       </Header>
       
       <TabsContainer>
-        <Tab active onClick={handleTargetologClick}>
-          <TabIcon>
-            <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20.2753 0.369507C21.0259 0.369507 21.7659 0.410174 22.4953 0.491507C22.7563 0.520398 23.0092 0.600427 23.2393 0.727025C23.4694 0.853623 23.6724 1.02431 23.8366 1.22934C24.0007 1.43437 24.1229 1.66973 24.1961 1.92199C24.2693 2.17424 24.2922 2.43844 24.2633 2.69951C24.2344 2.96057 24.1543 3.2134 24.0278 3.44353C23.9012 3.67367 23.7305 3.87662 23.5254 4.0408C23.3204 4.20497 23.085 4.32715 22.8328 4.40037C22.5805 4.47358 22.3163 4.4964 22.0553 4.46751C18.7594 4.0988 15.4303 4.76339 12.5286 6.36935C9.62692 7.97532 7.29598 10.4433 5.8582 13.4319C4.42042 16.4205 3.94687 19.782 4.50305 23.0515C5.05923 26.321 6.61765 29.3369 8.96275 31.682C11.3078 34.0271 14.3237 35.5855 17.5932 36.1417C20.8627 36.6979 24.2243 36.2244 27.2129 34.7866C30.2015 33.3488 32.6695 31.0179 34.2754 28.1162C35.8814 25.2145 36.546 21.8854 36.1773 18.5895C36.1484 18.3284 36.1712 18.0642 36.2444 17.812C36.3176 17.5597 36.4398 17.3244 36.604 17.1193C36.9355 16.7053 37.418 16.4399 37.9453 16.3815C38.4725 16.3232 39.0014 16.4767 39.4154 16.8082C39.6205 16.9724 39.7912 17.1753 39.9178 17.4055C40.0443 17.6356 40.1244 17.8884 40.1533 18.1495C40.2333 18.8788 40.2739 19.6188 40.2753 20.3695C40.2753 31.4155 31.3213 40.3695 20.2753 40.3695C9.22927 40.3695 0.275269 31.4155 0.275269 20.3695C0.275269 9.32351 9.22927 0.369507 20.2753 0.369507Z" fill="#005EFF"/>
-            </svg>
-          </TabIcon>
-          <TabTitle active>ИИ Таркетолог</TabTitle>
+        <Tab onClick={handleTargetologClick}>
+          <TabIcon src={targetologIcon} alt="ИИ Таркетолог" />
+          <TabTitle>ИИ Таркетолог</TabTitle>
         </Tab>
-
+        
         <Tab disabled>
-          <TabIcon>
-            <svg width="41" height="43" viewBox="0 0 41 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M32.2357 12.6992C32.2357 19.1968 26.9687 24.4639 20.471 24.4639C13.9734 24.4639 8.7063 19.1968 8.7063 12.6992C8.7063 6.20151 13.9734 0.934448 20.471 0.934448C26.9687 0.934448 32.2357 6.20151 32.2357 12.6992ZM29.8828 12.6992C29.8828 15.1953 28.8912 17.5892 27.1261 19.3543C25.3611 21.1193 22.9672 22.1109 20.471 22.1109C17.9748 22.1109 15.5809 21.1193 13.8159 19.3543C12.0508 17.5892 11.0592 15.1953 11.0592 12.6992C11.0592 10.203 12.0508 7.80908 13.8159 6.04403C15.5809 4.27898 17.9748 3.28739 20.471 3.28739C22.9672 3.28739 25.3611 4.27898 27.1261 6.04403C28.8912 7.80908 29.8828 10.203 29.8828 12.6992Z" fill="#949CA9"/>
-              <path d="M28.118 26.8168C27.9928 26.7883 27.8617 26.8033 27.7462 26.8594C27.6308 26.9154 27.5378 27.0091 27.4827 27.125L22.8239 40.4309V36.2286L22.1474 31.498C22.3634 31.4525 22.5622 31.3472 22.7211 31.194C22.8801 31.0409 22.9927 30.8462 23.0462 30.6321L23.6345 28.2792C23.6779 28.1058 23.6813 27.9248 23.6443 27.7499C23.6073 27.5751 23.531 27.4109 23.4211 27.27C23.3112 27.129 23.1707 27.0149 23.0101 26.9364C22.8495 26.8579 22.6732 26.817 22.4945 26.8168H18.4498C18.2711 26.8169 18.0947 26.8576 17.9341 26.936C17.7735 27.0144 17.6329 27.1283 17.5229 27.2691C17.4129 27.41 17.3364 27.574 17.2993 27.7488C17.2622 27.9236 17.2653 28.1046 17.3086 28.278L17.8968 30.6309C17.9502 30.8452 18.0627 31.0402 18.2217 31.1936C18.3806 31.3469 18.5796 31.4524 18.7957 31.498L18.118 36.2286V39.4003L13.4592 27.125C13.4041 27.0091 13.3111 26.9154 13.1957 26.8594C13.0802 26.8033 12.949 26.7883 12.8239 26.8168C12.3741 26.9254 11.9239 27.032 11.4733 27.1368C8.81212 27.7603 5.52271 28.5297 3.77448 29.678C1.70036 31.0392 0.470947 32.6439 0.470947 34.4639V42.1109H40.4709V34.4639C40.4709 32.6439 39.2415 31.0403 37.1674 29.678C35.4192 28.5297 32.1298 27.7603 29.4686 27.1368C28.9945 27.0262 28.5392 26.9203 28.118 26.8168Z" fill="#949CA9"/>
-            </svg>
-          </TabIcon>
+          <TabIcon src={buhgalterIcon} alt="ИИ Бугхалтер" />
           <TabTitle>ИИ Бугхалтер</TabTitle>
           <ComingSoon>Скоро будет</ComingSoon>
         </Tab>
-
+        
         <Tab disabled>
-          <TabIcon>
-            <svg width="41" height="42" viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.1263 22.9166V37.8849C11.1263 38.7708 10.7744 39.6205 10.148 40.2469C9.52152 40.8734 8.67188 41.2253 7.78596 41.2253H3.81133C2.9254 41.2253 2.07577 40.8734 1.44932 40.2469C0.822879 39.6205 0.470947 38.7708 0.470947 37.8849V22.9166C0.47093 22.0287 0.822185 21.1769 1.44803 20.5471C2.07387 19.9173 2.92347 19.5607 3.81133 19.5551H7.78596C8.67382 19.5607 9.52341 19.9173 10.1493 20.5471C10.7751 21.1769 11.1264 22.0287 11.1263 22.9166ZM25.7986 13.2126V37.9483C25.7931 38.8362 25.4364 39.6858 24.8066 40.3116C24.1768 40.9375 23.325 41.2887 22.4371 41.2887H18.4836C17.5958 41.2887 16.7439 40.9375 16.1141 40.3116C15.4843 39.6858 15.1277 38.8362 15.1221 37.9483V13.2126C15.1221 12.3211 15.4763 11.4661 16.1067 10.8357C16.7371 10.2052 17.5921 9.85108 18.4836 9.85108H22.4371C23.3287 9.85108 24.1837 10.2052 24.8141 10.8357C25.4445 11.4661 25.7986 12.3211 25.7986 13.2126ZM40.4709 3.42402V37.9483C40.4654 38.8362 40.1087 39.6858 39.4789 40.3116C38.8491 40.9375 37.9973 41.2887 37.1094 41.2887H33.1559C32.2681 41.2887 31.4162 40.9375 30.7864 40.3116C30.1566 39.6858 29.8 38.8362 29.7944 37.9483V3.42402C29.7944 2.53249 30.1486 1.67747 30.779 1.04707C31.4094 0.416659 32.2644 0.0625 33.1559 0.0625H37.1094C38.001 0.0625 38.856 0.416659 39.4864 1.04707C40.1168 1.67747 40.4709 2.53249 40.4709 3.42402Z" fill="#949CA9"/>
-            </svg>
-          </TabIcon>
+          <TabIcon src={sellerIcon} alt="ИИ Продавец" />
           <TabTitle>ИИ Продавец</TabTitle>
           <ComingSoon>Скоро будет</ComingSoon>
         </Tab>
-
+        
         <Tab disabled>
-          <TabIcon>
-            <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M31.0921 0.82251C30.5227 0.822598 29.959 0.936117 29.434 1.15644C28.9089 1.37676 28.433 1.69947 28.0341 2.10573L4.49036 25.5323C4.31623 25.7068 4.19021 25.9234 4.12455 26.161L0.523541 39.0217C0.455441 39.2658 0.453439 39.5235 0.517742 39.7686C0.582045 40.0136 0.710341 40.2371 0.889483 40.4163C1.06863 40.5954 1.29217 40.7237 1.53722 40.788C1.78227 40.8523 2.04001 40.8503 2.28403 40.7822L15.1448 37.1812C15.3824 37.1156 15.599 36.9895 15.7735 36.8154L39.2001 13.2717L39.2058 13.2688C39.6067 12.8704 39.9249 12.3966 40.142 11.8748C40.3592 11.3529 40.4709 10.7932 40.4709 10.228C40.4709 9.66275 40.3592 9.10309 40.142 8.58122C39.9249 8.05935 39.6067 7.58557 39.2058 7.18714L39.2001 7.18428L34.1529 2.10858C33.7539 1.70147 33.2776 1.37803 32.7521 1.1572C32.2265 0.936375 31.6622 0.822591 31.0921 0.82251Z" fill="#949CA9"/>
-            </svg>
-          </TabIcon>
+          <TabIcon src={consultantIcon} alt="ИИ Консультант" />
           <TabTitle>ИИ Консультант</TabTitle>
           <ComingSoon>Скоро будет</ComingSoon>
         </Tab>
