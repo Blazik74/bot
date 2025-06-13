@@ -1,11 +1,8 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
-import aiCenterBlueIcon from '../assets/icons/ai-center-blue.svg';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import aiCenterIcon from '../assets/icons/ai-center.svg';
-import targetologistBlueIcon from '../assets/icons/targetologist-blue.svg';
 import targetologistGrayIcon from '../assets/icons/targetologist-gray.svg';
-import profileBlueIcon from '../assets/icons/profile-blue.svg';
 import profileGrayIcon from '../assets/icons/profile-gray.svg';
 
 const NavigationContainer = styled.nav`
@@ -13,7 +10,7 @@ const NavigationContainer = styled.nav`
   bottom: 0;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme === 'dark' ? '#23272A' : '#fff'};
+  background: #fff;
   border-top: 1px solid #E5E8EB;
   display: flex;
   justify-content: space-around;
@@ -30,7 +27,6 @@ const NavButton = styled.button`
   padding: 8px 16px;
   cursor: pointer;
   opacity: 1;
-  transition: none;
 `;
 
 const IconWrapper = styled.div`
@@ -50,35 +46,33 @@ const IconWrapper = styled.div`
 
 const Label = styled.span`
   font-size: 12px;
-  color: ${({ active, theme }) => active ? '#005EFF' : (theme === 'dark' ? '#fff' : '#222')};
+  color: #8A8A8A;
 `;
 
 const BottomNavigation = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const theme = useTheme().theme || 'light';
 
   return (
-    <NavigationContainer theme={theme}>
+    <NavigationContainer>
       <NavButton onClick={() => navigate('/')}> 
         <IconWrapper>
-          <img src={location.pathname === '/' ? aiCenterBlueIcon : aiCenterIcon} alt="ИИ Центр" />
+          <img src={aiCenterIcon} alt="ИИ Центр" />
         </IconWrapper>
-        <Label active={location.pathname === '/'} theme={theme}>ИИ Центр</Label>
+        <Label>ИИ Центр</Label>
       </NavButton>
 
       <NavButton onClick={() => navigate('/targetolog')}>
         <IconWrapper>
-          <img src={location.pathname === '/targetolog' ? targetologistBlueIcon : targetologistGrayIcon} alt="ИИ Таргетолог" />
+          <img src={targetologistGrayIcon} alt="ИИ Таргетолог" />
         </IconWrapper>
-        <Label active={location.pathname === '/targetolog'} theme={theme}>ИИ Таргетолог</Label>
+        <Label>ИИ Таргетолог</Label>
       </NavButton>
 
       <NavButton onClick={() => navigate('/profile')}>
         <IconWrapper>
-          <img src={location.pathname === '/profile' ? profileBlueIcon : profileGrayIcon} alt="Профиль" />
+          <img src={profileGrayIcon} alt="Профиль" />
         </IconWrapper>
-        <Label active={location.pathname === '/profile'} theme={theme}>Профиль</Label>
+        <Label>Профиль</Label>
       </NavButton>
     </NavigationContainer>
   );
