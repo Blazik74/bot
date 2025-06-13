@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { useTheme as useStyledTheme } from 'styled-components';
+import styled from 'styled-components';
+import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store';
 import profileGrayIcon from '../assets/icons/profile-gray.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
@@ -119,6 +120,11 @@ const Profile = () => {
   const themeStore = useStore((state) => state.theme);
   const { theme, setTheme } = useTheme();
 
+  const handleFacebookClick = () => {
+    // Здесь можно добавить логику для подключения Facebook
+    console.log('Facebook button clicked');
+  };
+
   return (
     <Container theme={theme}>
       <AvatarCircle>
@@ -160,7 +166,7 @@ const Profile = () => {
           </CellValue>
         </Row>
       </Table>
-      <FacebookButton theme={theme}>
+      <FacebookButton theme={theme} onClick={handleFacebookClick}>
         <img src={facebookIcon} alt="Facebook" width={22} height={22} />
         Подключить Facebook Ads Account
       </FacebookButton>
@@ -168,10 +174,5 @@ const Profile = () => {
     </Container>
   );
 };
-
-function useTheme() {
-  // Используем кастомный хук из ThemeContext
-  return require('../contexts/ThemeContext').useTheme();
-}
 
 export default Profile; 
