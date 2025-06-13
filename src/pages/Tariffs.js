@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useStore } from '../store';
+import useStore from '../store';
 
 const tariffs = [
   {
