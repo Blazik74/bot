@@ -6,6 +6,7 @@ import { Tariffs } from './pages/Tariffs';
 import { Profile } from './pages/Profile';
 import { BottomNavigation } from './components/BottomNavigation';
 import { Notifications } from './components/Notifications';
+import AppRoutes from './AppRoutes';
 
 const AppRoutes = () => {
   return (
