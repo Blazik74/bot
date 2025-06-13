@@ -1,16 +1,17 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
 import useStore from '../store';
 import profileGrayIcon from '../assets/icons/profile-gray.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: ${({ theme }) => theme.background};
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 0 32px 0;
+  transition: background 0.3s;
 `;
 
 const AvatarCircle = styled.div`
@@ -36,16 +37,18 @@ const Username = styled.div`
   font-weight: 500;
   text-align: center;
   margin-bottom: 24px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  color: ${({ theme }) => theme.text};
+  transition: color 0.3s;
 `;
 
 const Table = styled.div`
   width: 90%;
   max-width: 370px;
-  background: ${({ theme }) => theme === 'dark' ? '#23272A' : '#E0E0E0'};
+  background: ${({ theme }) => theme.card};
   border-radius: 12px;
   margin-bottom: 18px;
   overflow: hidden;
+  transition: background 0.3s;
 `;
 
 const Row = styled.div`
@@ -53,9 +56,10 @@ const Row = styled.div`
   align-items: center;
   padding: 0 18px;
   height: 48px;
-  border-bottom: 1px solid #D1D5DB;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
   font-size: 17px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  color: ${({ theme }) => theme.text};
+  transition: color 0.3s, border-color 0.3s;
   &:last-child { border-bottom: none; }
 `;
 
@@ -79,8 +83,8 @@ const FacebookButton = styled.button`
   width: 90%;
   max-width: 370px;
   padding: 14px 0;
-  background: #005EFF;
-  color: #fff;
+  background: ${({ theme }) => theme.button};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 10px;
   font-size: 16px;
@@ -91,27 +95,29 @@ const FacebookButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 10px;
+  transition: background 0.3s, color 0.3s;
 `;
 
 const ExitButton = styled.button`
   width: 90%;
   max-width: 370px;
   padding: 14px 0;
-  background: #E0E0E0;
-  color: #005EFF;
+  background: ${({ theme }) => theme.buttonSecondary};
+  color: ${({ theme }) => theme.buttonSecondaryText};
   border: none;
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 8px;
+  transition: background 0.3s, color 0.3s;
 `;
 
 const Profile = () => {
   const user = useStore((state) => state.user) || { username: 'User', avatar: '', tariff: null };
-  const setTheme = useStore((state) => state.setTheme);
+  const setThemeStore = useStore((state) => state.setTheme);
   const themeStore = useStore((state) => state.theme);
-  const theme = useTheme().theme || themeStore || 'light';
+  const { theme, setTheme } = useTheme();
 
   return (
     <Container theme={theme}>
@@ -137,12 +143,12 @@ const Profile = () => {
           <CellValue>
             <select
               value={themeStore}
-              onChange={e => setTheme(e.target.value)}
+              onChange={e => { setTheme(e.target.value); setThemeStore(e.target.value); }}
               style={{
                 background: 'transparent',
                 border: 'none',
                 fontSize: '16px',
-                color: theme === 'dark' ? '#fff' : '#222',
+                color: theme.text,
                 outline: 'none',
                 fontWeight: 400
               }}
@@ -154,13 +160,18 @@ const Profile = () => {
           </CellValue>
         </Row>
       </Table>
-      <FacebookButton>
+      <FacebookButton theme={theme}>
         <img src={facebookIcon} alt="Facebook" width={22} height={22} />
         Подключить Facebook Ads Account
       </FacebookButton>
-      <ExitButton>Выйти</ExitButton>
+      <ExitButton theme={theme}>Выйти</ExitButton>
     </Container>
   );
 };
+
+function useTheme() {
+  // Используем кастомный хук из ThemeContext
+  return require('../contexts/ThemeContext').useTheme();
+}
 
 export default Profile; 
