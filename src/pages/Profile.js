@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import useStore from '../store';
 import profileGrayIcon from '../assets/icons/profile-gray.svg';
@@ -110,11 +110,11 @@ const ExitButton = styled.button`
 const Profile = () => {
   const user = useStore((state) => state.user) || { username: 'User', avatar: '', tariff: null };
   const setTheme = useStore((state) => state.setTheme);
-  const theme = useStore((state) => state.theme);
-  const themeHook = useTheme && useTheme().theme ? useTheme().theme : theme;
+  const themeStore = useStore((state) => state.theme);
+  const theme = useTheme().theme || themeStore || 'light';
 
   return (
-    <Container theme={themeHook}>
+    <Container theme={theme}>
       <AvatarCircle>
         {user.avatar ? (
           <AvatarImg src={user.avatar} alt="avatar" />
@@ -122,27 +122,27 @@ const Profile = () => {
           <img src={profileGrayIcon} alt="avatar" width={90} height={90} />
         )}
       </AvatarCircle>
-      <Username theme={themeHook}>{user.username || 'Имя пользователя'}</Username>
-      <Table theme={themeHook}>
-        <Row theme={themeHook}>
+      <Username theme={theme}>{user.username || 'Имя пользователя'}</Username>
+      <Table theme={theme}>
+        <Row theme={theme}>
           <CellTitle>Аккаунт</CellTitle>
           <CellValue>{user.username || 'Имя пользователя'}</CellValue>
         </Row>
-        <Row theme={themeHook} style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/tariffs'}>
+        <Row theme={theme} style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/tariffs'}>
           <CellTitle>Тариф</CellTitle>
           <CellValue>{user.tariff === 'company' ? 'Компания' : user.tariff === 'freelancer' ? 'Фрилансер' : 'Нет'}<Arrow>&#8250;</Arrow></CellValue>
         </Row>
-        <Row theme={themeHook}>
+        <Row theme={theme}>
           <CellTitle>Тема</CellTitle>
           <CellValue>
             <select
-              value={theme}
+              value={themeStore}
               onChange={e => setTheme(e.target.value)}
               style={{
                 background: 'transparent',
                 border: 'none',
                 fontSize: '16px',
-                color: themeHook === 'dark' ? '#fff' : '#222',
+                color: theme === 'dark' ? '#fff' : '#222',
                 outline: 'none',
                 fontWeight: 400
               }}
