@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useStore } from '../../store';
+import useStore from '../../store';
 import { Box, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
