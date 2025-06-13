@@ -1,134 +1,144 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import aiCenterIcon from '../assets/icons/ai-center.svg';
 import targetologIcon from '../assets/icons/targetolog.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
 
 const Container = styled.div`
-  padding: 20px;
   min-height: 100vh;
-  background-color: ${props => props.theme.background};
+  background: ${props => props.theme.background};
   color: ${props => props.theme.text};
-`;
-
-const Header = styled.div`
-  margin-bottom: 24px;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-`;
-
-const TabsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-`;
-
-const Tab = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 16px;
+  padding: 0 0 24px 0;
+`;
+
+const Header = styled.div`
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 24px 24px 24px;
+  box-sizing: border-box;
+`;
+
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+`;
+
+const TabsList = styled.div`
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+`;
+
+const TabRow = styled.button`
+  display: flex;
+  align-items: center;
+  width: 100%;
   background: ${props => props.theme.card};
   border: 1px solid ${props => props.theme.border};
-  border-radius: 12px;
+  border-radius: 14px;
+  padding: 18px 20px;
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   opacity: ${props => props.disabled ? 0.5 : 1};
-  transition: all 0.2s ease;
-
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: ${props => props.active ? '0 4px 16px rgba(0,0,0,0.07)' : 'none'};
+  position: relative;
   &:hover {
+    box-shadow: ${props => props.disabled ? 'none' : '0 4px 16px rgba(0,0,0,0.12)'};
     transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
-    box-shadow: ${props => props.disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.1)'};
   }
 `;
 
 const TabIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  margin-bottom: 8px;
+  width: 36px;
+  height: 36px;
+  margin-right: 18px;
+`;
+
+const TabTextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const TabTitle = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
 `;
 
 const ComingSoon = styled.span`
-  font-size: 12px;
-  color: ${props => props.theme.textSecondary};
-  margin-top: 4px;
+  font-size: 13px;
+  color: #FF9800;
+  margin-top: 2px;
+  font-weight: 500;
 `;
 
 const TariffsButton = styled.button`
   width: 100%;
-  padding: 16px;
+  max-width: 420px;
+  margin-top: auto;
+  padding: 18px 0;
   background: ${props => props.theme.primary};
-  color: white;
+  color: #fff;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
   &:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const AICenter = () => {
   const navigate = useNavigate();
 
-  const handleTargetologClick = () => {
-    navigate('/targetolog');
-  };
-
-  const handleTariffsClick = () => {
-    navigate('/tariffs');
-  };
-
   return (
     <Container>
       <Header>
         <Title>ИИ Центр</Title>
       </Header>
-      
-      <TabsContainer>
-        <Tab onClick={handleTargetologClick}>
+      <TabsList>
+        <TabRow onClick={() => navigate('/targetolog')}>
           <TabIcon src={targetologIcon} alt="ИИ Таркетолог" />
-          <TabTitle>ИИ Таркетолог</TabTitle>
-        </Tab>
-        
-        <Tab disabled>
+          <TabTextBlock>
+            <TabTitle>ИИ Таркетолог</TabTitle>
+          </TabTextBlock>
+        </TabRow>
+        <TabRow disabled>
           <TabIcon src={buhgalterIcon} alt="ИИ Бугхалтер" />
-          <TabTitle>ИИ Бугхалтер</TabTitle>
-          <ComingSoon>Скоро будет</ComingSoon>
-        </Tab>
-        
-        <Tab disabled>
+          <TabTextBlock>
+            <TabTitle>ИИ Бугхалтер</TabTitle>
+            <ComingSoon>Скоро будет</ComingSoon>
+          </TabTextBlock>
+        </TabRow>
+        <TabRow disabled>
           <TabIcon src={sellerIcon} alt="ИИ Продавец" />
-          <TabTitle>ИИ Продавец</TabTitle>
-          <ComingSoon>Скоро будет</ComingSoon>
-        </Tab>
-        
-        <Tab disabled>
+          <TabTextBlock>
+            <TabTitle>ИИ Продавец</TabTitle>
+            <ComingSoon>Скоро будет</ComingSoon>
+          </TabTextBlock>
+        </TabRow>
+        <TabRow disabled>
           <TabIcon src={consultantIcon} alt="ИИ Консультант" />
-          <TabTitle>ИИ Консультант</TabTitle>
-          <ComingSoon>Скоро будет</ComingSoon>
-        </Tab>
-      </TabsContainer>
-
-      <TariffsButton onClick={handleTariffsClick}>
+          <TabTextBlock>
+            <TabTitle>ИИ Консультант</TabTitle>
+            <ComingSoon>Скоро будет</ComingSoon>
+          </TabTextBlock>
+        </TabRow>
+      </TabsList>
+      <TariffsButton onClick={() => navigate('/tariffs')}>
         Тарифы и оплата
       </TariffsButton>
     </Container>
