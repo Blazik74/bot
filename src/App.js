@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import AppRoutes from './AppRoutes';
-import BottomNav from './components/BottomNav';
+import { BottomNavigation } from './components/BottomNavigation';
 import styled from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import './App.css';
@@ -27,7 +27,7 @@ const AppContent = () => {
     <StyledThemeProvider theme={theme}>
       <AppContainer>
         <AppRoutes />
-        <BottomNav />
+        <BottomNavigation />
       </AppContainer>
     </StyledThemeProvider>
   );
