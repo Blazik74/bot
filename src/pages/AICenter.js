@@ -9,6 +9,7 @@ const Container = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   padding: 32px 16px;
+  transition: background 0.3s;
 `;
 
 const Title = styled.h1`
@@ -17,6 +18,7 @@ const Title = styled.h1`
   text-align: center;
   margin-bottom: 24px;
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  transition: color 0.3s;
 `;
 
 const Cards = styled.div`
@@ -32,17 +34,20 @@ const Card = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  transition: background 0.3s;
 `;
 
 const CardIcon = styled.img`
   width: 48px;
   height: 48px;
+  transition: filter 0.3s;
 `;
 
 const CardLabel = styled.div`
   font-size: 18px;
   font-weight: 600;
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  transition: color 0.3s;
 `;
 
 const Soon = styled.div`
