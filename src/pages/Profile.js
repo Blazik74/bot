@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store';
@@ -23,7 +23,7 @@ const AvatarCircle = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 40px auto 16px auto;
+  margin: 40px auto 8px auto;
 `;
 
 const AvatarImg = styled.img`
@@ -33,13 +33,20 @@ const AvatarImg = styled.img`
   object-fit: cover;
 `;
 
-const Username = styled.div`
-  font-size: 26px;
-  font-weight: 500;
+const Name = styled.div`
+  font-size: 22px;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 24px;
   color: ${({ theme }) => theme.text};
+  margin-bottom: 2px;
   transition: color 0.3s;
+`;
+
+const Username = styled.div`
+  font-size: 16px;
+  color: #949CA9;
+  text-align: center;
+  margin-bottom: 18px;
 `;
 
 const Table = styled.div`
@@ -73,11 +80,16 @@ const CellValue = styled.div`
   flex: 1;
   text-align: right;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 const Arrow = styled.span`
   margin-left: 8px;
-  color: #949CA9;
+  display: inline-block;
+  transition: transform 0.3s;
+  transform: rotate(${({ open }) => (open ? 90 : 0)}deg);
 `;
 
 const FacebookButton = styled.button`
@@ -115,34 +127,44 @@ const ExitButton = styled.button`
 `;
 
 const Profile = () => {
-  const user = useStore((state) => state.user) || { username: 'User', avatar: '', tariff: null };
+  const { theme, setTheme } = useTheme();
   const setThemeStore = useStore((state) => state.setTheme);
   const themeStore = useStore((state) => state.theme);
-  const { theme, setTheme } = useTheme();
+  const [arrowOpen, setArrowOpen] = useState(false);
+  const [tgUser, setTgUser] = useState(null);
+
+  useEffect(() => {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+      setTgUser(window.Telegram.WebApp.initDataUnsafe.user);
+    }
+  }, []);
 
   const handleFacebookClick = () => {
-    // Здесь можно добавить логику для подключения Facebook
-    console.log('Facebook button clicked');
+    alert('Здесь будет подключение Facebook Ads');
   };
+
+  const handleThemeFocus = () => setArrowOpen(true);
+  const handleThemeBlur = () => setArrowOpen(false);
 
   return (
     <Container theme={theme}>
       <AvatarCircle>
-        {user.avatar ? (
-          <AvatarImg src={user.avatar} alt="avatar" />
+        {tgUser?.photo_url ? (
+          <AvatarImg src={tgUser.photo_url} alt="avatar" />
         ) : (
-          <img src={profileGrayIcon} alt="avatar" width={90} height={90} />
+          <AvatarImg src={profileGrayIcon} alt="avatar" />
         )}
       </AvatarCircle>
-      <Username theme={theme}>{user.username || 'Имя пользователя'}</Username>
+      <Name theme={theme}>{tgUser?.first_name || 'Имя'} {tgUser?.last_name || ''}</Name>
+      <Username>@{tgUser?.username || 'username'}</Username>
       <Table theme={theme}>
         <Row theme={theme}>
           <CellTitle>Аккаунт</CellTitle>
-          <CellValue>{user.username || 'Имя пользователя'}</CellValue>
+          <CellValue>{tgUser?.username ? `@${tgUser.username}` : 'username'}</CellValue>
         </Row>
         <Row theme={theme} style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/tariffs'}>
           <CellTitle>Тариф</CellTitle>
-          <CellValue>{user.tariff === 'company' ? 'Компания' : user.tariff === 'freelancer' ? 'Фрилансер' : 'Нет'}<Arrow>&#8250;</Arrow></CellValue>
+          <CellValue>Нет<Arrow>&#8250;</Arrow></CellValue>
         </Row>
         <Row theme={theme}>
           <CellTitle>Тема</CellTitle>
@@ -150,6 +172,8 @@ const Profile = () => {
             <select
               value={themeStore}
               onChange={e => { setTheme(e.target.value); setThemeStore(e.target.value); }}
+              onFocus={handleThemeFocus}
+              onBlur={handleThemeBlur}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -162,7 +186,7 @@ const Profile = () => {
               <option value="light">Светлая</option>
               <option value="dark">Темная</option>
             </select>
-            <Arrow>&#8250;</Arrow>
+            <Arrow open={arrowOpen}>&#8250;</Arrow>
           </CellValue>
         </Row>
       </Table>
