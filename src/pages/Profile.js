@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store';
 import facebookIcon from '../assets/icons/facebook.svg';
+import profileIcon from '../assets/icons/profile.svg';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -179,7 +180,7 @@ const Profile = () => {
         {tgUser?.photo_url ? (
           <AvatarImg src={tgUser.photo_url} alt="avatar" />
         ) : (
-          <AvatarImg src={profileGrayIcon} alt="avatar" />
+          <AvatarImg src={profileIcon} alt="avatar" />
         )}
       </AvatarCircle>
       <Name theme={theme}>{tgUser?.first_name || 'Имя'} {tgUser?.last_name || ''}</Name>
@@ -210,7 +211,7 @@ const Profile = () => {
           </CellValue>
         </Row>
       </Table>
-      <FacebookButton theme={theme} onClick={handleFacebookClick}>
+      <FacebookButton theme={theme} onClick={() => window.location.href = '/facebook-connect'}>
         <img src={facebookIcon} alt="Facebook" width={22} height={22} />
         Подключить Facebook Ads Account
       </FacebookButton>

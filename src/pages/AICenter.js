@@ -71,12 +71,23 @@ const Soon = styled.div`
   margin-left: 12px;
 `;
 
+const TariffLink = styled.a`
+  display: block;
+  text-align: right;
+  color: #005EFF;
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  text-decoration: underline;
+`;
+
 const AICenter = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
 
   return (
     <Container theme={theme}>
+      <TariffLink href="/tariffs">Тарифы и оплата</TariffLink>
       <Title theme={theme}>ИИ Центр</Title>
       <Cards>
         <Card theme={theme} onClick={() => navigate('/targetolog')}>
