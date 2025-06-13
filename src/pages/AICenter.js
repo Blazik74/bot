@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import targetologIcon from '../assets/icons/targetolog.svg';
+import targetologBlueIcon from '../assets/icons/targetolog-blue.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
@@ -13,20 +13,32 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 0 24px 0;
+  justify-content: flex-start;
+  overflow: hidden;
 `;
 
 const Header = styled.div`
   width: 100%;
   max-width: 420px;
-  padding: 32px 24px 24px 24px;
+  padding: 32px 24px 0 24px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
-  margin: 0;
+  margin: 0 0 16px 0;
+  text-align: center;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #E5E8EB;
+  margin-bottom: 24px;
 `;
 
 const TabsList = styled.div`
@@ -80,15 +92,14 @@ const ComingSoon = styled.span`
 const TariffsLink = styled.a`
   width: 100%;
   max-width: 420px;
-  margin-top: auto;
-  padding: 18px 0;
+  margin: 32px 0 0 0;
+  padding: 0;
   display: block;
   text-align: center;
-  background: #007AFF;
-  color: #fff;
-  border-radius: 14px;
-  font-size: 18px;
-  font-weight: 600;
+  background: none;
+  color: #005EFF;
+  font-size: 28px;
+  font-weight: 400;
   text-decoration: none;
   border: none;
   cursor: pointer;
@@ -101,10 +112,11 @@ const AICenter = () => {
     <Container>
       <Header>
         <Title>ИИ Центр</Title>
+        <Divider />
       </Header>
       <TabsList>
         <TabRow onClick={() => navigate('/targetolog')}>
-          <TabIcon src={targetologIcon} alt="ИИ Таркетолог" />
+          <TabIcon src={targetologBlueIcon} alt="ИИ Таркетолог" />
           <TabTextBlock>
             <TabTitle>ИИ Таркетолог</TabTitle>
           </TabTextBlock>
