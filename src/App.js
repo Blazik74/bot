@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import AppRoutes from './AppRoutes';
-import { BottomNavBar } from './components/BottomNavBar/BottomNavBar';
+import BottomNavBar from './components/BottomNavBar/BottomNavBar';
 import { NotificationProvider } from './contexts/NotificationContext';
 import './App.css';
 
