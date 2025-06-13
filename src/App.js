@@ -15,11 +15,37 @@ const AppContainer = styled.div`
   padding-bottom: 60px; // Space for bottom navigation
 `;
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    // Можно отправить лог на сервер
+  }
+  render() {
+    if (this.state.hasError) {
+      // Перезагружаем мини-апп полностью
+      if (window.Telegram?.WebApp?.close) {
+        window.Telegram.WebApp.close();
+      } else {
+        window.location.reload();
+      }
+      return null;
+    }
+    return this.props.children;
+  }
+}
+
 const AppContent = () => {
   const { theme } = useTheme();
   useEffect(() => {
     if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.enableFullscreen();
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
     }
   }, []);
 
@@ -36,9 +62,11 @@ const AppContent = () => {
 const App = () => (
   <ThemeProvider>
     <NotificationProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <ErrorBoundary>
+        <Router>
+          <AppContent />
+        </Router>
+      </ErrorBoundary>
     </NotificationProvider>
   </ThemeProvider>
 );
