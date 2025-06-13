@@ -1,36 +1,18 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AppRoutes from './AppRoutes';
-import BottomNavBar from './components/BottomNavBar/BottomNavBar';
+import BottomNavigation from './components/BottomNavigation';
+import styled from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import './App.css';
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-        },
-      },
-    },
-  },
-});
+const AppContainer = styled.div`
+  min-height: 100vh;
+  background-color: ${props => props.theme.background};
+  color: ${props => props.theme.text};
+  padding-bottom: 60px; // Space for bottom navigation
+`;
 
 const App = () => {
   useEffect(() => {
@@ -40,18 +22,15 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <NotificationProvider>
-          <BrowserRouter>
-            <div className="app-container">
-              <AppRoutes />
-              <BottomNavBar />
-            </div>
-          </BrowserRouter>
-        </NotificationProvider>
-      </LocalizationProvider>
+    <ThemeProvider>
+      <NotificationProvider>
+        <Router>
+          <AppContainer>
+            <AppRoutes />
+            <BottomNavigation />
+          </AppContainer>
+        </Router>
+      </NotificationProvider>
     </ThemeProvider>
   );
 };
