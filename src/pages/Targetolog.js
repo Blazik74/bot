@@ -1,128 +1,189 @@
-import { motion } from 'framer-motion';
+import React from 'react';
+import styled from 'styled-components';
+import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store';
+import { motion } from 'framer-motion';
+
+const Container = styled.div`
+  min-height: 100vh;
+  background: ${({ theme }) => theme.background};
+  padding: 32px 16px;
+  transition: background 0.3s;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 24px;
+  transition: color 0.3s;
+`;
+
+const NewCampaignButton = styled.button`
+  padding: 8px 16px;
+  background: ${({ theme }) => theme.button};
+  color: ${({ theme }) => theme.buttonText};
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const FiltersContainer = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  transition: background 0.3s;
+`;
+
+const FiltersRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+`;
+
+const Select = styled.select`
+  padding: 8px 12px;
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px 12px;
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  &::placeholder {
+    color: ${({ theme }) => theme.text}80;
+  }
+`;
+
+const CampaignsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const CampaignCard = styled(motion.div)`
+  background: ${({ theme }) => theme.card};
+  border-radius: 12px;
+  padding: 16px;
+  transition: background 0.3s;
+`;
+
+const CampaignHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+const CampaignName = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text};
+  transition: color 0.3s;
+`;
+
+const CampaignStatus = styled.p`
+  font-size: 14px;
+  color: ${({ active }) => active ? '#1BC47D' : '#FFB800'};
+`;
+
+const StatsContainer = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+
+const StatItem = styled.div`
+  text-align: right;
+`;
+
+const StatLabel = styled.p`
+  font-size: 12px;
+  color: ${({ theme }) => theme.text}80;
+  margin-bottom: 4px;
+  transition: color 0.3s;
+`;
+
+const StatValue = styled.p`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text};
+  transition: color 0.3s;
+`;
 
 export const Targetolog = () => {
-  const theme = useStore((state) => state.theme);
+  const { theme } = useTheme();
   const campaigns = useStore((state) => state.campaigns);
 
   return (
-    <div
-      className={`min-h-screen pb-16 ${
-        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
-      }`}
-    >
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-6"
-        >
-          {/* Заголовок */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Targetolog</h1>
-            <button
-              className={`px-4 py-2 rounded-full ${
-                theme === 'dark'
-                  ? 'bg-blue-500 hover:bg-blue-600'
-                  : 'bg-blue-600 hover:bg-blue-700'
-              } text-white transition-colors duration-200`}
-            >
-              New Campaign
-            </button>
-          </div>
+    <Container theme={theme}>
+      <Title theme={theme}>Targetolog</Title>
+      <NewCampaignButton theme={theme}>New Campaign</NewCampaignButton>
+      
+      <FiltersContainer theme={theme}>
+        <FiltersRow>
+          <Select theme={theme}>
+            <option>All Status</option>
+            <option>Active</option>
+            <option>Paused</option>
+          </Select>
+          <Select theme={theme}>
+            <option>All Platforms</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+          </Select>
+          <SearchInput theme={theme} placeholder="Search campaigns..." />
+        </FiltersRow>
+      </FiltersContainer>
 
-          {/* Фильтры */}
-          <div
-            className={`p-4 rounded-lg ${
-              theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-            } shadow-lg`}
+      <CampaignsList>
+        {campaigns.map((campaign) => (
+          <CampaignCard
+            key={campaign.id}
+            theme={theme}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            <div className="flex flex-wrap gap-4">
-              <select
-                className={`px-3 py-2 rounded-lg ${
-                  theme === 'dark'
-                    ? 'bg-gray-700 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
-              >
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Paused</option>
-              </select>
-              <select
-                className={`px-3 py-2 rounded-lg ${
-                  theme === 'dark'
-                    ? 'bg-gray-700 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
-              >
-                <option>All Platforms</option>
-                <option>Facebook</option>
-                <option>Instagram</option>
-              </select>
-              <input
-                type="text"
-                placeholder="Search campaigns..."
-                className={`px-3 py-2 rounded-lg ${
-                  theme === 'dark'
-                    ? 'bg-gray-700 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Список кампаний */}
-          <div className="space-y-4">
-            {campaigns.map((campaign) => (
-              <motion.div
-                key={campaign.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-4 rounded-lg ${
-                  theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                } shadow-lg`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{campaign.name}</h3>
-                    <p
-                      className={`text-sm ${
-                        campaign.status === 'active'
-                          ? 'text-green-500'
-                          : 'text-yellow-500'
-                      }`}
-                    >
-                      {campaign.status}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <p className="text-sm opacity-75">CTR</p>
-                      <p className="font-semibold">
-                        {campaign.stats.ctr.toFixed(2)}%
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm opacity-75">CPC</p>
-                      <p className="font-semibold">
-                        ${campaign.stats.cpc.toFixed(2)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm opacity-75">CPM</p>
-                      <p className="font-semibold">
-                        ${campaign.stats.cpm.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </div>
+            <CampaignHeader>
+              <div>
+                <CampaignName theme={theme}>{campaign.name}</CampaignName>
+                <CampaignStatus active={campaign.status === 'active'}>
+                  {campaign.status}
+                </CampaignStatus>
+              </div>
+              <StatsContainer>
+                <StatItem>
+                  <StatLabel theme={theme}>CTR</StatLabel>
+                  <StatValue theme={theme}>{campaign.stats.ctr.toFixed(2)}%</StatValue>
+                </StatItem>
+                <StatItem>
+                  <StatLabel theme={theme}>CPC</StatLabel>
+                  <StatValue theme={theme}>${campaign.stats.cpc.toFixed(2)}</StatValue>
+                </StatItem>
+                <StatItem>
+                  <StatLabel theme={theme}>CPM</StatLabel>
+                  <StatValue theme={theme}>${campaign.stats.cpm.toFixed(2)}</StatValue>
+                </StatItem>
+              </StatsContainer>
+            </CampaignHeader>
+          </CampaignCard>
+        ))}
+      </CampaignsList>
+    </Container>
   );
 }; 
