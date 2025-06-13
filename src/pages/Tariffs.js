@@ -4,165 +4,130 @@ import styled, { useTheme } from 'styled-components';
 const Container = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-  padding: 32px 16px;
+  padding: 0 0 120px 0;
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
-  text-align: center;
-  margin-bottom: 24px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  text-align: left;
+  margin: 40px 0 32px 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
-const TariffLink = styled.a`
-  display: block;
-  color: #005EFF;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 18px;
-  text-decoration: underline;
-  cursor: pointer;
+const TariffList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0 16px;
 `;
 
 const TariffCard = styled.div`
-  background: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  border: 2px solid #E5E8EB;
-  transition: all 0.3s ease;
+  background: ${({ selected, theme }) => selected ? (theme === 'dark' ? '#23272F' : '#fff') : '#E5E8EB'};
+  border: 2px solid ${({ selected }) => selected ? '#005EFF' : 'transparent'};
+  border-radius: 18px;
+  padding: ${({ selected }) => selected ? '32px 24px 24px 24px' : '18px 18px 14px 18px'};
+  margin-bottom: 0;
+  box-shadow: ${({ selected }) => selected ? '0 2px 12px 0 rgba(0,94,255,0.08)' : 'none'};
   cursor: pointer;
-  &:hover {
-    border-color: #005EFF;
-    transform: translateY(-2px);
-  }
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  min-height: ${({ selected }) => selected ? '120px' : '70px'};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
-const TariffTitle = styled.div`
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: #222;
+const TariffName = styled.div`
+  font-size: 22px;
+  font-weight: 700;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+`;
+
+const TariffDesc = styled.div`
+  font-size: 15px;
+  color: #888;
+  margin-top: 2px;
+`;
+
+const TariffPriceRow = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 8px;
 `;
 
 const TariffPrice = styled.div`
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: #005EFF;
-  margin-bottom: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
-const TariffDescription = styled.div`
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 16px;
+const TariffPerMonth = styled.div`
+  font-size: 15px;
+  color: #888;
+  margin-bottom: 2px;
 `;
 
-const TariffFeatures = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-`;
-
-const TariffFeature = styled.li`
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  &:before {
-    content: "✓";
-    color: #005EFF;
-    margin-right: 8px;
-  }
-`;
-
-const TariffButton = styled.button`
-  width: 100%;
-  padding: 12px 0;
+const PayButton = styled.button`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 32px;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 400px;
   background: #005EFF;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 18px 0;
   cursor: pointer;
-  transition: all 0.3s ease;
-  &:hover {
-    background: #0046CC;
-  }
+  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
 `;
 
+const tariffs = [
+  {
+    id: 1,
+    name: 'Фрилансер',
+    desc: 'ограниченные функции',
+    price: '50 000',
+    currency: '₸',
+  },
+  {
+    id: 2,
+    name: 'Компания',
+    desc: 'всё включено',
+    price: '80 000',
+    currency: '₸',
+  },
+];
+
 const Tariffs = () => {
-  const [selectedTariff, setSelectedTariff] = useState(null);
+  const [selected, setSelected] = useState(1);
   const theme = useTheme().theme || 'light';
-
-  const tariffs = [
-    {
-      id: 1,
-      title: "Базовый",
-      price: "5 000 ₸",
-      description: "Для начинающих",
-      features: [
-        "До 5 кампаний",
-        "Базовые метрики",
-        "Email поддержка"
-      ]
-    },
-    {
-      id: 2,
-      title: "Про",
-      price: "15 000 ₸",
-      description: "Для профессионалов",
-      features: [
-        "До 20 кампаний",
-        "Расширенные метрики",
-        "Приоритетная поддержка",
-        "API доступ"
-      ]
-    },
-    {
-      id: 3,
-      title: "Бизнес",
-      price: "50 000 ₸",
-      description: "Для компаний",
-      features: [
-        "Неограниченное количество кампаний",
-        "Все метрики",
-        "24/7 поддержка",
-        "API доступ",
-        "Персональный менеджер"
-      ]
-    }
-  ];
-
   return (
     <Container theme={theme}>
-      <TariffLink href="#">Тарифы и оплата</TariffLink>
       <Title theme={theme}>Тарифы и оплата</Title>
-      {tariffs.map(tariff => (
-        <TariffCard
-          key={tariff.id}
-          onClick={() => setSelectedTariff(tariff.id)}
-          style={{
-            borderColor: selectedTariff === tariff.id ? "#005EFF" : "#E5E8EB",
-            transform: selectedTariff === tariff.id ? "translateY(-2px)" : "none"
-          }}
-        >
-          <TariffTitle>{tariff.title}</TariffTitle>
-          <TariffPrice>{tariff.price}</TariffPrice>
-          <TariffDescription>{tariff.description}</TariffDescription>
-          <TariffFeatures>
-            {tariff.features.map((feature, index) => (
-              <TariffFeature key={index}>{feature}</TariffFeature>
-            ))}
-          </TariffFeatures>
-          <TariffButton>Оплатить</TariffButton>
-        </TariffCard>
-      ))}
+      <TariffList>
+        {tariffs.map(tariff => (
+          <TariffCard
+            key={tariff.id}
+            selected={selected === tariff.id}
+            theme={theme}
+            onClick={() => setSelected(tariff.id)}
+          >
+            <TariffName theme={theme}>{tariff.name}</TariffName>
+            <TariffDesc>{tariff.desc}</TariffDesc>
+            <TariffPriceRow>
+              <TariffPrice theme={theme}>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPerMonth>в месяц</TariffPerMonth>
+            </TariffPriceRow>
+          </TariffCard>
+        ))}
+      </TariffList>
+      <PayButton>Оплатить</PayButton>
     </Container>
   );
 };
