@@ -56,7 +56,7 @@ const Label = styled.span`
 const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme && useTheme().theme ? useTheme().theme : 'light';
+  const theme = useTheme().theme || 'light';
 
   return (
     <NavigationContainer theme={theme}>
