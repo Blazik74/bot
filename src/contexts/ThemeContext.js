@@ -8,14 +8,22 @@ export const themes = {
     text: '#000000',
     primary: '#005EFF',
     border: '#E5E5E5',
-    card: '#F5F5F5'
+    card: '#F5F5F5',
+    button: '#005EFF',
+    buttonText: '#fff',
+    buttonSecondary: '#E0E0E0',
+    buttonSecondaryText: '#005EFF',
   },
   dark: {
     background: '#1A1A1A',
     text: '#FFFFFF',
     primary: '#005EFF',
     border: '#333333',
-    card: '#2A2A2A'
+    card: '#2A2A2A',
+    button: '#005EFF',
+    buttonText: '#fff',
+    buttonSecondary: '#23272A',
+    buttonSecondaryText: '#fff',
   }
 };
 
@@ -27,16 +35,22 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    document.body.style.transition = 'background 0.3s';
+    document.body.style.background = isDarkMode ? themes.dark.background : themes.light.background;
   }, [isDarkMode]);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  const setTheme = (theme) => {
+    setIsDarkMode(theme === 'dark');
+  };
+
   const theme = isDarkMode ? themes.dark : themes.light;
 
   return (
-    <ThemeContext.Provider value={{ theme, isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, isDarkMode, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
