@@ -53,7 +53,7 @@ const Soon = styled.div`
 `;
 
 const AICenter = () => {
-  const theme = useTheme && useTheme().theme ? useTheme().theme : 'light';
+  const theme = useTheme().theme || 'light';
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>
