@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import AppRoutes from './AppRoutes';
 import BottomNavigation from './components/BottomNavigation';
 import styled from 'styled-components';
@@ -14,7 +15,8 @@ const AppContainer = styled.div`
   padding-bottom: 60px; // Space for bottom navigation
 `;
 
-const App = () => {
+const AppContent = () => {
+  const { theme } = useTheme();
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.enableFullscreen();
@@ -22,17 +24,23 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider>
-      <NotificationProvider>
-        <Router>
-          <AppContainer>
-            <AppRoutes />
-            <BottomNavigation />
-          </AppContainer>
-        </Router>
-      </NotificationProvider>
-    </ThemeProvider>
+    <StyledThemeProvider theme={theme}>
+      <AppContainer>
+        <AppRoutes />
+        <BottomNavigation />
+      </AppContainer>
+    </StyledThemeProvider>
   );
 };
+
+const App = () => (
+  <ThemeProvider>
+    <NotificationProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </NotificationProvider>
+  </ThemeProvider>
+);
 
 export default App; 
