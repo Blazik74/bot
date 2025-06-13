@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AICenter } from './pages/AICenter';
@@ -13,11 +14,11 @@ const AppRoutes = () => {
       <Notifications />
       <AnimatePresence mode="wait">
         <Routes>
-          <Route path="/" element={<Navigate to="/ai-center" replace />} />
-          <Route path="/ai-center" element={<AICenter />} />
+          <Route path="/" element={<AICenter />} />
           <Route path="/targetolog" element={<Targetolog />} />
-          <Route path="/tariffs" element={<Tariffs />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/tariffs" element={<Tariffs />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
       <BottomNavigation />
