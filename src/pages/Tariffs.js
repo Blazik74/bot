@@ -98,7 +98,7 @@ const TariffButton = styled.button`
 
 const Tariffs = () => {
   const [selectedTariff, setSelectedTariff] = useState(null);
-  const theme = useTheme && useTheme().theme ? useTheme().theme : 'light';
+  const theme = useTheme().theme || 'light';
 
   const tariffs = [
     {
