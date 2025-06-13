@@ -5,7 +5,6 @@ import AICenter from './pages/AICenter';
 import { Targetolog } from './pages/Targetolog';
 import Tariffs from './pages/Tariffs';
 import Profile from './pages/Profile';
-import BottomNavigation from './components/BottomNavigation';
 import { Notifications } from './components/Notifications';
 
 const AppRoutes = () => {
@@ -21,7 +20,6 @@ const AppRoutes = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
-      <BottomNavigation />
     </>
   );
 };
