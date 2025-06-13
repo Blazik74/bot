@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useStore } from '../../store';
+import useStore from '../../store';
 import {
   Box,
   Typography,
