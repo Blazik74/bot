@@ -1,12 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
-
-// Импортируем SVG иконки
-import homeIcon from '../assets/icons/home.svg';
-import targetologIcon from '../assets/icons/targetolog.svg';
 import aiCenterIcon from '../assets/icons/ai-center.svg';
+import targetologIcon from '../assets/icons/targetolog.svg';
 import profileIcon from '../assets/icons/profile.svg';
 
 const Navigation = styled.nav`
@@ -14,35 +10,34 @@ const Navigation = styled.nav`
   bottom: 0;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme.card};
-  padding: 8px 16px;
+  background: #fff;
+  padding: 0 0 4px 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.border};
-  transition: background 0.3s, border-color 0.3s;
+  border-top: 1px solid #E5E8EB;
+  z-index: 100;
 `;
 
 const NavButton = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   background: none;
   border: none;
-  padding: 8px;
+  padding: 8px 0 0 0;
   cursor: pointer;
-  color: ${({ active, theme }) => active ? theme.primary : theme.text}80;
-  transition: color 0.3s;
+  color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
 `;
 
 const IconWrapper = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  margin-bottom: 2px;
   img {
     width: 100%;
     height: 100%;
@@ -58,18 +53,13 @@ const Label = styled.span`
 const navigationItems = [
   {
     path: '/',
-    label: 'Главная',
-    icon: homeIcon
+    label: 'ИИ центр',
+    icon: aiCenterIcon
   },
   {
     path: '/targetolog',
-    label: 'Таргетолог',
+    label: 'ИИ таргетолог',
     icon: targetologIcon
-  },
-  {
-    path: '/ai-center',
-    label: 'AI Центр',
-    icon: aiCenterIcon
   },
   {
     path: '/profile',
@@ -81,16 +71,13 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme } = useTheme();
-
   return (
-    <Navigation theme={theme}>
+    <Navigation>
       {navigationItems.map((item) => (
         <NavButton
           key={item.path}
           onClick={() => navigate(item.path)}
-          active={location.pathname === item.path}
-          theme={theme}
+          active={location.pathname === item.path || (item.path === '/' && location.pathname === '/ai-center')}
         >
           <IconWrapper>
             <img src={item.icon} alt={item.label} />
