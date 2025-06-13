@@ -1,13 +1,10 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
-import targetologistBlueIcon from '../assets/icons/targetologist-blue.svg';
-import consultantIcon from '../assets/icons/consultant.svg';
-import sellerIcon from '../assets/icons/seller.svg';
-import buhgalterIcon from '../assets/icons/buhgalter.svg';
+import styled from 'styled-components';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: ${({ theme }) => theme.background};
   padding: 32px 16px;
   transition: background 0.3s;
 `;
@@ -17,7 +14,7 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: center;
   margin-bottom: 24px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  color: ${({ theme }) => theme.text};
   transition: color 0.3s;
 `;
 
@@ -28,7 +25,7 @@ const Cards = styled.div`
 `;
 
 const Card = styled.div`
-  background: ${({ theme }) => theme === 'dark' ? '#23272A' : '#F6F6F6'};
+  background: ${({ theme }) => theme.card};
   border-radius: 16px;
   padding: 24px 20px;
   display: flex;
@@ -37,16 +34,21 @@ const Card = styled.div`
   transition: background 0.3s;
 `;
 
-const CardIcon = styled.img`
+const CardIcon = styled.div`
   width: 48px;
   height: 48px;
-  transition: filter 0.3s;
+  background: #E0E0E0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
 `;
 
 const CardLabel = styled.div`
   font-size: 18px;
   font-weight: 600;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+  color: ${({ theme }) => theme.text};
   transition: color 0.3s;
 `;
 
@@ -58,25 +60,25 @@ const Soon = styled.div`
 `;
 
 const AICenter = () => {
-  const theme = useTheme().theme || 'light';
+  const { theme } = useTheme();
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>
       <Cards>
         <Card theme={theme}>
-          <CardIcon src={targetologistBlueIcon} alt="ИИ Таргетолог" />
+          <CardIcon>🎯</CardIcon>
           <CardLabel theme={theme}>ИИ Таргетолог</CardLabel>
         </Card>
         <Card theme={theme}>
-          <CardIcon src={consultantIcon} alt="ИИ Консультант" />
+          <CardIcon>💬</CardIcon>
           <CardLabel theme={theme}>ИИ Консультант <Soon>Скоро будет</Soon></CardLabel>
         </Card>
         <Card theme={theme}>
-          <CardIcon src={sellerIcon} alt="ИИ Продавец" />
+          <CardIcon>🛒</CardIcon>
           <CardLabel theme={theme}>ИИ Продавец <Soon>Скоро будет</Soon></CardLabel>
         </Card>
         <Card theme={theme}>
-          <CardIcon src={buhgalterIcon} alt="ИИ Бухгалтер" />
+          <CardIcon>📊</CardIcon>
           <CardLabel theme={theme}>ИИ Бухгалтер <Soon>Скоро будет</Soon></CardLabel>
         </Card>
       </Cards>
