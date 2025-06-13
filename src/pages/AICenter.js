@@ -8,6 +8,7 @@ import consultantIcon from '../assets/icons/consultant.svg';
 
 const Container = styled.div`
   min-height: 100vh;
+  max-height: 100vh;
   background: ${props => props.theme.background};
   color: ${props => props.theme.text};
   display: flex;
@@ -15,6 +16,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
+  position: relative;
 `;
 
 const Header = styled.div`
@@ -47,7 +49,7 @@ const TabsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 `;
 
 const TabRow = styled.button`
@@ -92,13 +94,13 @@ const ComingSoon = styled.span`
 const TariffsLink = styled.a`
   width: 100%;
   max-width: 420px;
-  margin: 32px 0 0 0;
+  margin: 8px 0 0 0;
   padding: 0;
   display: block;
   text-align: center;
   background: none;
   color: #005EFF;
-  font-size: 28px;
+  font-size: 16px;
   font-weight: 400;
   text-decoration: none;
   border: none;
