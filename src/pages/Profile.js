@@ -83,13 +83,41 @@ const CellValue = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
+`;
+
+const ThemeSelect = styled.select`
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: ${({ theme }) => theme.text};
+  outline: none;
+  font-weight: 400;
+  appearance: none;
+  padding-right: 20px;
+  cursor: pointer;
+  direction: ltr;
+  text-align-last: left;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  
+  option {
+    direction: ltr;
+    text-align: left;
+    background: ${({ theme }) => theme.card};
+    color: ${({ theme }) => theme.text};
+  }
 `;
 
 const Arrow = styled.span`
   margin-left: 8px;
   display: inline-block;
   transition: transform 0.3s;
-  transform: rotate(${({ open }) => (open ? 90 : 0)}deg);
+  transform: rotate(${({ open }) => (open ? -90 : 0)}deg);
+  position: absolute;
+  right: 0;
+  pointer-events: none;
 `;
 
 const FacebookButton = styled.button`
@@ -169,23 +197,16 @@ const Profile = () => {
         <Row theme={theme}>
           <CellTitle>Тема</CellTitle>
           <CellValue>
-            <select
+            <ThemeSelect
               value={themeStore}
               onChange={e => { setTheme(e.target.value); setThemeStore(e.target.value); }}
               onFocus={handleThemeFocus}
               onBlur={handleThemeBlur}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                fontSize: '16px',
-                color: theme.text,
-                outline: 'none',
-                fontWeight: 400
-              }}
+              theme={theme}
             >
               <option value="light">Светлая</option>
               <option value="dark">Темная</option>
-            </select>
+            </ThemeSelect>
             <Arrow open={arrowOpen}>&#8250;</Arrow>
           </CellValue>
         </Row>
