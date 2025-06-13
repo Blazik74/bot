@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: #fff;
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   padding: 32px 16px;
 `;
 
@@ -12,6 +12,18 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: center;
   margin-bottom: 24px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#222'};
+`;
+
+const TariffLink = styled.a`
+  display: block;
+  color: #005EFF;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 18px;
+  text-decoration: underline;
+  cursor: pointer;
 `;
 
 const TariffCard = styled.div`
@@ -86,6 +98,7 @@ const TariffButton = styled.button`
 
 const Tariffs = () => {
   const [selectedTariff, setSelectedTariff] = useState(null);
+  const theme = useTheme && useTheme().theme ? useTheme().theme : 'light';
 
   const tariffs = [
     {
@@ -127,8 +140,9 @@ const Tariffs = () => {
   ];
 
   return (
-    <Container>
-      <Title>Тарифы и оплата</Title>
+    <Container theme={theme}>
+      <TariffLink href="#">Тарифы и оплата</TariffLink>
+      <Title theme={theme}>Тарифы и оплата</Title>
       {tariffs.map(tariff => (
         <TariffCard
           key={tariff.id}
