@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useStore } from '../../store';
+import useStore from '../../store';
 import { Box, Typography, Button, Switch, Avatar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
