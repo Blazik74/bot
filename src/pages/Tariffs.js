@@ -1,37 +1,122 @@
+import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import useStore from '../store';
 
 const tariffs = [
   {
     id: 'freelancer',
-    name: 'Freelancer',
-    price: 49,
-    features: [
-      'Up to 5 campaigns',
-      'Basic analytics',
-      'Email support',
-      'Facebook integration',
-    ],
+    name: 'Фрилансер',
+    price: 50000,
+    description: 'ограниченные функции',
+    included: false,
   },
   {
     id: 'company',
-    name: 'Company',
-    price: 149,
-    features: [
-      'Unlimited campaigns',
-      'Advanced analytics',
-      'Priority support',
-      'All platform integrations',
-      'Custom reporting',
-      'API access',
-    ],
+    name: 'Компания',
+    price: 80000,
+    description: 'всё включено',
+    included: true,
   },
 ];
+
+const Container = styled.div`
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 32px 0;
+`;
+
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: 700;
+  margin: 32px 0 24px 0;
+  text-align: left;
+  width: 100%;
+  max-width: 420px;
+`;
+
+const TariffList = styled.div`
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+
+const TariffCard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: ${({ selected }) => (selected ? '#fff' : '#F3F4F6')};
+  border: 2px solid ${({ selected }) => (selected ? '#005EFF' : 'transparent')};
+  border-radius: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border 0.2s, background 0.2s;
+  box-shadow: none;
+  position: relative;
+`;
+
+const TariffInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TariffName = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 2px;
+`;
+
+const TariffDesc = styled.div`
+  font-size: 13px;
+  color: #949CA9;
+`;
+
+const TariffPrice = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const Price = styled.div`
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+`;
+
+const PerMonth = styled.div`
+  font-size: 13px;
+  color: #949CA9;
+`;
+
+const PayButton = styled.button`
+  width: 100%;
+  max-width: 420px;
+  margin-top: 24px;
+  padding: 14px 0;
+  background: #005EFF;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:active {
+    background: #0047c2;
+  }
+`;
 
 export const Tariffs = () => {
   const theme = useStore((state) => state.theme);
   const user = useStore((state) => state.user);
   const updateUser = useStore((state) => state.updateUser);
+  const [selected, setSelected] = useState('freelancer');
 
   const handleSelectTariff = (tariffId) => {
     if (user) {
@@ -40,117 +125,29 @@ export const Tariffs = () => {
   };
 
   return (
-    <div
-      className={`min-h-screen pb-16 ${
-        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
-      }`}
-    >
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-8"
-        >
-          {/* Заголовок */}
-          <div className="text-center">
-            <h1 className="text-3xl font-bold mb-4">Choose Your Plan</h1>
-            <p className="text-lg opacity-75">
-              Select the perfect plan for your business needs
-            </p>
-          </div>
-
-          {/* Тарифы */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {tariffs.map((tariff) => (
-              <motion.div
-                key={tariff.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-6 rounded-lg ${
-                  theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                } shadow-lg`}
-              >
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold mb-2">{tariff.name}</h2>
-                  <div className="text-4xl font-bold mb-2">
-                    ${tariff.price}
-                    <span className="text-lg opacity-75">/month</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-4 mb-6">
-                  {tariff.features.map((feature, index) => (
-                    <li key={index} className="flex items-center">
-                      <svg
-                        className={`w-5 h-5 mr-2 ${
-                          theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  onClick={() => handleSelectTariff(tariff.id)}
-                  className={`w-full py-3 rounded-lg ${
-                    user?.tariff === tariff.id
-                      ? theme === 'dark'
-                        ? 'bg-gray-700'
-                        : 'bg-gray-200'
-                      : theme === 'dark'
-                      ? 'bg-blue-500 hover:bg-blue-600'
-                      : 'bg-blue-600 hover:bg-blue-700'
-                  } text-white transition-colors duration-200`}
-                  disabled={user?.tariff === tariff.id}
-                >
-                  {user?.tariff === tariff.id ? 'Current Plan' : 'Select Plan'}
-                </button>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Дополнительная информация */}
-          <div
-            className={`p-6 rounded-lg ${
-              theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-            } shadow-lg max-w-4xl mx-auto`}
+    <Container>
+      <Title>Тарифы и оплата</Title>
+      <TariffList>
+        {tariffs.map((tariff) => (
+          <TariffCard
+            key={tariff.id}
+            selected={selected === tariff.id}
+            onClick={() => setSelected(tariff.id)}
           >
-            <h3 className="text-xl font-bold mb-4">All Plans Include</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div>
-                <h4 className="font-semibold mb-2">Security</h4>
-                <p className="text-sm opacity-75">
-                  Enterprise-grade security and data protection
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Updates</h4>
-                <p className="text-sm opacity-75">
-                  Regular updates and new features
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Support</h4>
-                <p className="text-sm opacity-75">
-                  24/7 customer support via email
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
+            <TariffInfo>
+              <TariffName>{tariff.name}</TariffName>
+              <TariffDesc>{tariff.description}</TariffDesc>
+            </TariffInfo>
+            <TariffPrice>
+              <Price>
+                ₸{tariff.price.toLocaleString('ru-RU')}
+              </Price>
+              <PerMonth>в месяц</PerMonth>
+            </TariffPrice>
+          </TariffCard>
+        ))}
+      </TariffList>
+      <PayButton>Оплатить</PayButton>
+    </Container>
   );
 }; 
