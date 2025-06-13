@@ -1,9 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import aiCenterBlueIcon from '../assets/icons/ai-center-blue.svg';
-import targetologGreyIcon from '../assets/icons/targetolog-grey.svg';
-import profileGreyIcon from '../assets/icons/profile-grey.svg';
+import aiCenterIcon from '../assets/icons/ai-center.svg';
+import targetologistBlueIcon from '../assets/icons/targetologist-blue.svg';
+import targetologistGrayIcon from '../assets/icons/targetologist-gray.svg';
+import profileBlueIcon from '../assets/icons/profile-blue.svg';
+import profileGrayIcon from '../assets/icons/profile-gray.svg';
 
 const NavigationContainer = styled.nav`
   position: fixed;
@@ -52,26 +55,27 @@ const Label = styled.span`
 
 const BottomNavigation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <NavigationContainer>
       <NavButton onClick={() => navigate('/')}> 
         <IconWrapper>
-          <img src={aiCenterBlueIcon} alt="ИИ Центр" />
+          <img src={location.pathname === '/' ? aiCenterBlueIcon : aiCenterIcon} alt="ИИ Центр" />
         </IconWrapper>
         <Label>ИИ Центр</Label>
       </NavButton>
 
       <NavButton onClick={() => navigate('/targetolog')}>
         <IconWrapper>
-          <img src={targetologGreyIcon} alt="ИИ Таркетолог" />
+          <img src={location.pathname === '/targetolog' ? targetologistBlueIcon : targetologistGrayIcon} alt="ИИ Таркетолог" />
         </IconWrapper>
         <Label>ИИ Таркетолог</Label>
       </NavButton>
 
       <NavButton onClick={() => navigate('/profile')}>
         <IconWrapper>
-          <img src={profileGreyIcon} alt="Профиль" />
+          <img src={location.pathname === '/profile' ? profileBlueIcon : profileGrayIcon} alt="Профиль" />
         </IconWrapper>
         <Label>Профиль</Label>
       </NavButton>
