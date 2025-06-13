@@ -6,6 +6,7 @@ import { Targetolog } from './pages/Targetolog';
 import Tariffs from './pages/Tariffs';
 import Profile from './pages/Profile';
 import { Notifications } from './components/Notifications';
+import FacebookConnect from './pages/FacebookConnect';
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
           <Route path="/targetolog" element={<Targetolog />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/tariffs" element={<Tariffs />} />
+          <Route path="/facebook-connect" element={<FacebookConnect />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
