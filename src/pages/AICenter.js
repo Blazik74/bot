@@ -48,13 +48,9 @@ const TabRow = styled.button`
   padding: 18px 20px;
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   opacity: ${props => props.disabled ? 0.5 : 1};
-  transition: box-shadow 0.2s, transform 0.2s;
-  box-shadow: ${props => props.active ? '0 4px 16px rgba(0,0,0,0.07)' : 'none'};
+  box-shadow: none;
   position: relative;
-  &:hover {
-    box-shadow: ${props => props.disabled ? 'none' : '0 4px 16px rgba(0,0,0,0.12)'};
-    transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
-  }
+  transition: none;
 `;
 
 const TabIcon = styled.img`
@@ -81,24 +77,21 @@ const ComingSoon = styled.span`
   font-weight: 500;
 `;
 
-const TariffsButton = styled.button`
+const TariffsLink = styled.a`
   width: 100%;
   max-width: 420px;
   margin-top: auto;
   padding: 18px 0;
-  background: ${props => props.theme.primary};
+  display: block;
+  text-align: center;
+  background: #007AFF;
   color: #fff;
-  border: none;
   border-radius: 14px;
   font-size: 18px;
   font-weight: 600;
+  text-decoration: none;
+  border: none;
   cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.2s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  &:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    transform: translateY(-2px);
-  }
 `;
 
 const AICenter = () => {
@@ -138,9 +131,9 @@ const AICenter = () => {
           </TabTextBlock>
         </TabRow>
       </TabsList>
-      <TariffsButton onClick={() => navigate('/tariffs')}>
+      <TariffsLink href="#" onClick={e => {e.preventDefault();navigate('/tariffs');}}>
         Тарифы и оплата
-      </TariffsButton>
+      </TariffsLink>
     </Container>
   );
 };
