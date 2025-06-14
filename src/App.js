@@ -4,8 +4,25 @@ import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
 import styled from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import './App.css';
 import { ThemeProvider } from './contexts/ThemeContext';
+import './App.css';
+
+// Импорт SVG-иконок
+import aiCenter from './assets/icons/ai-center.svg';
+import aiCenterActive from './assets/icons/ai-center-active.svg';
+import targetolog from './assets/icons/targetolog.svg';
+import targetologActive from './assets/icons/targetolog-active.svg';
+import profile from './assets/icons/profile.svg';
+import profileActive from './assets/icons/profile-active.svg';
+import buhgalter from './assets/icons/buhgalter.svg';
+import seller from './assets/icons/seller.svg';
+import consultant from './assets/icons/consultant.svg';
+import fileUpload from './assets/icons/file-upload.svg';
+import home from './assets/icons/home.svg';
+import homeActive from './assets/icons/home-active.svg';
+import target from './assets/icons/target.svg';
+import targetActive from './assets/icons/target-active.svg';
+import facebook from './assets/icons/facebook.svg';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -56,23 +73,6 @@ const Loader = () => (
     Загрузка…
   </LoaderWrapper>
 );
-
-// Импортирую все SVG через import
-import aiCenter from './assets/icons/ai-center.svg';
-import aiCenterActive from './assets/icons/ai-center-active.svg';
-import targetolog from './assets/icons/targetolog.svg';
-import targetologActive from './assets/icons/targetolog-active.svg';
-import profile from './assets/icons/profile.svg';
-import profileActive from './assets/icons/profile-active.svg';
-import buhgalter from './assets/icons/buhgalter.svg';
-import seller from './assets/icons/seller.svg';
-import consultant from './assets/icons/consultant.svg';
-import fileUpload from './assets/icons/file-upload.svg';
-import home from './assets/icons/home.svg';
-import homeActive from './assets/icons/home-active.svg';
-import target from './assets/icons/target.svg';
-import targetActive from './assets/icons/target-active.svg';
-import facebook from './assets/icons/facebook.svg';
 
 const allImages = [
   aiCenter,
