@@ -23,19 +23,6 @@ const NavContainer = styled.nav`
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
-
-  &::after {
-    content: '';
-    display: block;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: #fff;
-    z-index: 999;
-    pointer-events: none;
-  }
 `;
 
 const NavItem = styled.div`
