@@ -45,13 +45,7 @@ class ErrorBoundary extends React.Component {
   }
   render() {
     if (this.state.hasError) {
-      // Перезагружаем мини-апп полностью
-      if (window.Telegram?.WebApp?.close) {
-        window.Telegram.WebApp.close();
-      } else {
-        window.location.reload();
-      }
-      return null;
+      return <h1>Произошла ошибка в приложении</h1>;
     }
     return this.props.children;
   }
