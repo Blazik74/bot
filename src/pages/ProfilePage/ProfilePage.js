@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import useStore from '../../store';
 import { Box, Typography, Button, Switch, Avatar, Select, MenuItem } from '@mui/material';
-import { styled } from '@mui/material/styles';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
