@@ -33,17 +33,18 @@ const LoaderWrapper = styled.div`
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
   componentDidCatch(error, errorInfo) {
     // Можно отправить лог на сервер
+    console.error('ErrorBoundary:', error, errorInfo);
   }
   render() {
     if (this.state.hasError) {
-      return <h1>Произошла ошибка в приложении</h1>;
+      return <div style={{color:'red',padding:32}}><h1>Произошла ошибка в приложении</h1><pre>{String(this.state.error)}</pre></div>;
     }
     return this.props.children;
   }
@@ -55,23 +56,39 @@ const Loader = () => (
   </LoaderWrapper>
 );
 
+// Импортирую все SVG через import
+import aiCenter from './assets/icons/ai-center.svg';
+import aiCenterActive from './assets/icons/ai-center-active.svg';
+import targetolog from './assets/icons/targetolog.svg';
+import targetologActive from './assets/icons/targetolog-active.svg';
+import profile from './assets/icons/profile.svg';
+import profileActive from './assets/icons/profile-active.svg';
+import buhgalter from './assets/icons/buhgalter.svg';
+import seller from './assets/icons/seller.svg';
+import consultant from './assets/icons/consultant.svg';
+import fileUpload from './assets/icons/file-upload.svg';
+import home from './assets/icons/home.svg';
+import homeActive from './assets/icons/home-active.svg';
+import target from './assets/icons/target.svg';
+import targetActive from './assets/icons/target-active.svg';
+import facebook from './assets/icons/facebook.svg';
+
 const allImages = [
-  require('./assets/icons/ai-center.svg'),
-  require('./assets/icons/ai-center-active.svg'),
-  require('./assets/icons/targetolog.svg'),
-  require('./assets/icons/targetolog-active.svg'),
-  require('./assets/icons/profile.svg'),
-  require('./assets/icons/profile-active.svg'),
-  require('./assets/icons/buhgalter.svg'),
-  require('./assets/icons/seller.svg'),
-  require('./assets/icons/consultant.svg'),
-  require('./assets/icons/file-upload.svg'),
-  require('./assets/icons/home.svg'),
-  require('./assets/icons/home-active.svg'),
-  require('./assets/icons/target.svg'),
-  require('./assets/icons/target-active.svg'),
-  require('./assets/icons/facebook.svg'),
-  // profile-icon.svg убран, так как он пустой
+  aiCenter,
+  aiCenterActive,
+  targetolog,
+  targetologActive,
+  profile,
+  profileActive,
+  buhgalter,
+  seller,
+  consultant,
+  fileUpload,
+  home,
+  homeActive,
+  target,
+  targetActive,
+  facebook,
 ];
 
 const AppContent = () => {
@@ -95,6 +112,8 @@ const AppContent = () => {
       setTimeout(() => setLoading(false), 400);
     });
   }, []);
+
+  console.log('AppContent render', { loading });
 
   if (loading) return <Loader />;
 
