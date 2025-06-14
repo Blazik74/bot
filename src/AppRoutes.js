@@ -32,16 +32,14 @@ const AppRoutes = () => {
   return (
     <>
       <Notifications />
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.key}>
-          <Route path="/" element={<AnimatedRoute><AICenter /></AnimatedRoute>} />
-          <Route path="/targetolog" element={<AnimatedRoute><Targetolog /></AnimatedRoute>} />
-          <Route path="/profile" element={<AnimatedRoute><Profile /></AnimatedRoute>} />
-          <Route path="/tariffs" element={<AnimatedRoute><Tariffs /></AnimatedRoute>} />
-          <Route path="/facebook-connect" element={<AnimatedRoute><FacebookConnect /></AnimatedRoute>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AnimatePresence>
+      <Routes>
+        <Route path="/" element={<AnimatedRoute><AICenter /></AnimatedRoute>} />
+        <Route path="/targetolog" element={<AnimatedRoute><Targetolog /></AnimatedRoute>} />
+        <Route path="/profile" element={<AnimatedRoute><Profile /></AnimatedRoute>} />
+        <Route path="/tariffs" element={<AnimatedRoute><Tariffs /></AnimatedRoute>} />
+        <Route path="/facebook-connect" element={<AnimatedRoute><FacebookConnect /></AnimatedRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 };
