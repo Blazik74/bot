@@ -232,7 +232,7 @@ const HistoryItem = styled.div`
 const ModalOverlay = styled.div`
   position: fixed;
   left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.08);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -240,44 +240,38 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWindow = styled.div`
-  background: #fff;
-  border-radius: 18px;
-  padding: 32px 18px 24px 18px;
+  background: #E5E8EB;
+  border-radius: 16px;
+  padding: 32px 18px 0 18px;
   max-width: 340px;
   width: 90vw;
   text-align: center;
   position: relative;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
 `;
 
 const ModalTitle = styled.div`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  margin-bottom: 16px;
+  color: #B71C1C;
+  margin-bottom: 18px;
 `;
 
-const ModalText = styled.div`
-  font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#E5E8EB' : '#181A1B'};
-  margin-bottom: 24px;
-  line-height: 1.4;
+const ModalDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #BDBDBD;
+  margin-bottom: 18px;
 `;
 
 const ModalButton = styled.button`
-  background: #005EFF;
-  color: #fff;
+  background: none;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  color: #005EFF;
+  font-size: 20px;
   font-weight: 600;
-  padding: 14px 0;
-  width: 100%;
+  margin: 18px 0 18px 0;
   cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #0052E0;
-  }
 `;
 
 const CitySearchContainer = styled.div`
@@ -495,8 +489,8 @@ export default function Targetolog() {
     return (
       <ModalOverlay onClick={() => setShowModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
-          <ModalTitle theme={theme}>{modalType === 'success' ? 'Успешно' : 'Ошибка'}</ModalTitle>
-          <ModalText theme={theme}>{modalText}</ModalText>
+          <ModalTitle>Текст</ModalTitle>
+          <ModalDivider />
           <ModalButton onClick={() => setShowModal(false)}>Ok</ModalButton>
         </ModalWindow>
       </ModalOverlay>
@@ -509,7 +503,7 @@ export default function Targetolog() {
     return (
       <ModalOverlay onClick={() => setShowCreateModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
-          <ModalTitle theme={theme}>Создание кампании</ModalTitle>
+          <ModalTitle>Создание кампании</ModalTitle>
           
           <FormGroup>
             <FormLabel theme={theme}>Цель кампании</FormLabel>
