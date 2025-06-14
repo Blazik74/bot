@@ -1,5 +1,5 @@
 import React from 'react';
-import Notifications from './components/Notifications';
+import { Notifications } from './components/Notifications';
 import AICenter from './pages/AICenter';
 import Targetolog from './pages/Targetolog';
 import Tariffs from './pages/Tariffs';
