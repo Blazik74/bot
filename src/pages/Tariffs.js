@@ -99,19 +99,18 @@ const tariffs = [
 const Tariffs = () => {
   const [selected, setSelected] = useState(1);
   return (
-    <Container theme={theme || 'light'}>
-      <Title theme={theme || 'light'}>Тарифы и оплата</Title>
+    <Container>
+      <Title>Тарифы и оплата</Title>
       <TariffList>
         {tariffs.map(tariff => (
           <TariffCard
             key={tariff.id}
             selected={selected === tariff.id}
-            theme={theme || 'light'}
             onClick={() => setSelected(tariff.id)}
           >
-            <TariffName theme={theme || 'light'}>{tariff.name}</TariffName>
+            <TariffName>{tariff.name}</TariffName>
             <TariffPriceRow>
-              <TariffPrice theme={theme || 'light'}>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPrice>{tariff.currency}{tariff.price}</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
             </TariffPriceRow>
           </TariffCard>
