@@ -7,6 +7,7 @@ import targetologIcon from '../assets/icons/targetolog.svg';
 import targetologIconActive from '../assets/icons/targetolog-active.svg';
 import profileIcon from '../assets/icons/profile.svg';
 import profileIconActive from '../assets/icons/profile-active.svg';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const Navigation = styled.nav`
   position: fixed;
@@ -82,7 +83,9 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme() || 'light';
+  const themeFromStyled = useTheme();
+  const { theme: themeFromContext } = useThemeContext() || {};
+  const theme = themeFromContext || themeFromStyled || 'light';
   return (
     <Navigation theme={theme}>
       {navigationItems.map((item) => {
