@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import profileIcon from '../assets/icons/profile-icon.svg';
 import { useTheme as useThemeContext } from '../contexts/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -199,7 +200,7 @@ export default function Profile() {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showFbModal, setShowFbModal] = useState(false);
   const navigate = useNavigate();
-  const { isDarkMode, setTheme } = useTheme();
+  const { isDarkMode, setTheme } = useThemeContext();
   const theme = isDarkMode ? 'dark' : 'light';
 
   useEffect(() => {
@@ -232,19 +233,42 @@ export default function Profile() {
         </InfoRow>
         <ThemeRow theme={theme} onClick={() => setShowThemeDropdown(v => !v)}>
           <InfoTitle theme={theme}>Тема</InfoTitle>
-          <InfoValue theme={theme}>
+          <InfoValue theme={theme} style={{position:'relative'}}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <Arrow open={showThemeDropdown}>&#8250;</Arrow>
+            <motion.span
+              animate={{ rotate: showThemeDropdown ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ display: 'inline-block', marginLeft: 8 }}
+            >
+              &#8250;
+            </motion.span>
+            <AnimatePresence>
+              {showThemeDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.18 }}
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 32,
+                    background: theme === 'dark' ? '#23272F' : '#fff',
+                    border: '1px solid #E5E8EB',
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    padding: '8px 0',
+                    zIndex: 10,
+                    minWidth: 120,
+                  }}
+                >
+                  <div style={{padding:'8px 24px',cursor:'pointer',color:theme==='dark'?'#fff':'#181A1B'}} onClick={()=>{setTheme('light');setShowThemeDropdown(false);}}>Светлая</div>
+                  <div style={{padding:'8px 24px',cursor:'pointer',color:theme==='dark'?'#fff':'#181A1B'}} onClick={()=>{setTheme('dark');setShowThemeDropdown(false);}}>Тёмная</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </InfoValue>
         </ThemeRow>
-        {showThemeDropdown && (
-          <div style={{position:'relative',zIndex:10}}>
-            <div style={{position:'absolute',right:18,top:0,background:theme==='dark'?'#23272F':'#fff',border:'1px solid #E5E8EB',borderRadius:8,boxShadow:'0 2px 8px rgba(0,0,0,0.08)',padding:'8px 0'}}>
-              <div style={{padding:'8px 24px',cursor:'pointer',color:theme==='dark'?'#fff':'#181A1B'}} onClick={()=>{setTheme('light');setShowThemeDropdown(false);}}>Светлая</div>
-              <div style={{padding:'8px 24px',cursor:'pointer',color:theme==='dark'?'#fff':'#181A1B'}} onClick={()=>{setTheme('dark');setShowThemeDropdown(false);}}>Тёмная</div>
-            </div>
-          </div>
-        )}
       </InfoBlock>
       <FacebookButton theme={theme} onClick={() => setShowFbModal(true)}>
         <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
