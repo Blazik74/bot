@@ -9,11 +9,9 @@ import profileActiveIcon from '../assets/icons/profile-active.svg';
 import targetIcon from '../assets/icons/target.svg';
 import targetActiveIcon from '../assets/icons/target-active.svg';
 
-export const NAV_BAR_HEIGHT = 112;
-
 const NavContainer = styled.nav`
   position: fixed;
-  bottom: 24px;
+  bottom: 0;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
@@ -25,6 +23,19 @@ const NavContainer = styled.nav`
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
+
+  &::after {
+    content: '';
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    background: #fff;
+    z-index: 999;
+    pointer-events: none;
+  }
 `;
 
 const NavItem = styled.div`
@@ -42,12 +53,11 @@ const NavIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
-  filter: ${({ active }) => active ? 'drop-shadow(0 0 2px #005EFF)' : 'none'};
 `;
 
 const NavText = styled.span`
   font-size: 12px;
-  color: ${({ active }) => active ? '#005EFF' : '#181A1B'};
+  color: ${({ theme, active }) => active ? theme.primary : theme.text};
   transition: color 0.3s;
 `;
 
@@ -66,8 +76,8 @@ const BottomNav = () => {
     <NavContainer theme={theme}>
       {navItems.map(({ path, icon, activeIcon, text }) => (
         <NavItem key={path} onClick={() => navigate(path)}>
-          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} active={path === '/target' && location.pathname === '/target'} />
-          <NavText active={path === '/target' && location.pathname === '/target'}>{text}</NavText>
+          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} />
+          <NavText theme={theme} active={location.pathname === path}>{text}</NavText>
         </NavItem>
       ))}
     </NavContainer>

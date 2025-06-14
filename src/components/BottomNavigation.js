@@ -10,11 +10,11 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
-  bottom: 24px;
+  bottom: 12px;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
-  padding: 0;
+  padding: 0 0 2px 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -33,7 +33,7 @@ const NavButton = styled.button`
   border: none;
   padding: 8px 0 0 0;
   cursor: pointer;
-  color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
+  color: ${({ active, theme }) => active ? '#005EFF' : (theme === 'dark' ? '#BDBDBD' : '#BDBDBD')};
 `;
 
 const IconWrapper = styled.div`
@@ -53,7 +53,6 @@ const IconWrapper = styled.div`
 const Label = styled.span`
   font-size: 12px;
   font-weight: 500;
-  color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
 `;
 
 const navigationItems = [
@@ -83,18 +82,19 @@ export const BottomNavigation = () => {
   const theme = useTheme().theme || 'light';
   return (
     <Navigation theme={theme}>
-      {navigationItems.map((item, idx) => {
-        const isActive = (idx === 0 && (location.pathname === '/' || location.pathname === '/ai-center')) || location.pathname === item.path;
+      {navigationItems.map((item) => {
+        const isActive = location.pathname === item.path || (item.path === '/' && location.pathname === '/ai-center');
         return (
           <NavButton
             key={item.path}
             onClick={() => navigate(item.path)}
-            active={isActive && idx === 0}
+            active={isActive}
+            theme={theme}
           >
             <IconWrapper>
-              <img src={isActive && idx === 0 ? item.iconActive : item.icon} alt={item.label} />
+              <img src={isActive ? item.iconActive : item.icon} alt={item.label} />
             </IconWrapper>
-            <Label active={isActive && idx === 0}>{item.label}</Label>
+            <Label>{item.label}</Label>
           </NavButton>
         );
       })}
