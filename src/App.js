@@ -4,8 +4,9 @@ import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
 import styled from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from 'styled-components';
 import './App.css';
+import { themes } from './contexts/ThemeContext';
 
 // Импорт SVG-иконок
 import aiCenter from './assets/icons/ai-center.svg';
@@ -94,6 +95,8 @@ const allImages = [
 
 const AppContent = () => {
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState('light');
+
   useEffect(() => {
     document.body.style.background = '#fff';
     document.documentElement.style.background = '#fff';
@@ -119,10 +122,12 @@ const AppContent = () => {
   if (loading) return <Loader />;
 
   return (
-    <AppContainer>
-      <AppRoutes />
-      <BottomNavigation />
-    </AppContainer>
+    <ThemeProvider theme={themes[theme]}>
+      <AppContainer>
+        <AppRoutes />
+        <BottomNavigation />
+      </AppContainer>
+    </ThemeProvider>
   );
 };
 
