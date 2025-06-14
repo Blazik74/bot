@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
 import styled from 'styled-components';
@@ -10,8 +8,8 @@ import './App.css';
 
 const AppContainer = styled.div`
   min-height: 100vh;
-  background-color: ${props => props.theme.background};
-  color: ${props => props.theme.text};
+  background-color: #fff;
+  color: #181A1B;
   display: flex;
   flex-direction: column;
 `;
@@ -22,8 +20,8 @@ const LoaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  background: #fff;
+  color: #181A1B;
   font-size: 24px;
   font-weight: 700;
   position: fixed;
@@ -51,23 +49,11 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const Loader = ({ theme }) => (
-  <LoaderWrapper theme={theme}>
+const Loader = () => (
+  <LoaderWrapper>
     Загрузка…
   </LoaderWrapper>
 );
-
-// Функция для предзагрузки всех SVG и изображений
-const preloadImages = (imageList) => {
-  return Promise.all(imageList.map(src => {
-    return new Promise(resolve => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = resolve;
-      img.onerror = resolve;
-    });
-  }));
-};
 
 const allImages = [
   require('./assets/icons/ai-center.svg'),
@@ -84,13 +70,10 @@ const allImages = [
 ];
 
 const AppContent = () => {
-  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    // Синхронизация body и html с темой
-    document.body.style.background = theme === 'dark' ? '#181A1B' : '#fff';
-    document.documentElement.style.background = theme === 'dark' ? '#181A1B' : '#fff';
-    // Telegram Mini App Full Screen Mode (через web_app_request_fullscreen)
+    document.body.style.background = '#fff';
+    document.documentElement.style.background = '#fff';
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
       window.Telegram.WebApp.ready();
       setTimeout(() => {
@@ -98,33 +81,34 @@ const AppContent = () => {
       }, 100);
     }
     // Предзагрузка всех иконок и изображений
-    preloadImages(allImages).then(() => {
-      setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
+    Promise.all(allImages.map(src => new Promise(resolve => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = resolve;
+      img.onerror = resolve;
+    }))).then(() => {
+      setTimeout(() => setLoading(false), 400);
     });
-  }, [theme]);
+  }, []);
 
-  if (loading) return <Loader theme={theme} />;
+  if (loading) return <Loader />;
 
   return (
-    <StyledThemeProvider theme={theme}>
-      <AppContainer>
-        <AppRoutes />
-        <BottomNavigation />
-      </AppContainer>
-    </StyledThemeProvider>
+    <AppContainer>
+      <AppRoutes />
+      <BottomNavigation />
+    </AppContainer>
   );
 };
 
 const App = () => (
-  <ThemeProvider>
-    <NotificationProvider>
-      <ErrorBoundary>
-        <Router>
-          <AppContent />
-        </Router>
-      </ErrorBoundary>
-    </NotificationProvider>
-  </ThemeProvider>
+  <NotificationProvider>
+    <ErrorBoundary>
+      <Router>
+        <AppContent />
+      </Router>
+    </ErrorBoundary>
+  </NotificationProvider>
 );
 
 export default App; 
