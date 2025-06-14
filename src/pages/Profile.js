@@ -137,6 +137,53 @@ const LogoutButton = styled.button`
   cursor: pointer;
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ModalWindow = styled.div`
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px 18px 24px 18px;
+  max-width: 340px;
+  width: 90vw;
+  text-align: center;
+  position: relative;
+`;
+
+const MegaphoneIcon = styled.img`
+  width: 64px;
+  height: 64px;
+  margin-bottom: 18px;
+`;
+
+const ModalTitle = styled.div`
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #181A1B;
+`;
+
+const ModalText = styled.div`
+  font-size: 16px;
+  color: #181A1B;
+  margin-bottom: 18px;
+`;
+
+const ModalList = styled.ul`
+  text-align: left;
+  margin: 0 0 18px 0;
+  padding-left: 18px;
+  color: #181A1B;
+  font-size: 15px;
+`;
+
 const Profile = () => {
   const theme = useTheme().theme || 'light';
   const [tgUser, setTgUser] = useState(null);
