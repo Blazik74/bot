@@ -49,18 +49,6 @@ const NavButton = styled.button`
   font-weight: ${({ active }) => active ? 700 : 500};
   position: relative;
   font-size: 15px;
-  &:after {
-    content: '';
-    display: ${({ active }) => active ? 'block' : 'none'};
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -4px;
-    height: 5px;
-    border-radius: 3px;
-    background: #181A1B;
-    width: 100%;
-  }
 `;
 
 const IconWrapper = styled.div`
