@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import useStore from '../../store';
 import { Box, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -67,11 +66,7 @@ export const TariffsPage = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div>
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" gutterBottom>
           Choose Your Plan
@@ -153,6 +148,6 @@ export const TariffsPage = () => {
           </Box>
         </Box>
       </Box>
-    </motion.div>
+    </div>
   );
 }; 
