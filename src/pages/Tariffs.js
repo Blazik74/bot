@@ -145,7 +145,7 @@ const Tariffs = () => {
   );
 };
 
-import Tariffs from './pages/Tariffs';
+export default Tariffs;
 
 // CSS для fadeInTariff
 // @keyframes fadeInTariff { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none; } } 
