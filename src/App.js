@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { ThemeProvider } from 'styled-components';
-import './App.css';
 import { themes } from './contexts/ThemeContext';
+import './App.css';
 
 // Импорт SVG-иконок
 import aiCenter from './assets/icons/ai-center.svg';
@@ -122,17 +121,15 @@ const AppContent = () => {
   if (loading) return <Loader />;
 
   return (
-    <ThemeProvider theme={themes[theme]}>
-      <AppContainer>
-        <AppRoutes />
-        <BottomNavigation />
-      </AppContainer>
-    </ThemeProvider>
+    <AppContainer>
+      <AppRoutes />
+      <BottomNavigation />
+    </AppContainer>
   );
 };
 
 const App = () => (
-  <ThemeProvider>
+  <ThemeProvider theme={themes['light']}>
     <NotificationProvider>
       <ErrorBoundary>
         <Router>
