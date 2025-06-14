@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { useTheme } from 'styled-components';
+import React, { useState, useRef, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import facebookIcon from '../assets/icons/facebook.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
-import profileIcon from '../assets/icons/profile.svg';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -18,93 +16,101 @@ const ProfileHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 36px 16px 24px 16px;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  margin-top: 36px;
 `;
 
 const Avatar = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
-  margin-bottom: 16px;
-  border: 2px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
+  background: #E5E8EB;
+  margin-bottom: 18px;
 `;
 
-const Name = styled.div`
+const Nickname = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  margin-bottom: 4px;
+  color: #181A1B;
+  margin-bottom: 18px;
 `;
 
-const Username = styled.div`
+const InfoBlock = styled.div`
+  background: #E5E8EB;
+  border-radius: 12px;
+  margin: 0 16px 18px 16px;
+  overflow: hidden;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-bottom: 1px solid #D1D5DB;
+  &:last-child { border-bottom: none; }
+`;
+
+const InfoTitle = styled.div`
+  flex: 0 0 110px;
+  font-weight: 700;
+  color: #181A1B;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#E5E8EB' : '#666'};
-  margin-bottom: 24px;
+  padding-left: 18px;
+`;
+
+const InfoValue = styled.div`
+  flex: 1;
+  text-align: right;
+  font-weight: 400;
+  color: #181A1B;
+  font-size: 16px;
+  padding-right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 const TariffButton = styled.button`
   background: none;
   border: none;
-  color: #005EFF;
+  color: #181A1B;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   padding: 0;
   cursor: pointer;
-  margin-bottom: 32px;
-`;
-
-const ThemeSection = styled.div`
-  width: 100%;
-  padding: 0 16px;
-  margin-bottom: 24px;
-`;
-
-const ThemeButton = styled.button`
-  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: none;
-  border: none;
-  padding: 16px;
-  cursor: pointer;
-  border-radius: 12px;
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#F6F8FA'};
 `;
 
-const ThemeText = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+const ArrowAnim = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
 `;
 
-const ThemeArrow = styled.img`
-  transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+const Arrow = styled.span`
+  display: inline-block;
+  margin-left: 8px;
   transition: transform 0.3s;
+  transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(0)'};
+`;
+
+const ThemeRow = styled(InfoRow)`
+  cursor: pointer;
 `;
 
 const ThemeDropdown = styled.div`
-  margin-top: 8px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#F6F8FA'};
+  background: #E5E8EB;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  z-index: 10;
+  padding: 0 0 8px 0;
 `;
 
-const ThemeOption = styled.button`
-  width: 100%;
-  text-align: left;
-  padding: 16px;
-  background: none;
-  border: none;
+const ThemeOption = styled.div`
+  padding: 12px 18px;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: #181A1B;
   cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme === 'dark' ? '#3C3F40' : '#E5E8EB'};
-  }
+  &:hover { background: #D1D5DB; }
 `;
 
 const FacebookButton = styled.button`
@@ -128,8 +134,8 @@ const LogoutButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px;
   padding: 16px;
-  background: #F44336;
-  color: #fff;
+  background: #E5E8EB;
+  color: #005EFF;
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -140,7 +146,7 @@ const LogoutButton = styled.button`
 const ModalOverlay = styled.div`
   position: fixed;
   left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.08);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -148,13 +154,38 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWindow = styled.div`
-  background: #fff;
-  border-radius: 18px;
-  padding: 32px 18px 24px 18px;
+  background: #E5E8EB;
+  border-radius: 16px;
+  padding: 32px 18px 0 18px;
   max-width: 340px;
   width: 90vw;
   text-align: center;
   position: relative;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+`;
+
+const ModalTitle = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+  color: #B71C1C;
+  margin-bottom: 18px;
+`;
+
+const ModalDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #BDBDBD;
+  margin-bottom: 18px;
+`;
+
+const ModalButton = styled.button`
+  background: none;
+  border: none;
+  color: #005EFF;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 18px 0 18px 0;
+  cursor: pointer;
 `;
 
 const MegaphoneIcon = styled.img`
@@ -163,15 +194,8 @@ const MegaphoneIcon = styled.img`
   margin-bottom: 18px;
 `;
 
-const ModalTitle = styled.div`
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #181A1B;
-`;
-
 const ModalText = styled.div`
-  font-size: 16px;
+  font-size: 18px;
   color: #181A1B;
   margin-bottom: 18px;
 `;
@@ -181,17 +205,16 @@ const ModalList = styled.ul`
   margin: 0 0 18px 0;
   padding-left: 18px;
   color: #181A1B;
-  font-size: 15px;
+  font-size: 16px;
 `;
 
-const Profile = () => {
-  const theme = useTheme().theme || 'light';
+export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [themePanel, setThemePanel] = useState(false);
-  const [themeValue, setThemeValue] = useState('light');
+  const [themeValue, setThemeValue] = useState('Светлая');
   const [showModal, setShowModal] = useState(false);
-  const themePanelRef = useRef();
   const navigate = useNavigate();
+  const themePanelRef = useRef();
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -209,53 +232,56 @@ const Profile = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [themePanel]);
 
-  const avatar = tgUser?.photo_url || profileIcon;
-  const name = tgUser?.first_name || 'Имя';
-  const username = tgUser?.username || 'username';
+  const avatar = tgUser?.photo_url || '';
+  const nickname = tgUser?.first_name || 'Имя';
+  const username = tgUser?.username || 'Имя пользователя';
+  const tariff = tgUser?.tariff || 'Фрилансер';
 
   return (
-    <Container theme={theme}>
+    <Container>
       <ProfileHeader>
-        <Avatar src={avatar} alt={name} />
-        <Name theme={theme}>{name}</Name>
+        <Avatar src={avatar} alt={nickname} />
+        <Nickname>{nickname}</Nickname>
       </ProfileHeader>
-      <Username>{username}</Username>
-      <TariffButton onClick={() => navigate('/tariffs')}>Тариф</TariffButton>
-      <ThemeSection>
-        <ThemeButton onClick={() => setThemePanel(v => !v)}>
-          <ThemeText>Тема</ThemeText>
-          <ThemeArrow isOpen={themePanel} />
-        </ThemeButton>
+      <InfoBlock>
+        <InfoRow>
+          <InfoTitle>Аккаунт</InfoTitle>
+          <InfoValue>{username}</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoTitle>Тариф</InfoTitle>
+          <InfoValue>
+            <TariffButton onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
+          </InfoValue>
+        </InfoRow>
+        <ThemeRow onClick={() => setThemePanel(v => !v)}>
+          <InfoTitle>Тема</InfoTitle>
+          <InfoValue>
+            {themeValue}
+            <Arrow open={themePanel}>&#8250;</Arrow>
+          </InfoValue>
+        </ThemeRow>
         {themePanel && (
-          <ThemeDropdown>
-            <ThemeOption onClick={() => { setThemeValue('light'); setThemePanel(false); }}>Светлая</ThemeOption>
-            <ThemeOption onClick={() => { setThemeValue('dark'); setThemePanel(false); }}>Темная</ThemeOption>
+          <ThemeDropdown ref={themePanelRef}>
+            <ThemeOption onClick={() => { setThemeValue('Светлая'); setThemePanel(false); }}>Светлая</ThemeOption>
+            <ThemeOption onClick={() => { setThemeValue('Темная'); setThemePanel(false); }}>Темная</ThemeOption>
           </ThemeDropdown>
         )}
-      </ThemeSection>
+      </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
-        <img src={facebookIcon} alt="Facebook" width={22} height={22} />
+        <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
         Подключить Facebook Ads Account
       </FacebookButton>
       <LogoutButton>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalWindow onClick={e => e.stopPropagation()}>
-            <MegaphoneIcon src={megaphoneIcon} alt="Megaphone" />
-            <ModalTitle>Подключение рекламного аккаунта</ModalTitle>
-            <ModalText>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
-            <ModalList>
-              <li>Использовать ИИ автопилот</li>
-              <li>Получать советы и диагностику от ИИ</li>
-              <li>Просматривать метрики</li>
-              <li>Загружать креативы</li>
-            </ModalList>
-            <FacebookButton style={{ width: '100%', margin: 0 }}>Подключить рекламный аккаунт</FacebookButton>
+            <ModalTitle>Кампания остановлена</ModalTitle>
+            <ModalDivider />
+            <ModalButton onClick={() => setShowModal(false)}>Ok</ModalButton>
           </ModalWindow>
         </ModalOverlay>
       )}
     </Container>
   );
-};
-
-export default Profile; 
+} 
