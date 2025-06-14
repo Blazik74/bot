@@ -1,7 +1,7 @@
 import React from 'react';
 import Notifications from './components/Notifications';
 import AICenter from './pages/AICenter';
-import { Targetolog } from './pages/Targetolog';
+import Targetolog from './pages/Targetolog';
 import Tariffs from './pages/Tariffs';
 import Profile from './pages/Profile';
 import FacebookConnect from './pages/FacebookConnect';
