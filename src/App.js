@@ -92,16 +92,24 @@ const AppContent = () => {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    // Telegram Mini App fullscreen (строго по документации)
+    // Telegram Mini App Full Screen Mode
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
+      window.Telegram.WebApp.enableClosingConfirmation(false);
+      if (theme === 'dark') {
+        window.Telegram.WebApp.setHeaderColor('bg_color');
+        window.Telegram.WebApp.setBackgroundColor('#181A1B');
+      } else {
+        window.Telegram.WebApp.setHeaderColor('bg_color');
+        window.Telegram.WebApp.setBackgroundColor('#fff');
+      }
     }
     // Предзагрузка всех иконок и изображений
     preloadImages(allImages).then(() => {
       setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
     });
-  }, []);
+  }, [theme]);
 
   if (loading) return <Loader theme={theme} />;
 
