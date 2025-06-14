@@ -5,6 +5,7 @@ import targetologIcon from '../assets/icons/targetolog.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
+import targetologActiveIcon from '../assets/icons/targetolog-active.svg';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -97,19 +98,46 @@ const TariffButton = styled.button`
   box-shadow: 0 1px 4px 0 rgba(0,94,255,0.04);
 `;
 
+const BlueCard = styled(Card)`
+  background: #EAF1FF;
+  border: 2px solid #005EFF;
+  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
+`;
+
+const BlueCardRow = styled(CardRow)`
+  color: #005EFF;
+`;
+
+const BlueCardIcon = styled(CardIcon)`
+  img {
+    filter: none;
+  }
+`;
+
+const BlueCardLabel = styled(CardLabel)`
+  color: #005EFF;
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 2px solid #E5E8EB;
+  margin: 18px 0 24px 0;
+`;
+
 const AICenter = () => {
   const navigate = useNavigate();
   const theme = useTheme().theme || 'light';
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>
+      <Divider />
       <CardList>
-        <Card theme={theme} active onClick={() => navigate('/targetolog')}>
-          <CardRow>
-            <CardIcon><img src={targetologIcon} alt="ИИ Таргетолог" /></CardIcon>
-            <CardLabel theme={theme}>ИИ Таргетолог</CardLabel>
-          </CardRow>
-        </Card>
+        <BlueCard theme={theme} active onClick={() => navigate('/targetolog')}>
+          <BlueCardRow>
+            <BlueCardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></BlueCardIcon>
+            <BlueCardLabel>ИИ Таргетолог</BlueCardLabel>
+          </BlueCardRow>
+        </BlueCard>
         <Card theme={theme}>
           <CardRow>
             <CardIcon><img src={buhgalterIcon} alt="ИИ Бухгалтер" /></CardIcon>
