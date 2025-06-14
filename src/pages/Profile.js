@@ -3,6 +3,7 @@ import styled, { keyframes, useTheme } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import profileIcon from '../assets/icons/profile-icon.svg';
+import { useTheme as useThemeContext } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -198,8 +199,8 @@ export default function Profile() {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showFbModal, setShowFbModal] = useState(false);
   const navigate = useNavigate();
-  const theme = useTheme().theme || 'light';
-  const setTheme = window.Telegram?.WebApp?.setThemeParams || (()=>{});
+  const { isDarkMode, setTheme } = useTheme();
+  const theme = isDarkMode ? 'dark' : 'light';
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
