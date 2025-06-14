@@ -130,30 +130,47 @@ const CampaignList = styled.div`
 const CampaignCard = styled.div`
   background: #fff;
   border-radius: 14px;
-  padding: 16px 14px;
+  padding: 18px 16px 18px 16px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   border: 2px solid #E5E8EB;
 `;
 
 const CampaignHeader = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
 `;
 
 const CampaignName = styled.div`
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: #181A1B;
 `;
 
 const CampaignStatus = styled.div`
-  font-size: 14px;
+  font-size: 15px;
   color: ${({ active }) => active ? '#1BC47D' : '#F44336'};
   font-weight: 600;
+  margin-top: 2px;
+`;
+
+const CampaignMeta = styled.div`
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+`;
+
+const CampaignStats = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  margin-top: 8px;
+  font-size: 16px;
+  color: #181A1B;
 `;
 
 const CampaignAction = styled.button`
@@ -166,14 +183,6 @@ const CampaignAction = styled.button`
   padding: 8px 16px;
   cursor: pointer;
   margin-left: 12px;
-`;
-
-const CampaignStats = styled.div`
-  display: flex;
-  gap: 18px;
-  margin-top: 8px;
-  font-size: 14px;
-  color: #181A1B;
 `;
 
 const AdviceSection = styled.div`
@@ -427,6 +436,25 @@ const Card = styled.div`
   // ...остальные стили...
 `;
 
+const CampaignObjectiveBlock = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+`;
+const ObjectiveOption = styled.div`
+  flex: 1;
+  padding: 14px 0;
+  border-radius: 10px;
+  background: ${({ selected }) => selected ? '#005EFF' : '#F6F8FA'};
+  color: ${({ selected }) => selected ? '#fff' : '#181A1B'};
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid ${({ selected }) => selected ? '#005EFF' : '#E5E8EB'};
+  cursor: pointer;
+  transition: all 0.2s;
+`;
+
 export default function Targetolog() {
   const theme = useTheme();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -441,6 +469,10 @@ export default function Targetolog() {
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
   const [filteredCities, setFilteredCities] = useState([]);
   const fileInputRef = useRef(null);
+  const [objective, setObjective] = useState('traffic');
+  const [budget, setBudget] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -481,6 +513,11 @@ export default function Targetolog() {
 
   const handleCreateCampaign = () => {
     setShowCreateModal(true);
+    setObjective('traffic');
+    setBudget('');
+    setDate('');
+    setTime('');
+    setCityInput('');
   };
 
   const handleCityInputChange = (e) => {
@@ -503,15 +540,45 @@ export default function Targetolog() {
     setShowCitySuggestions(false);
   };
 
+  const handleSubmitCampaign = () => {
+    const newCampaign = {
+      id: Date.now(),
+      name: `Кампания ${campaigns.length + 1}`,
+      status: 'active',
+      stats: { clicks: 0, impressions: 0, ctr: 0 },
+      objective,
+      city: cityInput,
+      budget,
+      date,
+      time,
+    };
+    setCampaigns([newCampaign, ...campaigns]);
+    setShowCreateModal(false);
+    setModalType('success');
+    setModalText('Кампания успешно создана');
+    setShowModal(true);
+  };
+
   const renderModal = () => {
     if (!showModal) return null;
-
+    let title = '';
+    let color = '#B71C1C';
+    if (modalType === 'success') {
+      title = modalText;
+      color = '#1BC47D';
+    } else if (modalType === 'error') {
+      title = modalText;
+      color = '#B71C1C';
+    } else if (modalType === 'info') {
+      title = modalText;
+      color = '#005EFF';
+    }
     return (
       <ModalOverlay onClick={() => setShowModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
-          <ModalTitle>Текст</ModalTitle>
+          <ModalTitle style={{ color }}>{title}</ModalTitle>
           <ModalDivider />
-          <ModalButton onClick={() => setShowModal(false)}>Ok</ModalButton>
+          <ModalButton onClick={() => setShowModal(false)}>Ок</ModalButton>
         </ModalWindow>
       </ModalOverlay>
     );
@@ -519,37 +586,32 @@ export default function Targetolog() {
 
   const renderCreateModal = () => {
     if (!showCreateModal) return null;
-
     return (
       <ModalOverlay onClick={() => setShowCreateModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
           <ModalClose onClick={() => setShowCreateModal(false)}>&#10005;</ModalClose>
           <ModalTitle>Создание кампании</ModalTitle>
-          
           <FormGroup>
-            <FormLabel theme={theme}>Цель кампании</FormLabel>
-            <FormSelect theme={theme}>
-              <option value="traffic">Трафик</option>
-              <option value="conversion">Конверсии</option>
-              <option value="reach">Охват</option>
-            </FormSelect>
+            <FormLabel>Цель кампании</FormLabel>
+            <CampaignObjectiveBlock>
+              <ObjectiveOption selected={objective === 'traffic'} onClick={() => setObjective('traffic')}>Трафик</ObjectiveOption>
+              <ObjectiveOption selected={objective === 'conversion'} onClick={() => setObjective('conversion')}>Конверсии</ObjectiveOption>
+              <ObjectiveOption selected={objective === 'reach'} onClick={() => setObjective('reach')}>Охват</ObjectiveOption>
+            </CampaignObjectiveBlock>
           </FormGroup>
-
           <FormGroup>
-            <FormLabel theme={theme}>Геолокация аудитории</FormLabel>
+            <FormLabel>Геолокация аудитории</FormLabel>
             <CitySearchContainer>
               <CityInput
-                theme={theme}
                 value={cityInput}
                 onChange={handleCityInputChange}
                 placeholder="Выберите город"
               />
               {showCitySuggestions && (
-                <CitySuggestions theme={theme}>
+                <CitySuggestions>
                   {filteredCities.map((city, index) => (
                     <CitySuggestion
                       key={index}
-                      theme={theme}
                       onClick={() => handleCitySelect(city)}
                     >
                       {city}
@@ -559,34 +621,33 @@ export default function Targetolog() {
               )}
             </CitySearchContainer>
           </FormGroup>
-
           <FormGroup>
-            <FormLabel theme={theme}>Бюджет кампании</FormLabel>
+            <FormLabel>Бюджет кампании</FormLabel>
             <FormInput
-              theme={theme}
               type="number"
               placeholder="Введите сумму"
               min="0"
+              value={budget}
+              onChange={e => setBudget(e.target.value)}
             />
           </FormGroup>
-
           <FormGroup>
-            <FormLabel theme={theme}>Дата начала</FormLabel>
+            <FormLabel>Дата начала</FormLabel>
             <FormDateInput
-              theme={theme}
               type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
             />
           </FormGroup>
-
           <FormGroup>
-            <FormLabel theme={theme}>Время начала</FormLabel>
+            <FormLabel>Время начала</FormLabel>
             <FormDateInput
-              theme={theme}
               type="time"
+              value={time}
+              onChange={e => setTime(e.target.value)}
             />
           </FormGroup>
-
-          <ModalButton onClick={() => setShowCreateModal(false)}>Ок</ModalButton>
+          <ModalButton onClick={handleSubmitCampaign}>Создать кампанию</ModalButton>
         </ModalWindow>
       </ModalOverlay>
     );
@@ -648,23 +709,30 @@ export default function Targetolog() {
                 <CampaignCard>
                   <CampaignHeader>
                     <CampaignName>{campaign.name}</CampaignName>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <CampaignStatus active={campaign.status === 'active'}>
-                        {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
-                      </CampaignStatus>
-                      <CampaignAction
-                        active={campaign.status === 'active'}
-                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                      >
-                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                      </CampaignAction>
-                    </div>
+                    <CampaignStatus active={campaign.status === 'active'}>
+                      {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
+                    </CampaignStatus>
                   </CampaignHeader>
+                  <CampaignMeta>
+                    Цель: {campaign.objective === 'traffic' ? 'Трафик' : campaign.objective === 'conversion' ? 'Конверсии' : 'Охват'}
+                    {campaign.city && ` | Город: ${campaign.city}`}
+                    {campaign.budget && ` | Бюджет: ${campaign.budget}`}
+                    {campaign.date && ` | Дата: ${campaign.date}`}
+                    {campaign.time && ` | Время: ${campaign.time}`}
+                  </CampaignMeta>
                   <CampaignStats>
                     <div>Показы: {campaign.stats.impressions}</div>
                     <div>Клики: {campaign.stats.clicks}</div>
                     <div>CTR: {campaign.stats.ctr}%</div>
                   </CampaignStats>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                    <CampaignAction
+                      active={campaign.status === 'active'}
+                      onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                    >
+                      {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                    </CampaignAction>
+                  </div>
                 </CampaignCard>
               </CSSTransition>
             ))}
