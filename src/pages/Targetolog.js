@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import useStore from '../store';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -468,9 +469,6 @@ export default function Targetolog() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);
   const [autopilotEnabled, setAutopilotEnabled] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [modalText, setModalText] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [cityInput, setCityInput] = useState('');
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
@@ -480,6 +478,7 @@ export default function Targetolog() {
   const [budget, setBudget] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const addNotification = useStore((state) => state.addNotification);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -494,6 +493,9 @@ export default function Targetolog() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+      addNotification('Креатив успешно загружен', 'success');
+    } else {
+      addNotification('Ошибка при загрузке', 'error');
     }
   };
 
@@ -501,9 +503,7 @@ export default function Targetolog() {
     const updatedCampaigns = campaigns.map(campaign => {
       if (campaign.id === id) {
         const newStatus = action === 'start' ? 'active' : 'stopped';
-        setModalType('success');
-        setModalText(action === 'start' ? 'Кампания запущена' : 'Кампания остановлена');
-        setShowModal(true);
+        addNotification(action === 'start' ? 'Кампания запущена' : 'Кампания остановлена', action === 'start' ? 'success' : 'error');
         return { ...campaign, status: newStatus };
       }
       return campaign;
@@ -513,9 +513,7 @@ export default function Targetolog() {
 
   const handleAutopilot = () => {
     setAutopilotEnabled(!autopilotEnabled);
-    setModalType('success');
-    setModalText(autopilotEnabled ? 'Автопилот выключен' : 'Автопилот включен');
-    setShowModal(true);
+    addNotification(!autopilotEnabled ? 'Автопилот включён' : 'Автопилот выключен', 'success');
   };
 
   const handleCreateCampaign = () => {
@@ -561,34 +559,7 @@ export default function Targetolog() {
     };
     setCampaigns([newCampaign, ...campaigns]);
     setShowCreateModal(false);
-    setModalType('success');
-    setModalText('Кампания успешно создана');
-    setShowModal(true);
-  };
-
-  const renderModal = () => {
-    if (!showModal) return null;
-    let title = '';
-    let color = '#B71C1C';
-    if (modalType === 'success') {
-      title = modalText;
-      color = '#1BC47D';
-    } else if (modalType === 'error') {
-      title = modalText;
-      color = '#B71C1C';
-    } else if (modalType === 'info') {
-      title = modalText;
-      color = '#005EFF';
-    }
-    return (
-      <ModalOverlay onClick={() => setShowModal(false)}>
-        <ModalWindow onClick={e => e.stopPropagation()}>
-          <ModalTitle style={{ color }}>{title}</ModalTitle>
-          <ModalDivider />
-          <ModalButton onClick={() => setShowModal(false)}>Ок</ModalButton>
-        </ModalWindow>
-      </ModalOverlay>
-    );
+    addNotification('Кампания успешно создана', 'success');
   };
 
   const renderCreateModal = () => {
@@ -781,9 +752,6 @@ export default function Targetolog() {
         </HistoryList>
       </AutopilotSection>
 
-      <CSSTransition in={showModal} timeout={200} classNames="modal" unmountOnExit>
-        {renderModal()}
-      </CSSTransition>
       <CSSTransition in={showCreateModal} timeout={200} classNames="modal" unmountOnExit>
         {renderCreateModal()}
       </CSSTransition>
