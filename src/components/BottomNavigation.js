@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import aiCenterIcon from '../assets/icons/ai-center.svg';
 import aiCenterIconActive from '../assets/icons/ai-center-active.svg';
 import targetologIcon from '../assets/icons/targetolog.svg';
@@ -83,9 +83,7 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const themeFromStyled = useTheme();
-  const { theme: themeFromContext } = useThemeContext() || {};
-  const theme = themeFromContext || themeFromStyled || 'light';
+  const { theme } = useThemeContext() || {};
   return (
     <Navigation theme={theme}>
       {navigationItems.map((item) => {
