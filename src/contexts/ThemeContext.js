@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
-const ThemeContext = createContext();
+export const ThemeContext = createContext();
 
 export const themes = {
   light: {
@@ -19,7 +19,7 @@ export const themes = {
     text: '#FFFFFF',
     primary: '#005EFF',
     border: '#333333',
-    card: '#2A2A2A',
+    card: '#2A2A2A',ы
     button: '#005EFF',
     buttonText: '#fff',
     buttonSecondary: '#23272A',
@@ -28,12 +28,12 @@ export const themes = {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const theme = 'light';
+  const [theme, setTheme] = useState('light');
   return (
-    <ThemeContext.Provider value={{ theme }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
-export const useTheme = () => React.useContext(ThemeContext); 
+export const useThemeContext = () => useContext(ThemeContext); 
