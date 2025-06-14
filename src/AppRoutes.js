@@ -13,8 +13,8 @@ const AppRoutes = () => {
   // return <Targetolog />;
   // return <Tariffs />;
   // + return <Profile />;
-  return <FacebookConnect />;
-  // return <Targetolog />;
+  // + return <FacebookConnect />;
+  return <Targetolog />;
 };
 
 export default AppRoutes;
