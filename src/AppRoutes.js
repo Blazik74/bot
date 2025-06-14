@@ -14,7 +14,7 @@ const AppRoutes = () => {
   // return <Tariffs />;
   // return <Profile />;
   // return <FacebookConnect />;
-  return null; // Меняй на нужный компонент
+  return Targetolog; // Меняй на нужный компонент
 };
 
 export default AppRoutes;
