@@ -9,21 +9,7 @@ import { Notifications } from './components/Notifications';
 import FacebookConnect from './pages/FacebookConnect';
 
 const AppRoutes = () => {
-  return (
-    <>
-      <Notifications />
-      <AnimatePresence mode="wait">
-        <Routes>
-          <Route path="/" element={<AICenter />} />
-          <Route path="/targetolog" element={<Targetolog />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/tariffs" element={<Tariffs />} />
-          <Route path="/facebook-connect" element={<FacebookConnect />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AnimatePresence>
-    </>
-  );
+  return <div style={{padding: 40, color: 'green'}}>Test Render</div>;
 };
 
 export default AppRoutes; 
