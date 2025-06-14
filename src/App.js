@@ -66,6 +66,12 @@ const allImages = [
   require('./assets/icons/seller.svg'),
   require('./assets/icons/consultant.svg'),
   require('./assets/icons/file-upload.svg'),
+  require('./assets/icons/home.svg'),
+  require('./assets/icons/home-active.svg'),
+  require('./assets/icons/target.svg'),
+  require('./assets/icons/target-active.svg'),
+  require('./assets/icons/facebook.svg'),
+  require('./assets/icons/profile-icon.svg'),
   // Добавь сюда другие изображения, если появятся
 ];
 
