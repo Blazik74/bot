@@ -107,12 +107,6 @@ const AppContent = () => {
     preloadImages(allImages).then(() => {
       setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
     });
-    // Выход из полноэкранного режима при размонтировании
-    return () => {
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
-        window.Telegram.WebApp.postEvent('web_app_exit_fullscreen');
-      }
-    };
   }, [theme]);
 
   if (loading) return <Loader theme={theme} />;
