@@ -9,30 +9,22 @@ import profileActiveIcon from '../assets/icons/profile-active.svg';
 import targetIcon from '../assets/icons/target.svg';
 import targetActiveIcon from '../assets/icons/target-active.svg';
 
+export const NAV_BAR_HEIGHT = 112;
+
 const NavContainer = styled.nav`
   position: fixed;
-  bottom: 0;
+  bottom: 24px;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme === 'dark' ? 'linear-gradient(180deg, #181A1B 0%, #2C2F30 100%)' : 'linear-gradient(180deg, #fff 0%, #E5E8EB 100%)'};
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 100px; /* Увеличенная высота */
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  height: 88px;
+  min-height: 88px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
-  &::after {
-    content: '';
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-    z-index: -1;
-    pointer-events: none;
-  }
 `;
 
 const NavItem = styled.div`
@@ -47,14 +39,14 @@ const NavItem = styled.div`
 `;
 
 const NavIcon = styled.img`
-  width: 28px; /* Увеличенные размеры иконок */
-  height: 28px;
-  margin-bottom: 6px; /* Увеличенное расстояние между иконкой и текстом */
-  filter: ${({ active }) => active ? 'drop-shadow(0 0 3px #005EFF)' : 'none'};
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  filter: ${({ active }) => active ? 'drop-shadow(0 0 2px #005EFF)' : 'none'};
 `;
 
 const NavText = styled.span`
-  font-size: 14px; /* Увеличенный размер шрифта */
+  font-size: 12px;
   color: ${({ active }) => active ? '#005EFF' : '#181A1B'};
   transition: color 0.3s;
 `;
@@ -74,12 +66,12 @@ const BottomNav = () => {
     <NavContainer theme={theme}>
       {navItems.map(({ path, icon, activeIcon, text }) => (
         <NavItem key={path} onClick={() => navigate(path)}>
-          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} active={location.pathname === path} />
-          <NavText active={location.pathname === path}>{text}</NavText>
+          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} active={path === '/target' && location.pathname === '/target'} />
+          <NavText active={path === '/target' && location.pathname === '/target'}>{text}</NavText>
         </NavItem>
       ))}
     </NavContainer>
   );
 };
 
-export default BottomNav;
+export default BottomNav; 
