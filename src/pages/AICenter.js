@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import targetologIcon from '../assets/icons/targetolog.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
@@ -9,7 +9,7 @@ import targetologActiveIcon from '../assets/icons/targetolog-active.svg';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -22,7 +22,7 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: center;
   margin: 36px 0 18px 0;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: #181A1B;
 `;
 
 const CardList = styled.div`
@@ -33,7 +33,7 @@ const CardList = styled.div`
 `;
 
 const Card = styled.div`
-  background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
+  background: #fff;
   border: 2px solid #E5E8EB;
   border-radius: 20px;
   padding: 18px 20px 14px 20px;
@@ -71,7 +71,7 @@ const CardIcon = styled.div`
 const CardLabel = styled.div`
   font-size: 19px;
   font-weight: 600;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: #181A1B;
 `;
 
 const Soon = styled.span`
@@ -126,41 +126,40 @@ const Divider = styled.hr`
 
 const AICenter = () => {
   const navigate = useNavigate();
-  const theme = useTheme().theme || 'light';
   return (
-    <Container theme={theme}>
-      <Title theme={theme}>ИИ Центр</Title>
+    <Container>
+      <Title>ИИ Центр</Title>
       <Divider />
       <CardList>
-        <BlueCard theme={theme} active onClick={() => navigate('/targetolog')}>
+        <BlueCard active onClick={() => navigate('/targetolog')}>
           <BlueCardRow>
             <BlueCardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></BlueCardIcon>
             <BlueCardLabel>ИИ Таргетолог</BlueCardLabel>
           </BlueCardRow>
         </BlueCard>
-        <Card theme={theme}>
+        <Card>
           <CardRow>
             <CardIcon><img src={buhgalterIcon} alt="ИИ Бухгалтер" /></CardIcon>
-            <CardLabel theme={theme}>ИИ Бухгалтер</CardLabel>
+            <CardLabel>ИИ Бухгалтер</CardLabel>
           </CardRow>
           <Soon>Будет скоро</Soon>
         </Card>
-        <Card theme={theme}>
+        <Card>
           <CardRow>
             <CardIcon><img src={sellerIcon} alt="ИИ Продавец" /></CardIcon>
-            <CardLabel theme={theme}>ИИ Продавец</CardLabel>
+            <CardLabel>ИИ Продавец</CardLabel>
           </CardRow>
           <Soon>Будет скоро</Soon>
         </Card>
-        <Card theme={theme}>
+        <Card>
           <CardRow>
             <CardIcon><img src={consultantIcon} alt="ИИ Консультант" /></CardIcon>
-            <CardLabel theme={theme}>ИИ Консультант</CardLabel>
+            <CardLabel>ИИ Консультант</CardLabel>
           </CardRow>
           <Soon>Будет скоро</Soon>
         </Card>
       </CardList>
-      <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
+      <TariffButton onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
     </Container>
   );
 };
