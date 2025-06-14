@@ -1,7 +1,8 @@
 import React from 'react';
+import { Notifications } from './components/Notifications';
 
 const AppRoutes = () => {
-  return <div style={{color:'red',fontSize:40}}>Тестовый текст</div>;
+  return <Notifications />;
 };
 
 export default AppRoutes; 
