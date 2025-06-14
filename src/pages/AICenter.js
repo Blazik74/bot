@@ -116,5 +116,42 @@ const DividerLine = styled.div`
 `;
 
 export default function AICenter() {
-  return <div style={{color: 'red', padding: 40}}>Test AICenter</div>;
+  const navigate = useNavigate();
+  const theme = 'light'; // временно, если нужно — подключи из стора или пропсов
+  return (
+    <Container theme={theme}>
+      <Title theme={theme}>ИИ Центр</Title>
+      <DividerLine />
+      <CardList>
+        <BlueCard theme={theme} active onClick={() => navigate('/targetolog')}>
+          <CardRow>
+            <CardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></CardIcon>
+            <BlueCardLabel theme={theme}>ИИ Таргетолог</BlueCardLabel>
+          </CardRow>
+        </BlueCard>
+        <Card theme={theme}>
+          <CardRow>
+            <CardIcon><img src={buhgalterIcon} alt="ИИ Бухгалтер" /></CardIcon>
+            <CardLabel theme={theme}>ИИ Бухгалтер</CardLabel>
+          </CardRow>
+          <Soon>Будет скоро</Soon>
+        </Card>
+        <Card theme={theme}>
+          <CardRow>
+            <CardIcon><img src={sellerIcon} alt="ИИ Продавец" /></CardIcon>
+            <CardLabel theme={theme}>ИИ Продавец</CardLabel>
+          </CardRow>
+          <Soon>Будет скоро</Soon>
+        </Card>
+        <Card theme={theme}>
+          <CardRow>
+            <CardIcon><img src={consultantIcon} alt="ИИ Консультант" /></CardIcon>
+            <CardLabel theme={theme}>ИИ Консультант</CardLabel>
+          </CardRow>
+          <Soon>Будет скоро</Soon>
+        </Card>
+      </CardList>
+      <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
+    </Container>
+  );
 } 
