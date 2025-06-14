@@ -6,7 +6,7 @@ import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
 import targetologActiveIcon from '../assets/icons/targetolog-active.svg';
-import BottomNavigation from '../components/BottomNavigation';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
