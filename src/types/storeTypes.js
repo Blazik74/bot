@@ -59,11 +59,6 @@ export const USER_TARIFF = {
   COMPANY: 'company',
 };
 
-export const THEME = {
-  LIGHT: 'light',
-  DARK: 'dark',
-};
-
 export const NOTIFICATION_TYPE = {
   INFO: 'info',
   SUCCESS: 'success',
