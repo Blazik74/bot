@@ -5,10 +5,6 @@ import { CAMPAIGN_STATUS, USER_TARIFF, THEME, NOTIFICATION_TYPE } from '../types
  * @type {import('../types/storeTypes').AppState}
  */
 const useStore = create((set) => ({
-  // Тема
-  theme: THEME.LIGHT,
-  setTheme: (theme) => set({ theme }),
-
   // Кампании
   campaigns: [],
   addCampaign: (campaign) =>
