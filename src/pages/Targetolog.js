@@ -436,24 +436,31 @@ const Card = styled.div`
   // ...остальные стили...
 `;
 
-const CampaignObjectiveBlock = styled.div`
-  display: flex;
+const CampaignObjectiveGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 20px;
 `;
-const ObjectiveOption = styled.div`
-  flex: 1;
-  padding: 14px 0;
-  border-radius: 10px;
-  background: ${({ selected }) => selected ? '#005EFF' : '#F6F8FA'};
-  color: ${({ selected }) => selected ? '#fff' : '#181A1B'};
+const ObjectiveBlock = styled.div`
+  padding: 18px 0;
+  border-radius: 12px;
+  background: ${({ selected }) => selected ? '#EAF1FF' : '#fff'};
+  color: ${({ selected }) => selected ? '#005EFF' : '#181A1B'};
   font-weight: 600;
-  font-size: 16px;
+  font-size: 17px;
   text-align: center;
   border: 2px solid ${({ selected }) => selected ? '#005EFF' : '#E5E8EB'};
   cursor: pointer;
   transition: all 0.2s;
 `;
+
+const OBJECTIVES = [
+  { value: 'conversion', label: 'Конверсия' },
+  { value: 'traffic', label: 'Посещения сайта' },
+  { value: 'leads', label: 'Лиды' },
+  { value: 'engagement', label: 'Вовлеченность' },
+];
 
 export default function Targetolog() {
   const theme = useTheme();
@@ -593,11 +600,17 @@ export default function Targetolog() {
           <ModalTitle>Создание кампании</ModalTitle>
           <FormGroup>
             <FormLabel>Цель кампании</FormLabel>
-            <CampaignObjectiveBlock>
-              <ObjectiveOption selected={objective === 'traffic'} onClick={() => setObjective('traffic')}>Трафик</ObjectiveOption>
-              <ObjectiveOption selected={objective === 'conversion'} onClick={() => setObjective('conversion')}>Конверсии</ObjectiveOption>
-              <ObjectiveOption selected={objective === 'reach'} onClick={() => setObjective('reach')}>Охват</ObjectiveOption>
-            </CampaignObjectiveBlock>
+            <CampaignObjectiveGrid>
+              {OBJECTIVES.map(obj => (
+                <ObjectiveBlock
+                  key={obj.value}
+                  selected={objective === obj.value}
+                  onClick={() => setObjective(obj.value)}
+                >
+                  {obj.label}
+                </ObjectiveBlock>
+              ))}
+            </CampaignObjectiveGrid>
           </FormGroup>
           <FormGroup>
             <FormLabel>Геолокация аудитории</FormLabel>
@@ -702,42 +715,46 @@ export default function Targetolog() {
 
       <CampaignsSection>
         <CampaignsTitle>Кампании</CampaignsTitle>
-        <CampaignList>
-          <TransitionGroup>
-            {campaigns.map(campaign => (
-              <CSSTransition key={campaign.id} classNames="card" timeout={300}>
-                <CampaignCard>
-                  <CampaignHeader>
-                    <CampaignName>{campaign.name}</CampaignName>
+        {campaigns.length === 0 ? (
+          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
+        ) : (
+          <CampaignList>
+            <TransitionGroup>
+              {campaigns.map(campaign => (
+                <CSSTransition key={campaign.id} classNames="card" timeout={300}>
+                  <CampaignCard>
+                    <CampaignHeader>
+                      <CampaignName>{campaign.name}</CampaignName>
+                    </CampaignHeader>
                     <CampaignStatus active={campaign.status === 'active'}>
                       {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
                     </CampaignStatus>
-                  </CampaignHeader>
-                  <CampaignMeta>
-                    Цель: {campaign.objective === 'traffic' ? 'Трафик' : campaign.objective === 'conversion' ? 'Конверсии' : 'Охват'}
-                    {campaign.city && ` | Город: ${campaign.city}`}
-                    {campaign.budget && ` | Бюджет: ${campaign.budget}`}
-                    {campaign.date && ` | Дата: ${campaign.date}`}
-                    {campaign.time && ` | Время: ${campaign.time}`}
-                  </CampaignMeta>
-                  <CampaignStats>
-                    <div>Показы: {campaign.stats.impressions}</div>
-                    <div>Клики: {campaign.stats.clicks}</div>
-                    <div>CTR: {campaign.stats.ctr}%</div>
-                  </CampaignStats>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-                    <CampaignAction
-                      active={campaign.status === 'active'}
-                      onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                    >
-                      {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                    </CampaignAction>
-                  </div>
-                </CampaignCard>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </CampaignList>
+                    <CampaignMeta>
+                      Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
+                      {campaign.city && ` | Город: ${campaign.city}`}
+                      {campaign.budget && ` | Бюджет: ${campaign.budget}`}
+                      {campaign.date && ` | Дата: ${campaign.date}`}
+                      {campaign.time && ` | Время: ${campaign.time}`}
+                    </CampaignMeta>
+                    <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
+                      <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
+                      <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
+                      <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
+                    </CampaignStats>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                      <CampaignAction
+                        active={campaign.status === 'active'}
+                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                      >
+                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                      </CampaignAction>
+                    </div>
+                  </CampaignCard>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
+          </CampaignList>
+        )}
       </CampaignsSection>
 
       <AdviceSection>
