@@ -691,38 +691,40 @@ export default function Targetolog() {
         ) : (
           <CampaignList>
             <TransitionGroup>
-              {campaigns.map(campaign => (
-                <CSSTransition key={campaign.id} classNames="card" timeout={300}>
-                  <CampaignCard>
-                    <CampaignHeader>
-                      <CampaignName>{campaign.name}</CampaignName>
-                    </CampaignHeader>
-                    <CampaignStatus active={campaign.status === 'active'}>
-                      {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
-                    </CampaignStatus>
-                    <CampaignMeta>
-                      Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
-                      {campaign.city && ` | Город: ${campaign.city}`}
-                      {campaign.budget && ` | Бюджет: ${campaign.budget}`}
-                      {campaign.date && ` | Дата: ${campaign.date}`}
-                      {campaign.time && ` | Время: ${campaign.time}`}
-                    </CampaignMeta>
-                    <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
-                      <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
-                      <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
-                      <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
-                    </CampaignStats>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-                      <CampaignAction
-                        active={campaign.status === 'active'}
-                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                      >
-                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                      </CampaignAction>
-                    </div>
-                  </CampaignCard>
-                </CSSTransition>
-              ))}
+              <div>
+                {campaigns.map(campaign => (
+                  <CSSTransition key={campaign.id} classNames="card" timeout={300}>
+                    <CampaignCard>
+                      <CampaignHeader>
+                        <CampaignName>{campaign.name}</CampaignName>
+                      </CampaignHeader>
+                      <CampaignStatus active={campaign.status === 'active'}>
+                        {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
+                      </CampaignStatus>
+                      <CampaignMeta>
+                        Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
+                        {campaign.city && ` | Город: ${campaign.city}`}
+                        {campaign.budget && ` | Бюджет: ${campaign.budget}`}
+                        {campaign.date && ` | Дата: ${campaign.date}`}
+                        {campaign.time && ` | Время: ${campaign.time}`}
+                      </CampaignMeta>
+                      <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
+                        <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
+                        <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
+                        <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
+                      </CampaignStats>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                        <CampaignAction
+                          active={campaign.status === 'active'}
+                          onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                        >
+                          {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                        </CampaignAction>
+                      </div>
+                    </CampaignCard>
+                  </CSSTransition>
+                ))}
+              </div>
             </TransitionGroup>
           </CampaignList>
         )}
