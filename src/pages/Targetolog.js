@@ -96,19 +96,32 @@ const MainButton = styled.button`
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
 `;
 
-const OverviewBlock = styled.div`
-  background: #F6F8FA;
-  border-radius: 12px;
-  margin: 18px 16px 0 16px;
-  padding: 14px 0 10px 0;
+const OverviewWrap = styled.div`
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+  padding: 18px 18px 10px 18px;
+  margin: 24px 0 18px 0;
   display: flex;
-  justify-content: space-around;
-  font-size: 15px;
-  color: #181A1B;
+  justify-content: center;
 `;
 
 const OverviewItem = styled.div`
+  flex: 1;
   text-align: center;
+`;
+
+const OverviewLabel = styled.div`
+  color: #BDBDBD;
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 2px;
+`;
+
+const OverviewValue = styled.div`
+  color: #181A1B;
+  font-size: 20px;
+  font-weight: 600;
 `;
 
 const CampaignsSection = styled.div`
@@ -128,62 +141,71 @@ const CampaignList = styled.div`
   gap: 14px;
 `;
 
-const CampaignCard = styled.div`
+const CampaignCardWrap = styled.div`
   background: #fff;
-  border-radius: 14px;
-  padding: 18px 16px 18px 16px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+  padding: 18px 18px 14px 18px;
+  margin-bottom: 18px;
   border: 2px solid #E5E8EB;
 `;
 
-const CampaignHeader = styled.div`
+const CampaignRow = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 8px;
+  justify-content: space-between;
 `;
 
-const CampaignName = styled.div`
-  font-size: 18px;
+const CampaignTitle = styled.div`
+  font-size: 26px;
   font-weight: 700;
   color: #181A1B;
 `;
 
-const CampaignStatus = styled.div`
-  font-size: 15px;
-  color: ${({ active }) => active ? '#1BC47D' : '#F44336'};
+const StatusBadge = styled.div`
+  display: inline-block;
+  padding: 4px 18px;
+  border-radius: 12px;
+  font-size: 17px;
   font-weight: 600;
-  margin-top: 2px;
+  background: ${({ active }) => active ? '#1BC47D' : '#E5E8EB'};
+  color: ${({ active }) => active ? '#fff' : '#888'};
+  margin-top: 6px;
 `;
 
-const CampaignMeta = styled.div`
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 8px;
-`;
-
-const CampaignStats = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 0;
-  margin-top: 8px;
-  font-size: 16px;
-  color: #181A1B;
-`;
-
-const CampaignAction = styled.button`
+const CampaignActionBtn = styled.button`
   background: ${({ active }) => active ? '#F44336' : '#005EFF'};
   color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 18px;
   font-weight: 600;
-  padding: 8px 16px;
-  cursor: pointer;
+  padding: 8px 22px;
   margin-left: 12px;
+  cursor: pointer;
+`;
+
+const CampaignStatsRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+`;
+
+const StatCol = styled.div`
+  text-align: center;
+  flex: 1;
+`;
+
+const StatLabel = styled.div`
+  color: #BDBDBD;
+  font-size: 15px;
+  font-weight: 500;
+`;
+
+const StatValue = styled.div`
+  color: #181A1B;
+  font-size: 18px;
+  font-weight: 600;
 `;
 
 const AdviceSection = styled.div`
@@ -669,64 +691,62 @@ export default function Targetolog() {
 
       <MainButton onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
 
-      <OverviewBlock>
+      <OverviewWrap>
         <OverviewItem>
-          <div>Показы</div>
-          <div>0</div>
+          <OverviewLabel>Показы</OverviewLabel>
+          <OverviewValue>11</OverviewValue>
         </OverviewItem>
         <OverviewItem>
-          <div>Клики</div>
-          <div>0</div>
+          <OverviewLabel>CTR</OverviewLabel>
+          <OverviewValue>11</OverviewValue>
         </OverviewItem>
         <OverviewItem>
-          <div>CTR</div>
-          <div>0%</div>
+          <OverviewLabel>CPC</OverviewLabel>
+          <OverviewValue>11</OverviewValue>
         </OverviewItem>
-      </OverviewBlock>
+      </OverviewWrap>
 
-      <CampaignsSection>
-        <CampaignsTitle>Кампании</CampaignsTitle>
-        {campaigns.length === 0 ? (
-          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
-        ) : (
-          <CampaignList>
-            <TransitionGroup>
-              {campaigns.map(campaign => (
-                <CSSTransition key={campaign.id} classNames="card" timeout={300}>
-                  <CampaignCard>
-                    <CampaignHeader>
-                      <CampaignName>{campaign.name}</CampaignName>
-                    </CampaignHeader>
-                    <CampaignStatus active={campaign.status === 'active'}>
-                      {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
-                    </CampaignStatus>
-                    <CampaignMeta>
-                      Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
-                      {campaign.city && ` | Город: ${campaign.city}`}
-                      {campaign.budget && ` | Бюджет: ${campaign.budget}`}
-                      {campaign.date && ` | Дата: ${campaign.date}`}
-                      {campaign.time && ` | Время: ${campaign.time}`}
-                    </CampaignMeta>
-                    <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
-                      <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
-                      <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
-                      <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
-                    </CampaignStats>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-                      <CampaignAction
-                        active={campaign.status === 'active'}
-                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                      >
-                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                      </CampaignAction>
-                    </div>
-                  </CampaignCard>
-                </CSSTransition>
-              ))}
-            </TransitionGroup>
-          </CampaignList>
-        )}
-      </CampaignsSection>
+      <div style={{fontWeight:700,fontSize:22,margin:'18px 0 18px 0'}}>Список рекламных кампаний</div>
+      {campaigns.map(campaign => (
+        <CampaignCardWrap key={campaign.id}>
+          <CampaignRow>
+            <div>
+              <CampaignTitle>{campaign.name}</CampaignTitle>
+              <StatusBadge active={campaign.status === 'active'}>
+                {campaign.status === 'active' ? 'Активна' : 'Приостановлена'}
+              </StatusBadge>
+            </div>
+            <CampaignActionBtn
+              active={campaign.status === 'active'}
+              onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+            >
+              {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+            </CampaignActionBtn>
+          </CampaignRow>
+          <CampaignStatsRow>
+            <StatCol>
+              <StatLabel>Клики</StatLabel>
+              <StatValue>{campaign.stats?.clicks ?? 11}</StatValue>
+            </StatCol>
+            <StatCol>
+              <StatLabel>Показы</StatLabel>
+              <StatValue>{campaign.stats?.impressions ?? 11}</StatValue>
+            </StatCol>
+            <StatCol>
+              <StatLabel>CTR</StatLabel>
+              <StatValue>{campaign.stats?.ctr ?? 11}</StatValue>
+            </StatCol>
+            <StatCol>
+              <StatLabel>CPC</StatLabel>
+              <StatValue>{campaign.stats?.cpc ?? 11}</StatValue>
+            </StatCol>
+            <StatCol>
+              <StatLabel>CPM</StatLabel>
+              <StatValue>{campaign.stats?.cpm ?? 11}</StatValue>
+            </StatCol>
+          </CampaignStatsRow>
+        </CampaignCardWrap>
+      ))}
 
       <AdviceSection>
         <AdviceTitle>Советы от ИИ</AdviceTitle>
