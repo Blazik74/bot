@@ -13,7 +13,7 @@ export const NAV_BAR_HEIGHT = 112;
 
 const NavContainer = styled.nav`
   position: fixed;
-  bottom: 12px;
+  bottom: 24px;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
@@ -25,17 +25,6 @@ const NavContainer = styled.nav`
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
-  &::after {
-    content: '';
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-    z-index: -1;
-    pointer-events: none;
-  }
 `;
 
 const NavItem = styled.div`
@@ -75,15 +64,12 @@ const BottomNav = () => {
 
   return (
     <NavContainer theme={theme}>
-      {navItems.map(({ path, icon, activeIcon, text }) => {
-        const isActive = location.pathname === path;
-        return (
-          <NavItem key={path} onClick={() => navigate(path)}>
-            <NavIcon src={isActive ? activeIcon : icon} alt={text} active={isActive} />
-            <NavText active={isActive}>{text}</NavText>
-          </NavItem>
-        );
-      })}
+      {navItems.map(({ path, icon, activeIcon, text }) => (
+        <NavItem key={path} onClick={() => navigate(path)}>
+          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} active={path === '/target' && location.pathname === '/target'} />
+          <NavText active={path === '/target' && location.pathname === '/target'}>{text}</NavText>
+        </NavItem>
+      ))}
     </NavContainer>
   );
 };
