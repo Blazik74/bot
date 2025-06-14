@@ -17,10 +17,11 @@ const NavContainer = styled.nav`
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   display: flex;
   justify-content: space-around;
-  padding: 12px 0;
+  align-items: center;
+  height: 88px;
+  min-height: 88px;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
-  height: 80px;
   border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
 `;
 
