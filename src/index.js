@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 // import AppRoutes from './AppRoutes';
 import './index.css';
@@ -9,7 +9,9 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider>
-    <div style={{color:'red',fontSize:40}}>Тестовый текст</div>
+    <BrowserRouter>
+      <div style={{color:'red',fontSize:40}}>Тестовый текст</div>
+    </BrowserRouter>
   </ThemeProvider>
 );
 
