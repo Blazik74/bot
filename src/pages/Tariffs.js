@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav';
-import { useTheme } from 'styled-components';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -98,22 +97,21 @@ const tariffs = [
 ];
 
 const Tariffs = () => {
-  const theme = useTheme().theme || 'light';
   const [selected, setSelected] = useState(1);
   return (
-    <Container theme={theme}>
-      <Title theme={theme}>Тарифы и оплата</Title>
+    <Container theme={theme || 'light'}>
+      <Title theme={theme || 'light'}>Тарифы и оплата</Title>
       <TariffList>
         {tariffs.map(tariff => (
           <TariffCard
             key={tariff.id}
             selected={selected === tariff.id}
-            theme={theme}
+            theme={theme || 'light'}
             onClick={() => setSelected(tariff.id)}
           >
-            <TariffName theme={theme}>{tariff.name}</TariffName>
+            <TariffName theme={theme || 'light'}>{tariff.name}</TariffName>
             <TariffPriceRow>
-              <TariffPrice theme={theme}>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPrice theme={theme || 'light'}>{tariff.currency}{tariff.price}</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
             </TariffPriceRow>
           </TariffCard>
