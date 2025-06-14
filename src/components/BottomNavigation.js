@@ -10,7 +10,7 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
-  bottom: 0;
+  bottom: 12px;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
