@@ -62,16 +62,45 @@ const Loader = ({ theme }) => (
   </LoaderWrapper>
 );
 
+// Функция для предзагрузки всех SVG и изображений
+const preloadImages = (imageList) => {
+  return Promise.all(imageList.map(src => {
+    return new Promise(resolve => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = resolve;
+      img.onerror = resolve;
+    });
+  }));
+};
+
+const allImages = [
+  require('./assets/icons/ai-center.svg'),
+  require('./assets/icons/ai-center-active.svg'),
+  require('./assets/icons/targetolog.svg'),
+  require('./assets/icons/targetolog-active.svg'),
+  require('./assets/icons/profile.svg'),
+  require('./assets/icons/profile-active.svg'),
+  require('./assets/icons/buhgalter.svg'),
+  require('./assets/icons/seller.svg'),
+  require('./assets/icons/consultant.svg'),
+  require('./assets/icons/file-upload.svg'),
+  // Добавь сюда другие изображения, если появятся
+];
+
 const AppContent = () => {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (window.Telegram?.WebApp) {
+    // Telegram Mini App fullscreen (строго по документации)
+    if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
-    // Имитация загрузки данных/иконок/темы
-    setTimeout(() => setLoading(false), 900);
+    // Предзагрузка всех иконок и изображений
+    preloadImages(allImages).then(() => {
+      setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
+    });
   }, []);
 
   if (loading) return <Loader theme={theme} />;
