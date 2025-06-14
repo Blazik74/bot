@@ -355,6 +355,64 @@ const initialHistory = [
   { text: 'Кампания запущена', time: '2ч. назад' },
 ];
 
+const FormGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const FormLabel = styled.label`
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  margin-bottom: 8px;
+`;
+
+const FormInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+
+  &:focus {
+    outline: none;
+    border-color: #005EFF;
+  }
+`;
+
+const FormSelect = styled.select`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #005EFF;
+  }
+`;
+
+const FormDateInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+
+  &:focus {
+    outline: none;
+    border-color: #005EFF;
+  }
+`;
+
 export default function Targetolog() {
   const theme = useTheme();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -452,28 +510,68 @@ export default function Targetolog() {
       <ModalOverlay onClick={() => setShowCreateModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
           <ModalTitle theme={theme}>Создание кампании</ModalTitle>
-          <CitySearchContainer>
-            <CityInput
+          
+          <FormGroup>
+            <FormLabel theme={theme}>Цель кампании</FormLabel>
+            <FormSelect theme={theme}>
+              <option value="traffic">Трафик</option>
+              <option value="conversion">Конверсии</option>
+              <option value="reach">Охват</option>
+            </FormSelect>
+          </FormGroup>
+
+          <FormGroup>
+            <FormLabel theme={theme}>Геолокация аудитории</FormLabel>
+            <CitySearchContainer>
+              <CityInput
+                theme={theme}
+                value={cityInput}
+                onChange={handleCityInputChange}
+                placeholder="Выберите город"
+              />
+              {showCitySuggestions && (
+                <CitySuggestions theme={theme}>
+                  {filteredCities.map((city, index) => (
+                    <CitySuggestion
+                      key={index}
+                      theme={theme}
+                      onClick={() => handleCitySelect(city)}
+                    >
+                      {city}
+                    </CitySuggestion>
+                  ))}
+                </CitySuggestions>
+              )}
+            </CitySearchContainer>
+          </FormGroup>
+
+          <FormGroup>
+            <FormLabel theme={theme}>Бюджет кампании</FormLabel>
+            <FormInput
               theme={theme}
-              value={cityInput}
-              onChange={handleCityInputChange}
-              placeholder="Выберите город"
+              type="number"
+              placeholder="Введите сумму"
+              min="0"
             />
-            {showCitySuggestions && (
-              <CitySuggestions theme={theme}>
-                {filteredCities.map((city, index) => (
-                  <CitySuggestion
-                    key={index}
-                    theme={theme}
-                    onClick={() => handleCitySelect(city)}
-                  >
-                    {city}
-                  </CitySuggestion>
-                ))}
-              </CitySuggestions>
-            )}
-          </CitySearchContainer>
-          <ModalButton onClick={() => setShowCreateModal(false)}>Создать</ModalButton>
+          </FormGroup>
+
+          <FormGroup>
+            <FormLabel theme={theme}>Дата начала</FormLabel>
+            <FormDateInput
+              theme={theme}
+              type="date"
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <FormLabel theme={theme}>Время начала</FormLabel>
+            <FormDateInput
+              theme={theme}
+              type="time"
+            />
+          </FormGroup>
+
+          <ModalButton onClick={() => setShowCreateModal(false)}>Создать кампанию</ModalButton>
         </ModalWindow>
       </ModalOverlay>
     );
