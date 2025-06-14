@@ -10,17 +10,18 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
-  bottom: 12px;
-  left: 0;
-  right: 0;
+  bottom: 24px;
+  left: 12px;
+  right: 12px;
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
   padding: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #E5E8EB;
+  border-radius: 22px 22px 0 0;
   z-index: 100;
-  box-shadow: 0 0 12px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
   transition: background 0.3s;
   &::after {
     content: '';
@@ -45,6 +46,21 @@ const NavButton = styled.button`
   padding: 8px 0 0 0;
   cursor: pointer;
   color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
+  font-weight: ${({ active }) => active ? 700 : 500};
+  position: relative;
+  font-size: 15px;
+  &:after {
+    content: '';
+    display: ${({ active }) => active ? 'block' : 'none'};
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 5px;
+    border-radius: 3px;
+    background: #181A1B;
+    width: 100%;
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -62,8 +78,8 @@ const IconWrapper = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: ${({ active }) => active ? 700 : 500};
   color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
 `;
 
