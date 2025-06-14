@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { useTheme } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import facebookIcon from '../assets/icons/facebook.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import profileIcon from '../assets/icons/profile.svg';
@@ -185,6 +186,7 @@ const Profile = () => {
   const [themeValue, setThemeValue] = useState('light');
   const [showModal, setShowModal] = useState(false);
   const themePanelRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -217,7 +219,7 @@ const Profile = () => {
           <InfoTitle>Аккаунт</InfoTitle>
           <InfoValue>{username}</InfoValue>
         </InfoRow>
-        <InfoRow style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/tariffs'}>
+        <InfoRow style={{ cursor: 'pointer' }} onClick={() => navigate('/tariffs')}>
           <InfoTitle>Тариф</InfoTitle>
           <InfoValue>Фрилансер <Arrow>›</Arrow></InfoValue>
         </InfoRow>
