@@ -51,11 +51,12 @@ const NavIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
+  filter: ${({ active }) => active ? 'drop-shadow(0 0 2px #005EFF)' : 'none'};
 `;
 
 const NavText = styled.span`
   font-size: 12px;
-  color: ${({ theme, active }) => active ? theme.primary : theme.text};
+  color: ${({ active }) => active ? '#005EFF' : '#181A1B'};
   transition: color 0.3s;
 `;
 
@@ -74,8 +75,8 @@ const BottomNav = () => {
     <NavContainer theme={theme}>
       {navItems.map(({ path, icon, activeIcon, text }) => (
         <NavItem key={path} onClick={() => navigate(path)}>
-          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} />
-          <NavText theme={theme} active={location.pathname === path}>{text}</NavText>
+          <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} active={path === '/target' && location.pathname === '/target'} />
+          <NavText active={path === '/target' && location.pathname === '/target'}>{text}</NavText>
         </NavItem>
       ))}
     </NavContainer>
