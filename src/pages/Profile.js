@@ -5,7 +5,7 @@ import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import profileIcon from '../assets/icons/profile-icon.svg';
 import { useTheme as useThemeContext } from '../contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import BottomNavigation from '../components/BottomNavigation';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
