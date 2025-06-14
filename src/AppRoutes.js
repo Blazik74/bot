@@ -12,8 +12,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* <Route path="/" element={<AICenter />} />  */}
-      <Route path="/targetolog" element={<Targetolog />} />
-      {/* <Route path="/profile" element={<Profile />} /> */}
+      {/* <Route path="/targetolog" element={<Targetolog />} /> */}
+      <Route path="/profile" element={<Profile />} />
       {/* <Route path="/tariffs" element={<Tariffs />} /> */}
       {/* <Route path="/facebook-connect" element={<FacebookConnect />} /> */}
       {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
