@@ -5,6 +5,7 @@ import { BottomNavigation } from './components/BottomNavigation';
 import styled from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import './App.css';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -126,13 +127,15 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <NotificationProvider>
-    <ErrorBoundary>
-      <Router>
-        <AppContent />
-      </Router>
-    </ErrorBoundary>
-  </NotificationProvider>
+  <ThemeProvider>
+    <NotificationProvider>
+      <ErrorBoundary>
+        <Router>
+          <AppContent />
+        </Router>
+      </ErrorBoundary>
+    </NotificationProvider>
+  </ThemeProvider>
 );
 
 export default App; 
