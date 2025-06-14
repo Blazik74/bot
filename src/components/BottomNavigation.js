@@ -13,7 +13,7 @@ const Navigation = styled.nav`
   bottom: 24px;
   left: 12px;
   right: 12px;
-  background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
+  background: #fff;
   padding: 0;
   display: flex;
   justify-content: space-around;
@@ -30,7 +30,7 @@ const Navigation = styled.nav`
     right: 0;
     bottom: 0;
     height: 100vh;
-    background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
+    background: #fff;
     z-index: -1;
     pointer-events: none;
   }
@@ -95,9 +95,8 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme().theme || 'light';
   return (
-    <Navigation theme={theme}>
+    <Navigation>
       {navigationItems.map((item) => {
         const isActive = location.pathname === item.path || (item.path === '/' && (location.pathname === '/' || location.pathname === '/ai-center'));
         return (
