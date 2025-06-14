@@ -11,29 +11,17 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 const Navigation = styled.nav`
   position: fixed;
   bottom: 24px;
-  left: 12px;
-  right: 12px;
-  background: #fff;
+  left: 0;
+  right: 0;
+  background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
   padding: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #E5E8EB;
-  border-radius: 22px 22px 0 0;
   z-index: 100;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+  box-shadow: 0 0 12px 0 rgba(0,0,0,0.04);
   transition: background 0.3s;
-  &::after {
-    content: '';
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: #fff;
-    z-index: -1;
-    pointer-events: none;
-  }
 `;
 
 const NavButton = styled.button`
@@ -46,9 +34,6 @@ const NavButton = styled.button`
   padding: 8px 0 0 0;
   cursor: pointer;
   color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
-  font-weight: ${({ active }) => active ? 700 : 500};
-  position: relative;
-  font-size: 15px;
 `;
 
 const IconWrapper = styled.div`
@@ -66,8 +51,8 @@ const IconWrapper = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 14px;
-  font-weight: ${({ active }) => active ? 700 : 500};
+  font-size: 12px;
+  font-weight: 500;
   color: ${({ active }) => active ? '#005EFF' : '#BDBDBD'};
 `;
 
@@ -95,23 +80,21 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme().theme || 'light';
   return (
-    <Navigation>
-      {navigationItems.map((item) => {
-        const isActive = location.pathname === item.path || (item.path === '/' && (location.pathname === '/' || location.pathname === '/ai-center'));
+    <Navigation theme={theme}>
+      {navigationItems.map((item, idx) => {
+        const isActive = (idx === 0 && (location.pathname === '/' || location.pathname === '/ai-center')) || location.pathname === item.path;
         return (
           <NavButton
             key={item.path}
-            onClick={() => { 
-              console.log('click', item.path); 
-              navigate(item.path); 
-            }}
-            active={isActive}
+            onClick={() => navigate(item.path)}
+            active={isActive && idx === 0}
           >
             <IconWrapper>
-              <img src={isActive ? item.iconActive : item.icon} alt={item.label} />
+              <img src={isActive && idx === 0 ? item.iconActive : item.icon} alt={item.label} />
             </IconWrapper>
-            <Label active={isActive}>{item.label}</Label>
+            <Label active={isActive && idx === 0}>{item.label}</Label>
           </NavButton>
         );
       })}
