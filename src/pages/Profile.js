@@ -98,22 +98,6 @@ const ThemeRow = styled(InfoRow)`
   cursor: pointer;
 `;
 
-const ThemeDropdown = styled.div`
-  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  z-index: 10;
-  padding: 0 0 8px 0;
-`;
-
-const ThemeOption = styled.div`
-  padding: 12px 18px;
-  font-size: 16px;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
-  cursor: pointer;
-  &:hover { background: ${({ theme }) => theme === 'light' ? '#D1D5DB' : '#4D4F53'}; }
-`;
-
 const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
