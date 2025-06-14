@@ -12,7 +12,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 0 0 100px 0;
+  padding: 0;
   overflow: hidden;
 `;
 
@@ -20,34 +20,27 @@ const Title = styled.h1`
   font-size: 32px;
   font-weight: 700;
   text-align: center;
-  margin: 48px 0 24px 0;
+  margin: 36px 0 18px 0;
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-`;
-
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #E5E8EB;
-  margin-bottom: 24px;
 `;
 
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   margin: 0 16px;
 `;
 
 const Card = styled.div`
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
   border: 2px solid #E5E8EB;
-  border-radius: 20px;
-  padding: 28px 20px 18px 20px;
+  border-radius: 16px;
+  padding: 14px 16px 10px 16px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-height: 90px;
-  min-width: 0;
-  max-width: 100%;
+  min-height: 60px;
+  max-height: 70px;
   box-sizing: border-box;
   cursor: ${({active}) => active ? 'pointer' : 'default'};
   opacity: ${({active}) => active ? 1 : 0.7};
@@ -58,12 +51,12 @@ const Card = styled.div`
 const CardRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 `;
 
 const CardIcon = styled.div`
-  width: 56px;
-  height: 56px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,25 +68,33 @@ const CardIcon = styled.div`
 `;
 
 const CardLabel = styled.div`
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 600;
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
 const Soon = styled.span`
-  font-size: 15px;
+  font-size: 13px;
   color: #FFD600;
   font-weight: 500;
-  margin-left: 4px;
-  margin-top: 4px;
+  margin-left: 2px;
+  margin-top: 2px;
 `;
 
-const TariffText = styled.div`
-  margin: 32px 0 0 0;
-  text-align: center;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+const TariffButton = styled.button`
+  margin: 22px 16px 0 16px;
+  width: calc(100% - 32px);
+  background: none;
+  border: none;
+  color: #005EFF;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 12px 0;
+  background-color: ${({ theme }) => theme === 'dark' ? '#23272F' : '#EAF1FF'};
+  box-shadow: 0 1px 4px 0 rgba(0,94,255,0.04);
 `;
 
 const AICenter = () => {
@@ -102,7 +103,6 @@ const AICenter = () => {
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>
-      <Divider />
       <CardList>
         <Card theme={theme} active onClick={() => navigate('/targetolog')}>
           <CardRow>
@@ -132,7 +132,7 @@ const AICenter = () => {
           <Soon>будет скоро</Soon>
         </Card>
       </CardList>
-      <TariffText theme={theme}>Тарифы и оплата</TariffText>
+      <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
     </Container>
   );
 };
