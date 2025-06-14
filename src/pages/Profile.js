@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
-import profileIcon from '../assets/icons/profile-icon.svg';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -212,7 +211,7 @@ export default function Profile() {
   return (
     <Container>
       <ProfileHeader>
-        <Avatar src={avatar || profileIcon} alt={nickname} />
+        <Avatar src={avatar || ''} alt={nickname} />
         <Nickname>{nickname}</Nickname>
       </ProfileHeader>
       <InfoBlock>
