@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
 import styled, { ThemeProvider } from 'styled-components';
