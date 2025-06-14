@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import BottomNav from '../components/BottomNav';
+import { useTheme } from 'styled-components';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: #fff;
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   padding: 0 0 40px 0;
   animation: fadeInTariff 0.4s;
 `;
@@ -14,7 +15,7 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: left;
   margin: 40px 0 32px 16px;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
 const TariffList = styled.div`
@@ -25,7 +26,7 @@ const TariffList = styled.div`
 `;
 
 const TariffCard = styled.div`
-  background: ${({ selected }) => selected ? '#fff' : '#E5E8EB'};
+  background: ${({ selected, theme }) => selected ? (theme === 'dark' ? '#23272F' : '#fff') : (theme === 'dark' ? '#23272F' : '#E5E8EB')};
   border: 2px solid ${({ selected }) => selected ? '#005EFF' : 'transparent'};
   border-radius: 18px;
   padding: ${({ selected }) => selected ? '32px 24px 24px 24px' : '18px 18px 14px 18px'};
@@ -42,7 +43,7 @@ const TariffCard = styled.div`
 const TariffName = styled.div`
   font-size: 22px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
 const TariffPriceRow = styled.div`
@@ -55,7 +56,7 @@ const TariffPriceRow = styled.div`
 const TariffPrice = styled.div`
   font-size: 28px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
 const TariffPerMonth = styled.div`
@@ -97,20 +98,22 @@ const tariffs = [
 ];
 
 const Tariffs = () => {
+  const theme = useTheme().theme || 'light';
   const [selected, setSelected] = useState(1);
   return (
-    <Container>
-      <Title>Тарифы и оплата</Title>
+    <Container theme={theme}>
+      <Title theme={theme}>Тарифы и оплата</Title>
       <TariffList>
         {tariffs.map(tariff => (
           <TariffCard
             key={tariff.id}
             selected={selected === tariff.id}
+            theme={theme}
             onClick={() => setSelected(tariff.id)}
           >
-            <TariffName>{tariff.name}</TariffName>
+            <TariffName theme={theme}>{tariff.name}</TariffName>
             <TariffPriceRow>
-              <TariffPrice>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPrice theme={theme}>{tariff.currency}{tariff.price}</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
             </TariffPriceRow>
           </TariffCard>
