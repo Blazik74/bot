@@ -8,12 +8,12 @@ import FacebookConnect from './pages/FacebookConnect';
 
 const AppRoutes = () => {
   // Вставляй по одному компоненту внутрь return для проверки:
-  // + return <Notifications />;
+  // return <Notifications />;
   // return <AICenter />;
   // return <Targetolog />;
   // return <Tariffs />;
-  return <Profile />;
-  // return <FacebookConnect />;
+  // + return <Profile />;
+  return <FacebookConnect />;
   // return <Targetolog />;
 };
 
