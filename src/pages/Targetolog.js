@@ -4,7 +4,6 @@ import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useStore from '../store';
-import { BottomNavigation } from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -97,32 +96,19 @@ const MainButton = styled.button`
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
 `;
 
-const OverviewWrap = styled.div`
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
-  padding: 18px 18px 10px 18px;
-  margin: 24px 0 18px 0;
+const OverviewBlock = styled.div`
+  background: #F6F8FA;
+  border-radius: 12px;
+  margin: 18px 16px 0 16px;
+  padding: 14px 0 10px 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  font-size: 15px;
+  color: #181A1B;
 `;
 
 const OverviewItem = styled.div`
-  flex: 1;
   text-align: center;
-`;
-
-const OverviewLabel = styled.div`
-  color: #BDBDBD;
-  font-size: 17px;
-  font-weight: 500;
-  margin-bottom: 2px;
-`;
-
-const OverviewValue = styled.div`
-  color: #181A1B;
-  font-size: 20px;
-  font-weight: 600;
 `;
 
 const CampaignsSection = styled.div`
@@ -142,71 +128,62 @@ const CampaignList = styled.div`
   gap: 14px;
 `;
 
-const CampaignCardWrap = styled.div`
+const CampaignCard = styled.div`
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
-  padding: 18px 18px 14px 18px;
-  margin-bottom: 18px;
+  border-radius: 14px;
+  padding: 18px 16px 18px 16px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   border: 2px solid #E5E8EB;
 `;
 
-const CampaignRow = styled.div`
+const CampaignHeader = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  margin-bottom: 8px;
 `;
 
-const CampaignTitle = styled.div`
-  font-size: 26px;
+const CampaignName = styled.div`
+  font-size: 18px;
   font-weight: 700;
   color: #181A1B;
 `;
 
-const StatusBadge = styled.div`
-  display: inline-block;
-  padding: 4px 18px;
-  border-radius: 12px;
-  font-size: 17px;
+const CampaignStatus = styled.div`
+  font-size: 15px;
+  color: ${({ active }) => active ? '#1BC47D' : '#F44336'};
   font-weight: 600;
-  background: ${({ active }) => active ? '#1BC47D' : '#E5E8EB'};
-  color: ${({ active }) => active ? '#fff' : '#888'};
-  margin-top: 6px;
+  margin-top: 2px;
 `;
 
-const CampaignActionBtn = styled.button`
+const CampaignMeta = styled.div`
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+`;
+
+const CampaignStats = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  margin-top: 8px;
+  font-size: 16px;
+  color: #181A1B;
+`;
+
+const CampaignAction = styled.button`
   background: ${({ active }) => active ? '#F44336' : '#005EFF'};
   color: #fff;
   border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 600;
-  padding: 8px 22px;
-  margin-left: 12px;
-  cursor: pointer;
-`;
-
-const CampaignStatsRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 18px;
-`;
-
-const StatCol = styled.div`
-  text-align: center;
-  flex: 1;
-`;
-
-const StatLabel = styled.div`
-  color: #BDBDBD;
+  border-radius: 8px;
   font-size: 15px;
-  font-weight: 500;
-`;
-
-const StatValue = styled.div`
-  color: #181A1B;
-  font-size: 18px;
   font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-left: 12px;
 `;
 
 const AdviceSection = styled.div`
@@ -369,7 +346,7 @@ const CitySuggestion = styled.div`
 `;
 
 const citiesKZ = [
-  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
+  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
 
 const initialCampaigns = [
   {
@@ -692,62 +669,64 @@ export default function Targetolog() {
 
       <MainButton onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
 
-      <OverviewWrap>
+      <OverviewBlock>
         <OverviewItem>
-          <OverviewLabel>Показы</OverviewLabel>
-          <OverviewValue>11</OverviewValue>
+          <div>Показы</div>
+          <div>0</div>
         </OverviewItem>
         <OverviewItem>
-          <OverviewLabel>CTR</OverviewLabel>
-          <OverviewValue>11</OverviewValue>
+          <div>Клики</div>
+          <div>0</div>
         </OverviewItem>
         <OverviewItem>
-          <OverviewLabel>CPC</OverviewLabel>
-          <OverviewValue>11</OverviewValue>
+          <div>CTR</div>
+          <div>0%</div>
         </OverviewItem>
-      </OverviewWrap>
+      </OverviewBlock>
 
-      <div style={{fontWeight:700,fontSize:22,margin:'18px 0 18px 0'}}>Список рекламных кампаний</div>
-      {campaigns.map(campaign => (
-        <CampaignCardWrap key={campaign.id}>
-          <CampaignRow>
-            <div>
-              <CampaignTitle>{campaign.name}</CampaignTitle>
-              <StatusBadge active={campaign.status === 'active'}>
-                {campaign.status === 'active' ? 'Активна' : 'Приостановлена'}
-              </StatusBadge>
-            </div>
-            <CampaignActionBtn
-              active={campaign.status === 'active'}
-              onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-            >
-              {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-            </CampaignActionBtn>
-          </CampaignRow>
-          <CampaignStatsRow>
-            <StatCol>
-              <StatLabel>Клики</StatLabel>
-              <StatValue>{campaign.stats?.clicks ?? 11}</StatValue>
-            </StatCol>
-            <StatCol>
-              <StatLabel>Показы</StatLabel>
-              <StatValue>{campaign.stats?.impressions ?? 11}</StatValue>
-            </StatCol>
-            <StatCol>
-              <StatLabel>CTR</StatLabel>
-              <StatValue>{campaign.stats?.ctr ?? 11}</StatValue>
-            </StatCol>
-            <StatCol>
-              <StatLabel>CPC</StatLabel>
-              <StatValue>{campaign.stats?.cpc ?? 11}</StatValue>
-            </StatCol>
-            <StatCol>
-              <StatLabel>CPM</StatLabel>
-              <StatValue>{campaign.stats?.cpm ?? 11}</StatValue>
-            </StatCol>
-          </CampaignStatsRow>
-        </CampaignCardWrap>
-      ))}
+      <CampaignsSection>
+        <CampaignsTitle>Кампании</CampaignsTitle>
+        {campaigns.length === 0 ? (
+          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
+        ) : (
+          <CampaignList>
+            <TransitionGroup>
+              {campaigns.map(campaign => (
+                <CSSTransition key={campaign.id} classNames="card" timeout={300}>
+                  <CampaignCard>
+                    <CampaignHeader>
+                      <CampaignName>{campaign.name}</CampaignName>
+                    </CampaignHeader>
+                    <CampaignStatus active={campaign.status === 'active'}>
+                      {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
+                    </CampaignStatus>
+                    <CampaignMeta>
+                      Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
+                      {campaign.city && ` | Город: ${campaign.city}`}
+                      {campaign.budget && ` | Бюджет: ${campaign.budget}`}
+                      {campaign.date && ` | Дата: ${campaign.date}`}
+                      {campaign.time && ` | Время: ${campaign.time}`}
+                    </CampaignMeta>
+                    <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
+                      <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
+                      <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
+                      <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
+                    </CampaignStats>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                      <CampaignAction
+                        active={campaign.status === 'active'}
+                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                      >
+                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                      </CampaignAction>
+                    </div>
+                  </CampaignCard>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
+          </CampaignList>
+        )}
+      </CampaignsSection>
 
       <AdviceSection>
         <AdviceTitle>Советы от ИИ</AdviceTitle>
@@ -776,8 +755,6 @@ export default function Targetolog() {
       <CSSTransition in={showCreateModal} timeout={200} classNames="modal" unmountOnExit>
         {renderCreateModal()}
       </CSSTransition>
-      <AdviceBox>{initialAdvice[0]}</AdviceBox>
-      <BottomNavigation />
     </Container>
   );
 } 
