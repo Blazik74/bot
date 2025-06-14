@@ -10,7 +10,7 @@ const AppRoutes = () => {
   // Вставляй по одному компоненту внутрь return для проверки:
   // + return <Notifications />;
   // return <AICenter />;
-  return <Targetolog />;
+  // return <Targetolog />;
   // return <Tariffs />;
   // return <Profile />;
   // return <FacebookConnect />;
