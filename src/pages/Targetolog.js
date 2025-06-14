@@ -275,49 +275,250 @@ const ModalButton = styled.button`
   cursor: pointer;
 `;
 
-const Targetolog = () => {
-  const theme = useTheme().theme || 'light';
-  const [showFrame7, setShowFrame7] = useState(false);
-  const [campaigns] = useState([
-    { name: 'Летняя распродажа', status: 'Активна' },
-    { name: 'Новая коллекция', status: 'Пауза' },
-  ]);
+const initialCampaigns = [
+  {
+    id: 1,
+    name: 'Кампания 1',
+    status: 'active',
+    stats: { clicks: 11, impressions: 11, ctr: 11, cpc: 11, cpm: 11 },
+  },
+  {
+    id: 2,
+    name: 'Кампания 2',
+    status: 'paused',
+    stats: { clicks: 11, impressions: 11, ctr: 11, cpc: 11, cpm: 11 },
+  },
+];
 
-  if (showFrame7) {
-    return (
-      <Container theme={theme}>
-        <Title theme={theme}>Кампания запущена!</Title>
-        {/* Здесь будет Frame 7 */}
-      </Container>
+const initialAdvice = [
+  'Совет 1 от ИИ',
+  'Совет 2 от ИИ',
+];
+
+const initialHistory = [
+  { text: 'Автопилот включён', time: '1ч. назад' },
+  { text: 'Кампания запущена', time: '2ч. назад' },
+];
+
+export default function Targetolog() {
+  const theme = useTheme().theme || 'light';
+  const [file, setFile] = useState(null);
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadModalText, setUploadModalText] = useState('');
+  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [actionModalText, setActionModalText] = useState('');
+  const [advice, setAdvice] = useState(initialAdvice);
+  const [autopilot, setAutopilot] = useState(true);
+  const [history, setHistory] = useState(initialHistory);
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const [campaignGoal, setCampaignGoal] = useState('conversion');
+  const [geo, setGeo] = useState('Казахстан, Россия');
+  const [allCountry, setAllCountry] = useState(false);
+  const [budget, setBudget] = useState('1');
+  const [date, setDate] = useState('Сегодня');
+  const [time, setTime] = useState('12:00');
+  const [modalType, setModalType] = useState('success'); // success, error, info
+
+  // File upload logic
+  const fileInputRef = useRef();
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setFileUploaded(false);
+  };
+  const handleUpload = () => {
+    if (file) {
+      setShowUploadModal(true);
+      setUploadModalText('Креатив загружен успешно');
+      setFileUploaded(true);
+    } else {
+      setShowUploadModal(true);
+      setUploadModalText('Ошибка при загрузке');
+      setFileUploaded(false);
+    }
+  };
+
+  // Campaign actions
+  const handleCampaignAction = (id, action) => {
+    setCampaigns((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? { ...c, status: action === 'start' ? 'active' : 'paused' }
+          : c
+      )
     );
-  }
+    setShowActionModal(true);
+    setActionModalText(
+      action === 'start' ? 'Автопилот включён' : 'Кампания остановлена'
+    );
+  };
+
+  // Autopilot toggle
+  const handleAutopilot = () => {
+    setAutopilot((prev) => !prev);
+    setShowActionModal(true);
+    setActionModalText(autopilot ? 'Автопилот выключен' : 'Автопилот включён');
+  };
+
+  // Campaign modal (Frame 7)
+  const handleCreateCampaign = () => {
+    setShowCampaignModal(false);
+    setShowActionModal(true);
+    setActionModalText('Кампания создана');
+  };
 
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Таргетолог</Title>
-      <Subtitle>Создайте рекламную кампанию за 2 минуты</Subtitle>
-      <Card theme={theme}>
-        <Input theme={theme} placeholder="Название кампании" />
-        <Input theme={theme} placeholder="Ссылка на сайт или продукт" />
-        <FileUpload>
-          <FileIcon src={fileIcon} alt="Выбрать файл" />
-          <span>Выбрать файл</span>
-        </FileUpload>
-      </Card>
-      <Button onClick={() => setShowFrame7(true)}>Запустить кампанию</Button>
+      <Divider />
+      {/* Загрузка креатива */}
+      <UploadBlock>
+        <FileInputRow>
+          <FileInput
+            ref={fileInputRef}
+            type="file"
+            id="creative-upload"
+            onChange={handleFileChange}
+          />
+          <FileLabel htmlFor="creative-upload">
+            <img src={fileIcon} alt="file" width={22} height={22} />
+            {file ? file.name : 'Выбрать файл'}
+          </FileLabel>
+          {file && (
+            <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
+          )}
+        </FileInputRow>
+        {fileUploaded && <UploadSuccess>Файл успешно загружен</UploadSuccess>}
+      </UploadBlock>
+      <MainButton onClick={() => setShowCampaignModal(true)}>
+        Запустить кампанию
+      </MainButton>
+      {/* Обзор показателей */}
+      <OverviewBlock>
+        <OverviewItem>
+          <div>Показы</div>
+          <div>11</div>
+        </OverviewItem>
+        <OverviewItem>
+          <div>CTR</div>
+          <div>11</div>
+        </OverviewItem>
+        <OverviewItem>
+          <div>CPC</div>
+          <div>11</div>
+        </OverviewItem>
+      </OverviewBlock>
+      {/* Список кампаний */}
       <CampaignsSection>
-        <CampaignTitle theme={theme}>Ваши кампании</CampaignTitle>
+        <CampaignsTitle>Список рекламных кампаний</CampaignsTitle>
         <CampaignList>
-          {campaigns.map((c, i) => (
-            <CampaignCard theme={theme} key={i}>
-              <CampaignName theme={theme}>{c.name}</CampaignName>
-              <CampaignStatus>{c.status}</CampaignStatus>
+          {campaigns.map((c) => (
+            <CampaignCard key={c.id}>
+              <CampaignHeader>
+                <div>
+                  <CampaignName>{c.name}</CampaignName>
+                  <CampaignStatus active={c.status === 'active'}>
+                    {c.status === 'active' ? 'Активна' : 'Приостановлена'}
+                  </CampaignStatus>
+                </div>
+                <CampaignAction
+                  active={c.status === 'active'}
+                  onClick={() =>
+                    handleCampaignAction(c.id, c.status === 'active' ? 'stop' : 'start')
+                  }
+                >
+                  {c.status === 'active' ? 'Остановить' : 'Запустить'}
+                </CampaignAction>
+              </CampaignHeader>
+              <CampaignStats>
+                <div>Клики<br />{c.stats.clicks}</div>
+                <div>Показы<br />{c.stats.impressions}</div>
+                <div>CTR<br />{c.stats.ctr}</div>
+                <div>CPC<br />{c.stats.cpc}</div>
+                <div>CPM<br />{c.stats.cpm}</div>
+              </CampaignStats>
             </CampaignCard>
           ))}
         </CampaignList>
       </CampaignsSection>
+      {/* Советы от ИИ */}
+      <AdviceSection>
+        <AdviceTitle>Советы от ИИ</AdviceTitle>
+        {advice.length > 0 && (
+          <AdviceBox>{advice.join('\n')}</AdviceBox>
+        )}
+      </AdviceSection>
+      {/* Автопилот */}
+      <AutopilotSection>
+        <AutopilotTitle>ИИ-автопилот</AutopilotTitle>
+        <AutopilotButton enabled={autopilot} onClick={handleAutopilot}>
+          {autopilot ? 'Выключить' : 'Включить'}
+        </AutopilotButton>
+        <HistoryList>
+          {history.map((h, i) => (
+            <HistoryItem key={i}>• {h.text} <span style={{ color: '#888' }}>{h.time}</span></HistoryItem>
+          ))}
+        </HistoryList>
+      </AutopilotSection>
+      {/* Модальные окна */}
+      {showUploadModal && (
+        <ModalOverlay onClick={() => setShowUploadModal(false)}>
+          <ModalWindow onClick={e => e.stopPropagation()}>
+            <ModalTitle>{uploadModalText.includes('ошибка') ? 'Ошибка при загрузке' : 'Креатив загружен успешно'}</ModalTitle>
+            <ModalText>{uploadModalText}</ModalText>
+            <ModalButton onClick={() => setShowUploadModal(false)}>Ok</ModalButton>
+          </ModalWindow>
+        </ModalOverlay>
+      )}
+      {showActionModal && (
+        <ModalOverlay onClick={() => setShowActionModal(false)}>
+          <ModalWindow onClick={e => e.stopPropagation()}>
+            <ModalTitle>{actionModalText}</ModalTitle>
+            <ModalButton onClick={() => setShowActionModal(false)}>Ok</ModalButton>
+          </ModalWindow>
+        </ModalOverlay>
+      )}
+      {/* Модальное окно создания кампании (Frame 7) */}
+      {showCampaignModal && (
+        <ModalOverlay onClick={() => setShowCampaignModal(false)}>
+          <ModalWindow onClick={e => e.stopPropagation()}>
+            <ModalTitle>Цель кампании</ModalTitle>
+            <div style={{ marginBottom: 12, fontWeight: 500 }}>Что вы хотите получить?</div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <ModalButton style={{ background: campaignGoal === 'conversion' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'conversion' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('conversion')}>Конверсия</ModalButton>
+              <ModalButton style={{ background: campaignGoal === 'site' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'site' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('site')}>Посещения сайта</ModalButton>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <ModalButton style={{ background: campaignGoal === 'leads' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'leads' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('leads')}>Лиды</ModalButton>
+              <ModalButton style={{ background: campaignGoal === 'engagement' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'engagement' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('engagement')}>Вовлеченность</ModalButton>
+            </div>
+            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Геолокация аудитории</div>
+            <input style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB', marginBottom: 8 }} value={geo} onChange={e => setGeo(e.target.value)} disabled={allCountry} />
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+              <input type="checkbox" checked={allCountry} onChange={e => setAllCountry(e.target.checked)} />
+              <span style={{ marginLeft: 8 }}>Вся страна</span>
+            </div>
+            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Дневной бюджет</div>
+            <input style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB', marginBottom: 8 }} type="number" min={1} value={budget} onChange={e => setBudget(e.target.value)} />
+            <div style={{ color: '#888', fontSize: 13, marginBottom: 8 }}>Минимум $1</div>
+            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Время публикации</div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <select value={date} onChange={e => setDate(e.target.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB' }}>
+                <option>Сегодня</option>
+                <option>Завтра</option>
+              </select>
+              <select value={time} onChange={e => setTime(e.target.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB' }}>
+                <option>12:00</option>
+                <option>18:00</option>
+                <option>21:00</option>
+              </select>
+            </div>
+            <ModalButton onClick={handleCreateCampaign}>Запустить кампанию</ModalButton>
+            <div style={{ position: 'absolute', top: 18, right: 18, cursor: 'pointer', fontSize: 28, color: '#B84D8B' }} onClick={() => setShowCampaignModal(false)}>&#10005;</div>
+          </ModalWindow>
+        </ModalOverlay>
+      )}
     </Container>
   );
-};
-
-export default Targetolog; 
+} 
