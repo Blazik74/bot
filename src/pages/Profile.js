@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import useStore from '../store';
 import facebookIcon from '../assets/icons/facebook.svg';
 import profileIcon from '../assets/icons/profile.svg';
 
 const Container = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-  padding: 0 0 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;
 
 const ProfileHeader = styled.div`
@@ -38,17 +39,6 @@ const Username = styled.div`
   margin-top: 4px;
 `;
 
-const Section = styled.div`
-  margin: 0 16px 24px 16px;
-`;
-
-const SectionTitle = styled.div`
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-`;
-
 const TariffBlock = styled.div`
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#F6F8FA'};
   border-radius: 14px;
@@ -56,8 +46,9 @@ const TariffBlock = styled.div`
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin: 18px 16px 0 16px;
   cursor: default;
+  text-align: center;
 `;
 
 const StatGrid = styled.div`
@@ -157,9 +148,8 @@ const ExitButton = styled.button`
 
 const Profile = () => {
   const theme = useTheme().theme || 'light';
-  const setThemeStore = useStore((state) => state.setTheme);
-  const themeStore = useStore((state) => state.theme);
   const [tgUser, setTgUser] = useState(null);
+  const [themeStore, setThemeStore] = useState(theme);
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -178,10 +168,7 @@ const Profile = () => {
         <Name theme={theme}>{name}</Name>
         <Username>@{username}</Username>
       </ProfileHeader>
-      <Section>
-        <SectionTitle theme={theme}>Ваш тариф</SectionTitle>
-        <TariffBlock theme={theme}>Фрилансер (50 000₸/мес)</TariffBlock>
-      </Section>
+      <TariffBlock theme={theme}>Фрилансер (50 000₸/мес)</TariffBlock>
       <StatGrid theme={theme}>
         <StatBox theme={theme}>
           <StatValue theme={theme}>12</StatValue>
@@ -220,4 +207,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
