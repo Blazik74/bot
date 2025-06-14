@@ -71,8 +71,7 @@ const allImages = [
   require('./assets/icons/target.svg'),
   require('./assets/icons/target-active.svg'),
   require('./assets/icons/facebook.svg'),
-  require('./assets/icons/profile-icon.svg'),
-  // Добавь сюда другие изображения, если появятся
+  // profile-icon.svg убран, так как он пустой
 ];
 
 const AppContent = () => {
