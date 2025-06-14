@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -237,6 +238,7 @@ const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 0.2s;
 `;
 
 const ModalWindow = styled.div`
@@ -248,6 +250,18 @@ const ModalWindow = styled.div`
   text-align: center;
   position: relative;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  animation: slideUp 0.25s;
+`;
+
+const ModalClose = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #888;
+  cursor: pointer;
 `;
 
 const ModalTitle = styled.div`
@@ -407,6 +421,12 @@ const FormDateInput = styled.input`
   }
 `;
 
+const Card = styled.div`
+  background: ${({ active }) => active ? '#005EFF' : '#F6F8FA'};
+  color: ${({ active }) => active ? '#fff' : '#181A1B'};
+  // ...остальные стили...
+`;
+
 export default function Targetolog() {
   const theme = useTheme();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -503,6 +523,7 @@ export default function Targetolog() {
     return (
       <ModalOverlay onClick={() => setShowCreateModal(false)}>
         <ModalWindow onClick={e => e.stopPropagation()}>
+          <ModalClose onClick={() => setShowCreateModal(false)}>&#10005;</ModalClose>
           <ModalTitle>Создание кампании</ModalTitle>
           
           <FormGroup>
@@ -565,11 +586,19 @@ export default function Targetolog() {
             />
           </FormGroup>
 
-          <ModalButton onClick={() => setShowCreateModal(false)}>Создать кампанию</ModalButton>
+          <ModalButton onClick={() => setShowCreateModal(false)}>Ок</ModalButton>
         </ModalWindow>
       </ModalOverlay>
     );
   };
+
+  useEffect(() => {
+    if (showCreateModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [showCreateModal]);
 
   return (
     <Container theme={theme}>
