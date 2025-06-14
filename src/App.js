@@ -104,7 +104,7 @@ const AppContent = () => {
     }
     document.body.style.background = '#fff';
     document.documentElement.style.background = '#fff';
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.ready) {
       window.Telegram.WebApp.ready();
       setTimeout(() => {
         window.Telegram.WebApp.postEvent('web_app_request_fullscreen');
