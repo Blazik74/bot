@@ -9,18 +9,19 @@ import profileActiveIcon from '../assets/icons/profile-active.svg';
 import targetIcon from '../assets/icons/target.svg';
 import targetActiveIcon from '../assets/icons/target-active.svg';
 
-const Nav = styled.nav`
+const NavContainer = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid ${({ theme }) => theme.border};
-  transition: background 0.3s, border-color 0.3s;
+  padding: 12px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  height: 80px;
+  border-top: 1px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
 `;
 
 const NavItem = styled.div`
@@ -58,14 +59,14 @@ const BottomNav = () => {
   ];
 
   return (
-    <Nav theme={theme}>
+    <NavContainer theme={theme}>
       {navItems.map(({ path, icon, activeIcon, text }) => (
         <NavItem key={path} onClick={() => navigate(path)}>
           <NavIcon src={location.pathname === path ? activeIcon : icon} alt={text} />
           <NavText theme={theme} active={location.pathname === path}>{text}</NavText>
         </NavItem>
       ))}
-    </Nav>
+    </NavContainer>
   );
 };
 
