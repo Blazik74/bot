@@ -102,7 +102,10 @@ export const BottomNavigation = () => {
         return (
           <NavButton
             key={item.path}
-            onClick={() => navigate(item.path)}
+            onClick={() => { 
+              console.log('click', item.path); 
+              navigate(item.path); 
+            }}
             active={isActive}
           >
             <IconWrapper>
