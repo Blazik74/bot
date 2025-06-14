@@ -11,172 +11,130 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-bottom: 80px;
 `;
 
 const ProfileHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 36px 0 24px 0;
+  padding: 36px 16px 24px 16px;
+  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
 `;
 
 const Avatar = styled.img`
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  object-fit: cover;
   margin-bottom: 16px;
-  border: 3px solid #005EFF;
+  border: 2px solid ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#E5E8EB'};
 `;
 
 const Name = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#181A1B'};
-  margin-bottom: 12px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  margin-bottom: 4px;
 `;
 
-const InfoTable = styled.div`
-  background: #E5E8EB;
+const Username = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#E5E8EB' : '#666'};
+  margin-bottom: 24px;
+`;
+
+const TariffButton = styled.button`
+  background: none;
+  border: none;
+  color: #005EFF;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 32px;
+`;
+
+const ThemeSection = styled.div`
+  width: 100%;
+  padding: 0 16px;
+  margin-bottom: 24px;
+`;
+
+const ThemeButton = styled.button`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 16px;
+  cursor: pointer;
   border-radius: 12px;
-  margin: 0 16px 18px 16px;
-  overflow: hidden;
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#F6F8FA'};
 `;
 
-const InfoRow = styled.div`
-  display: flex;
-  align-items: center;
-  height: 48px;
-  border-bottom: 1px solid #D1D5DB;
-  &:last-child { border-bottom: none; }
-`;
-
-const InfoTitle = styled.div`
-  flex: 0 0 110px;
-  font-weight: 700;
-  color: #181A1B;
+const ThemeText = styled.div`
   font-size: 16px;
-  padding-left: 18px;
+  font-weight: 600;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
-const InfoValue = styled.div`
-  flex: 1;
-  text-align: right;
-  font-weight: 400;
-  color: #181A1B;
-  font-size: 16px;
-  padding-right: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`;
-
-const Arrow = styled.span`
-  margin-left: 8px;
-  display: inline-block;
+const ThemeArrow = styled.img`
+  transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   transition: transform 0.3s;
-  transform: rotate(${({ open }) => (open ? 90 : 0)}deg);
+`;
+
+const ThemeDropdown = styled.div`
+  margin-top: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#F6F8FA'};
+`;
+
+const ThemeOption = styled.button`
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: ${({ theme }) => theme === 'dark' ? '#3C3F40' : '#E5E8EB'};
+  }
 `;
 
 const FacebookButton = styled.button`
-  width: 90%;
-  max-width: 370px;
-  padding: 14px 0;
-  background: #005EFF;
+  width: calc(100% - 32px);
+  margin: 0 16px 16px 16px;
+  padding: 16px;
+  background: #1877F2;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin: 18px auto 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  transition: background 0.3s, color 0.3s;
+  gap: 8px;
 `;
 
-const ExitButton = styled.button`
-  width: 90%;
-  max-width: 370px;
-  padding: 14px 0;
-  background: #E5E8EB;
-  color: #005EFF;
+const LogoutButton = styled.button`
+  width: calc(100% - 32px);
+  margin: 0 16px;
+  padding: 16px;
+  background: #F44336;
+  color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin: 18px auto 0 auto;
-  transition: background 0.3s, color 0.3s;
-`;
-
-const ThemeSelectPanel = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 48px;
-  background: #E5E8EB;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  z-index: 10;
-  padding: 0 0 8px 0;
-`;
-
-const ThemeOption = styled.div`
-  padding: 12px 18px;
-  font-size: 16px;
-  color: #181A1B;
-  cursor: pointer;
-  &:hover { background: #D1D5DB; }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalWindow = styled.div`
-  background: #fff;
-  border-radius: 18px;
-  padding: 32px 18px 24px 18px;
-  max-width: 340px;
-  width: 90vw;
-  text-align: center;
-  position: relative;
-`;
-
-const MegaphoneIcon = styled.img`
-  width: 64px;
-  height: 64px;
-  margin-bottom: 18px;
-`;
-
-const ModalTitle = styled.div`
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #181A1B;
-`;
-
-const ModalText = styled.div`
-  font-size: 16px;
-  color: #181A1B;
-  margin-bottom: 18px;
-`;
-
-const ModalList = styled.ul`
-  text-align: left;
-  margin: 0 0 18px 0;
-  padding-left: 18px;
-  color: #181A1B;
-  font-size: 15px;
 `;
 
 const Profile = () => {
@@ -214,34 +172,25 @@ const Profile = () => {
         <Avatar src={avatar} alt={name} />
         <Name theme={theme}>{name}</Name>
       </ProfileHeader>
-      <InfoTable>
-        <InfoRow>
-          <InfoTitle>Аккаунт</InfoTitle>
-          <InfoValue>{username}</InfoValue>
-        </InfoRow>
-        <InfoRow style={{ cursor: 'pointer' }} onClick={() => navigate('/tariffs')}>
-          <InfoTitle>Тариф</InfoTitle>
-          <InfoValue>Фрилансер <Arrow>›</Arrow></InfoValue>
-        </InfoRow>
-        <InfoRow style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setThemePanel(v => !v)}>
-          <InfoTitle>Тема</InfoTitle>
-          <InfoValue>
-            {themeValue === 'dark' ? 'Темная' : 'Светлая'}
-            <Arrow open={themePanel}>›</Arrow>
-          </InfoValue>
-          {themePanel && (
-            <ThemeSelectPanel ref={themePanelRef}>
-              <ThemeOption onClick={() => { setThemeValue('light'); setThemePanel(false); }}>Светлая</ThemeOption>
-              <ThemeOption onClick={() => { setThemeValue('dark'); setThemePanel(false); }}>Темная</ThemeOption>
-            </ThemeSelectPanel>
-          )}
-        </InfoRow>
-      </InfoTable>
+      <Username>{username}</Username>
+      <TariffButton onClick={() => navigate('/tariffs')}>Тариф</TariffButton>
+      <ThemeSection>
+        <ThemeButton onClick={() => setThemePanel(v => !v)}>
+          <ThemeText>Тема</ThemeText>
+          <ThemeArrow isOpen={themePanel} />
+        </ThemeButton>
+        {themePanel && (
+          <ThemeDropdown>
+            <ThemeOption onClick={() => { setThemeValue('light'); setThemePanel(false); }}>Светлая</ThemeOption>
+            <ThemeOption onClick={() => { setThemeValue('dark'); setThemePanel(false); }}>Темная</ThemeOption>
+          </ThemeDropdown>
+        )}
+      </ThemeSection>
       <FacebookButton onClick={() => setShowModal(true)}>
         <img src={facebookIcon} alt="Facebook" width={22} height={22} />
         Подключить Facebook Ads Account
       </FacebookButton>
-      <ExitButton>Выйти</ExitButton>
+      <LogoutButton>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalWindow onClick={e => e.stopPropagation()}>
