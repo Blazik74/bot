@@ -28,58 +28,12 @@ export const themes = {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    // If no saved theme, use Telegram's theme
-    if (window.Telegram?.WebApp) {
-      return window.Telegram.WebApp.colorScheme === 'dark';
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    document.body.style.transition = 'background 0.3s';
-    document.body.style.background = isDarkMode ? themes.dark.background : themes.light.background;
-
-    // Listen for Telegram theme changes
-    if (window.Telegram?.WebApp) {
-      const handleThemeChange = () => {
-        const isDark = window.Telegram.WebApp.colorScheme === 'dark';
-        setIsDarkMode(isDark);
-      };
-
-      window.Telegram.WebApp.onEvent('themeChanged', handleThemeChange);
-      return () => {
-        window.Telegram.WebApp.offEvent('themeChanged', handleThemeChange);
-      };
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
-  const setTheme = (theme) => {
-    setIsDarkMode(theme === 'dark');
-  };
-
-  const theme = isDarkMode ? themes.dark : themes.light;
-
+  const theme = 'light';
   return (
-    <ThemeContext.Provider value={{ theme, isDarkMode, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
-}; 
+export const useTheme = () => React.useContext(ThemeContext); 
