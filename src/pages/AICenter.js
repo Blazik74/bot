@@ -101,27 +101,18 @@ const TariffButton = styled.button`
 const BlueCard = styled(Card)`
   background: #EAF1FF;
   border: 2px solid #005EFF;
-  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
-`;
-
-const BlueCardRow = styled(CardRow)`
   color: #005EFF;
-`;
-
-const BlueCardIcon = styled(CardIcon)`
-  img {
-    filter: none;
-  }
 `;
 
 const BlueCardLabel = styled(CardLabel)`
   color: #005EFF;
 `;
 
-const Divider = styled.hr`
-  border: none;
-  border-top: 2px solid #E5E8EB;
-  margin: 18px 0 24px 0;
+const DividerLine = styled.div`
+  width: 100%;
+  height: 2px;
+  background: #E5E8EB;
+  margin: 0 0 18px 0;
 `;
 
 const AICenter = () => {
@@ -130,13 +121,13 @@ const AICenter = () => {
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>
-      <Divider />
+      <DividerLine />
       <CardList>
         <BlueCard theme={theme} active onClick={() => navigate('/targetolog')}>
-          <BlueCardRow>
-            <BlueCardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></BlueCardIcon>
-            <BlueCardLabel>ИИ Таргетолог</BlueCardLabel>
-          </BlueCardRow>
+          <CardRow>
+            <CardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></CardIcon>
+            <BlueCardLabel theme={theme}>ИИ Таргетолог</BlueCardLabel>
+          </CardRow>
         </BlueCard>
         <Card theme={theme}>
           <CardRow>
