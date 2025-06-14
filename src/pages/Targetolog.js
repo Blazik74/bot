@@ -642,29 +642,33 @@ export default function Targetolog() {
       <CampaignsSection>
         <CampaignsTitle>Кампании</CampaignsTitle>
         <CampaignList>
-          {campaigns.map(campaign => (
-            <CampaignCard key={campaign.id}>
-              <CampaignHeader>
-                <CampaignName>{campaign.name}</CampaignName>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CampaignStatus active={campaign.status === 'active'}>
-                    {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
-                  </CampaignStatus>
-                  <CampaignAction
-                    active={campaign.status === 'active'}
-                    onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                  >
-                    {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                  </CampaignAction>
-                </div>
-              </CampaignHeader>
-              <CampaignStats>
-                <div>Показы: {campaign.stats.impressions}</div>
-                <div>Клики: {campaign.stats.clicks}</div>
-                <div>CTR: {campaign.stats.ctr}%</div>
-              </CampaignStats>
-            </CampaignCard>
-          ))}
+          <TransitionGroup>
+            {campaigns.map(campaign => (
+              <CSSTransition key={campaign.id} classNames="card" timeout={300}>
+                <CampaignCard>
+                  <CampaignHeader>
+                    <CampaignName>{campaign.name}</CampaignName>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <CampaignStatus active={campaign.status === 'active'}>
+                        {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
+                      </CampaignStatus>
+                      <CampaignAction
+                        active={campaign.status === 'active'}
+                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                      >
+                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                      </CampaignAction>
+                    </div>
+                  </CampaignHeader>
+                  <CampaignStats>
+                    <div>Показы: {campaign.stats.impressions}</div>
+                    <div>Клики: {campaign.stats.clicks}</div>
+                    <div>CTR: {campaign.stats.ctr}%</div>
+                  </CampaignStats>
+                </CampaignCard>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
         </CampaignList>
       </CampaignsSection>
 
@@ -692,8 +696,12 @@ export default function Targetolog() {
         </HistoryList>
       </AutopilotSection>
 
-      {renderModal()}
-      {renderCreateModal()}
+      <CSSTransition in={showModal} timeout={200} classNames="modal" unmountOnExit>
+        {renderModal()}
+      </CSSTransition>
+      <CSSTransition in={showCreateModal} timeout={200} classNames="modal" unmountOnExit>
+        {renderCreateModal()}
+      </CSSTransition>
     </Container>
   );
 } 
