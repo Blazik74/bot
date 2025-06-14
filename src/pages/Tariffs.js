@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 const Container = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
-  padding: 0 0 120px 0;
+  padding: 0 0 40px 0;
 `;
 
 const Title = styled.h1`
@@ -43,12 +43,6 @@ const TariffName = styled.div`
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
-const TariffDesc = styled.div`
-  font-size: 15px;
-  color: #888;
-  margin-top: 2px;
-`;
-
 const TariffPriceRow = styled.div`
   display: flex;
   align-items: flex-end;
@@ -69,11 +63,6 @@ const TariffPerMonth = styled.div`
 `;
 
 const PayButton = styled.button`
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 32px;
-  margin: 0 auto;
   width: 90%;
   max-width: 400px;
   background: #005EFF;
@@ -85,20 +74,20 @@ const PayButton = styled.button`
   padding: 18px 0;
   cursor: pointer;
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
+  margin: 32px auto 0 auto;
+  display: block;
 `;
 
 const tariffs = [
   {
     id: 1,
     name: 'Фрилансер',
-    desc: 'ограниченные функции',
     price: '50 000',
     currency: '₸',
   },
   {
     id: 2,
     name: 'Компания',
-    desc: 'всё включено',
     price: '80 000',
     currency: '₸',
   },
@@ -119,7 +108,6 @@ const Tariffs = () => {
             onClick={() => setSelected(tariff.id)}
           >
             <TariffName theme={theme}>{tariff.name}</TariffName>
-            <TariffDesc>{tariff.desc}</TariffDesc>
             <TariffPriceRow>
               <TariffPrice theme={theme}>{tariff.currency}{tariff.price}</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
