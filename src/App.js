@@ -40,9 +40,12 @@ class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { hasError: true };
   }
-  componentDidCatch(error, errorInfo) {}
+  componentDidCatch(error, errorInfo) {
+    // Можно отправить лог на сервер
+  }
   render() {
     if (this.state.hasError) {
+      // Перезагружаем мини-апп полностью
       if (window.Telegram?.WebApp?.close) {
         window.Telegram.WebApp.close();
       } else {
@@ -60,6 +63,7 @@ const Loader = ({ theme }) => (
   </LoaderWrapper>
 );
 
+// Функция для предзагрузки всех SVG и изображений
 const preloadImages = (imageList) => {
   return Promise.all(imageList.map(src => {
     return new Promise(resolve => {
@@ -82,6 +86,7 @@ const allImages = [
   require('./assets/icons/seller.svg'),
   require('./assets/icons/consultant.svg'),
   require('./assets/icons/file-upload.svg'),
+  // Добавь сюда другие изображения, если появятся
 ];
 
 const AppContent = () => {
@@ -91,16 +96,23 @@ const AppContent = () => {
     // Синхронизация body и html с темой
     document.body.style.background = theme === 'dark' ? '#181A1B' : '#fff';
     document.documentElement.style.background = theme === 'dark' ? '#181A1B' : '#fff';
-    // Telegram Mini App Full Screen Mode (как в Blum)
-    if (window.Telegram && window.Telegram.WebApp) {
+    // Telegram Mini App Full Screen Mode (через web_app_request_fullscreen)
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
       window.Telegram.WebApp.ready();
       setTimeout(() => {
-        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.postEvent('web_app_request_fullscreen');
       }, 100);
     }
+    // Предзагрузка всех иконок и изображений
     preloadImages(allImages).then(() => {
-      setTimeout(() => setLoading(false), 400);
+      setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
     });
+    // Выход из полноэкранного режима при размонтировании
+    return () => {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
+        window.Telegram.WebApp.postEvent('web_app_exit_fullscreen');
+      }
+    };
   }, [theme]);
 
   if (loading) return <Loader theme={theme} />;
@@ -127,4 +139,4 @@ const App = () => (
   </ThemeProvider>
 );
 
-export default App;
+export default App; 
