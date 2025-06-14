@@ -10,11 +10,11 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
-  bottom: 12px;
+  bottom: 0;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
-  padding: 0 0 2px 0;
+  padding: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -22,6 +22,8 @@ const Navigation = styled.nav`
   z-index: 100;
   box-shadow: 0 0 12px 0 rgba(0,0,0,0.04);
   transition: background 0.3s;
+  height: 72px;
+  min-height: 72px;
 `;
 
 const NavButton = styled.button`
@@ -83,7 +85,7 @@ export const BottomNavigation = () => {
   return (
     <Navigation theme={theme}>
       {navigationItems.map((item) => {
-        const isActive = location.pathname === item.path || (item.path === '/' && location.pathname === '/ai-center');
+        const isActive = location.pathname === item.path;
         return (
           <NavButton
             key={item.path}
