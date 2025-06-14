@@ -250,30 +250,85 @@ const ModalWindow = styled.div`
 `;
 
 const ModalTitle = styled.div`
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 12px;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  margin-bottom: 16px;
 `;
 
 const ModalText = styled.div`
   font-size: 16px;
-  color: #181A1B;
-  margin-bottom: 18px;
+  color: ${({ theme }) => theme === 'dark' ? '#E5E8EB' : '#181A1B'};
+  margin-bottom: 24px;
+  line-height: 1.4;
 `;
 
 const ModalButton = styled.button`
   background: #005EFF;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  padding: 12px 0;
+  padding: 14px 0;
   width: 100%;
-  margin-top: 18px;
   cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #0052E0;
+  }
 `;
+
+const CitySearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const CityInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 16px;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+
+  &:focus {
+    outline: none;
+    border-color: #005EFF;
+  }
+`;
+
+const CitySuggestions = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+`;
+
+const CitySuggestion = styled.div`
+  padding: 10px 16px;
+  cursor: pointer;
+  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  font-size: 15px;
+
+  &:hover {
+    background: ${({ theme }) => theme === 'dark' ? '#3C3F40' : '#F6F8FA'};
+  }
+`;
+
+const citiesKZ = [
+  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
 
 const initialCampaigns = [
   {
@@ -301,224 +356,223 @@ const initialHistory = [
 ];
 
 export default function Targetolog() {
-  const theme = useTheme().theme || 'light';
-  const [file, setFile] = useState(null);
-  const [fileUploaded, setFileUploaded] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [uploadModalText, setUploadModalText] = useState('');
+  const theme = useTheme();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);
-  const [showActionModal, setShowActionModal] = useState(false);
-  const [actionModalText, setActionModalText] = useState('');
-  const [advice, setAdvice] = useState(initialAdvice);
-  const [autopilot, setAutopilot] = useState(true);
-  const [history, setHistory] = useState(initialHistory);
-  const [showCampaignModal, setShowCampaignModal] = useState(false);
-  const [campaignGoal, setCampaignGoal] = useState('conversion');
-  const [geo, setGeo] = useState('Казахстан, Россия');
-  const [allCountry, setAllCountry] = useState(false);
-  const [budget, setBudget] = useState('1');
-  const [date, setDate] = useState('Сегодня');
-  const [time, setTime] = useState('12:00');
-  const [modalType, setModalType] = useState('success'); // success, error, info
+  const [autopilotEnabled, setAutopilotEnabled] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('');
+  const [modalText, setModalText] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [cityInput, setCityInput] = useState('');
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const fileInputRef = useRef(null);
 
-  // File upload logic
-  const fileInputRef = useRef();
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setFileUploaded(false);
-  };
-  const handleUpload = () => {
-    if (file) {
-      setShowUploadModal(true);
-      setUploadModalText('Креатив загружен успешно');
-      setFileUploaded(true);
-    } else {
-      setShowUploadModal(true);
-      setUploadModalText('Ошибка при загрузке');
-      setFileUploaded(false);
+    if (e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
     }
   };
 
-  // Campaign actions
+  const handleUpload = () => {
+    if (selectedFile) {
+      setUploadSuccess(true);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleCampaignAction = (id, action) => {
-    setCampaigns((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? { ...c, status: action === 'start' ? 'active' : 'paused' }
-          : c
-      )
-    );
-    setShowActionModal(true);
-    setActionModalText(
-      action === 'start' ? 'Автопилот включён' : 'Кампания остановлена'
-    );
+    const updatedCampaigns = campaigns.map(campaign => {
+      if (campaign.id === id) {
+        const newStatus = action === 'start' ? 'active' : 'stopped';
+        setModalType('success');
+        setModalText(action === 'start' ? 'Кампания запущена' : 'Кампания остановлена');
+        setShowModal(true);
+        return { ...campaign, status: newStatus };
+      }
+      return campaign;
+    });
+    setCampaigns(updatedCampaigns);
   };
 
-  // Autopilot toggle
   const handleAutopilot = () => {
-    setAutopilot((prev) => !prev);
-    setShowActionModal(true);
-    setActionModalText(autopilot ? 'Автопилот выключен' : 'Автопилот включён');
+    setAutopilotEnabled(!autopilotEnabled);
+    setModalType('success');
+    setModalText(autopilotEnabled ? 'Автопилот выключен' : 'Автопилот включен');
+    setShowModal(true);
   };
 
-  // Campaign modal (Frame 7)
   const handleCreateCampaign = () => {
-    setShowCampaignModal(false);
-    setShowActionModal(true);
-    setActionModalText('Кампания создана');
+    setShowCreateModal(true);
+  };
+
+  const handleCityInputChange = (e) => {
+    const value = e.target.value;
+    setCityInput(value);
+    
+    if (value.length > 0) {
+      const filtered = citiesKZ.filter(city => 
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(filtered);
+      setShowCitySuggestions(true);
+    } else {
+      setShowCitySuggestions(false);
+    }
+  };
+
+  const handleCitySelect = (city) => {
+    setCityInput(city);
+    setShowCitySuggestions(false);
+  };
+
+  const renderModal = () => {
+    if (!showModal) return null;
+
+    return (
+      <ModalOverlay onClick={() => setShowModal(false)}>
+        <ModalWindow onClick={e => e.stopPropagation()}>
+          <ModalTitle theme={theme}>{modalType === 'success' ? 'Успешно' : 'Ошибка'}</ModalTitle>
+          <ModalText theme={theme}>{modalText}</ModalText>
+          <ModalButton onClick={() => setShowModal(false)}>Ok</ModalButton>
+        </ModalWindow>
+      </ModalOverlay>
+    );
+  };
+
+  const renderCreateModal = () => {
+    if (!showCreateModal) return null;
+
+    return (
+      <ModalOverlay onClick={() => setShowCreateModal(false)}>
+        <ModalWindow onClick={e => e.stopPropagation()}>
+          <ModalTitle theme={theme}>Создание кампании</ModalTitle>
+          <CitySearchContainer>
+            <CityInput
+              theme={theme}
+              value={cityInput}
+              onChange={handleCityInputChange}
+              placeholder="Выберите город"
+            />
+            {showCitySuggestions && (
+              <CitySuggestions theme={theme}>
+                {filteredCities.map((city, index) => (
+                  <CitySuggestion
+                    key={index}
+                    theme={theme}
+                    onClick={() => handleCitySelect(city)}
+                  >
+                    {city}
+                  </CitySuggestion>
+                ))}
+              </CitySuggestions>
+            )}
+          </CitySearchContainer>
+          <ModalButton onClick={() => setShowCreateModal(false)}>Создать</ModalButton>
+        </ModalWindow>
+      </ModalOverlay>
+    );
   };
 
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Таргетолог</Title>
       <Divider />
-      {/* Загрузка креатива */}
+      
       <UploadBlock>
         <FileInputRow>
           <FileInput
-            ref={fileInputRef}
             type="file"
-            id="creative-upload"
+            id="file"
+            ref={fileInputRef}
             onChange={handleFileChange}
           />
-          <FileLabel htmlFor="creative-upload">
-            <img src={fileIcon} alt="file" width={22} height={22} />
-            {file ? file.name : 'Выбрать файл'}
+          <FileLabel htmlFor="file">
+            <img src={fileIcon} alt="Upload" />
+            {selectedFile ? selectedFile.name : 'Загрузить креатив'}
           </FileLabel>
-          {file && (
-            <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
-          )}
+          <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
         </FileInputRow>
-        {fileUploaded && <UploadSuccess>Файл успешно загружен</UploadSuccess>}
+        {uploadSuccess && <UploadSuccess>Креатив успешно загружен</UploadSuccess>}
       </UploadBlock>
-      <MainButton onClick={() => setShowCampaignModal(true)}>
-        Запустить кампанию
-      </MainButton>
-      {/* Обзор показателей */}
+
+      <MainButton onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
+
       <OverviewBlock>
         <OverviewItem>
           <div>Показы</div>
-          <div>11</div>
+          <div>0</div>
+        </OverviewItem>
+        <OverviewItem>
+          <div>Клики</div>
+          <div>0</div>
         </OverviewItem>
         <OverviewItem>
           <div>CTR</div>
-          <div>11</div>
-        </OverviewItem>
-        <OverviewItem>
-          <div>CPC</div>
-          <div>11</div>
+          <div>0%</div>
         </OverviewItem>
       </OverviewBlock>
-      {/* Список кампаний */}
+
       <CampaignsSection>
-        <CampaignsTitle>Список рекламных кампаний</CampaignsTitle>
+        <CampaignsTitle>Кампании</CampaignsTitle>
         <CampaignList>
-          {campaigns.map((c) => (
-            <CampaignCard key={c.id}>
+          {campaigns.map(campaign => (
+            <CampaignCard key={campaign.id}>
               <CampaignHeader>
-                <div>
-                  <CampaignName>{c.name}</CampaignName>
-                  <CampaignStatus active={c.status === 'active'}>
-                    {c.status === 'active' ? 'Активна' : 'Приостановлена'}
+                <CampaignName>{campaign.name}</CampaignName>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <CampaignStatus active={campaign.status === 'active'}>
+                    {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
                   </CampaignStatus>
+                  <CampaignAction
+                    active={campaign.status === 'active'}
+                    onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                  >
+                    {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                  </CampaignAction>
                 </div>
-                <CampaignAction
-                  active={c.status === 'active'}
-                  onClick={() =>
-                    handleCampaignAction(c.id, c.status === 'active' ? 'stop' : 'start')
-                  }
-                >
-                  {c.status === 'active' ? 'Остановить' : 'Запустить'}
-                </CampaignAction>
               </CampaignHeader>
               <CampaignStats>
-                <div>Клики<br />{c.stats.clicks}</div>
-                <div>Показы<br />{c.stats.impressions}</div>
-                <div>CTR<br />{c.stats.ctr}</div>
-                <div>CPC<br />{c.stats.cpc}</div>
-                <div>CPM<br />{c.stats.cpm}</div>
+                <div>Показы: {campaign.stats.impressions}</div>
+                <div>Клики: {campaign.stats.clicks}</div>
+                <div>CTR: {campaign.stats.ctr}%</div>
               </CampaignStats>
             </CampaignCard>
           ))}
         </CampaignList>
       </CampaignsSection>
-      {/* Советы от ИИ */}
+
       <AdviceSection>
         <AdviceTitle>Советы от ИИ</AdviceTitle>
-        {advice.length > 0 && (
-          <AdviceBox>{advice.join('\n')}</AdviceBox>
-        )}
+        <AdviceBox>
+          Загрузите креатив, чтобы получить рекомендации по улучшению эффективности кампании
+        </AdviceBox>
       </AdviceSection>
-      {/* Автопилот */}
+
       <AutopilotSection>
-        <AutopilotTitle>ИИ-автопилот</AutopilotTitle>
-        <AutopilotButton enabled={autopilot} onClick={handleAutopilot}>
-          {autopilot ? 'Выключить' : 'Включить'}
+        <AutopilotTitle>Автопилот</AutopilotTitle>
+        <AutopilotButton
+          enabled={autopilotEnabled}
+          onClick={handleAutopilot}
+        >
+          {autopilotEnabled ? 'Выключить автопилот' : 'Включить автопилот'}
         </AutopilotButton>
         <HistoryList>
-          {history.map((h, i) => (
-            <HistoryItem key={i}>• {h.text} <span style={{ color: '#888' }}>{h.time}</span></HistoryItem>
-          ))}
+          {autopilotEnabled && (
+            <HistoryItem>
+              Автопилот включен в {new Date().toLocaleTimeString()}
+            </HistoryItem>
+          )}
         </HistoryList>
       </AutopilotSection>
-      {/* Модальные окна */}
-      {showUploadModal && (
-        <ModalOverlay onClick={() => setShowUploadModal(false)}>
-          <ModalWindow onClick={e => e.stopPropagation()}>
-            <ModalTitle>{uploadModalText.includes('ошибка') ? 'Ошибка при загрузке' : 'Креатив загружен успешно'}</ModalTitle>
-            <ModalText>{uploadModalText}</ModalText>
-            <ModalButton onClick={() => setShowUploadModal(false)}>Ok</ModalButton>
-          </ModalWindow>
-        </ModalOverlay>
-      )}
-      {showActionModal && (
-        <ModalOverlay onClick={() => setShowActionModal(false)}>
-          <ModalWindow onClick={e => e.stopPropagation()}>
-            <ModalTitle>{actionModalText}</ModalTitle>
-            <ModalButton onClick={() => setShowActionModal(false)}>Ok</ModalButton>
-          </ModalWindow>
-        </ModalOverlay>
-      )}
-      {/* Модальное окно создания кампании (Frame 7) */}
-      {showCampaignModal && (
-        <ModalOverlay onClick={() => setShowCampaignModal(false)}>
-          <ModalWindow onClick={e => e.stopPropagation()}>
-            <ModalTitle>Цель кампании</ModalTitle>
-            <div style={{ marginBottom: 12, fontWeight: 500 }}>Что вы хотите получить?</div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <ModalButton style={{ background: campaignGoal === 'conversion' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'conversion' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('conversion')}>Конверсия</ModalButton>
-              <ModalButton style={{ background: campaignGoal === 'site' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'site' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('site')}>Посещения сайта</ModalButton>
-            </div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <ModalButton style={{ background: campaignGoal === 'leads' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'leads' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('leads')}>Лиды</ModalButton>
-              <ModalButton style={{ background: campaignGoal === 'engagement' ? '#005EFF' : '#E5E8EB', color: campaignGoal === 'engagement' ? '#fff' : '#181A1B', flex: 1 }} onClick={() => setCampaignGoal('engagement')}>Вовлеченность</ModalButton>
-            </div>
-            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Геолокация аудитории</div>
-            <input style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB', marginBottom: 8 }} value={geo} onChange={e => setGeo(e.target.value)} disabled={allCountry} />
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-              <input type="checkbox" checked={allCountry} onChange={e => setAllCountry(e.target.checked)} />
-              <span style={{ marginLeft: 8 }}>Вся страна</span>
-            </div>
-            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Дневной бюджет</div>
-            <input style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB', marginBottom: 8 }} type="number" min={1} value={budget} onChange={e => setBudget(e.target.value)} />
-            <div style={{ color: '#888', fontSize: 13, marginBottom: 8 }}>Минимум $1</div>
-            <div style={{ fontWeight: 700, margin: '18px 0 6px 0' }}>Время публикации</div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <select value={date} onChange={e => setDate(e.target.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB' }}>
-                <option>Сегодня</option>
-                <option>Завтра</option>
-              </select>
-              <select value={time} onChange={e => setTime(e.target.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: '1.5px solid #D1D5DB' }}>
-                <option>12:00</option>
-                <option>18:00</option>
-                <option>21:00</option>
-              </select>
-            </div>
-            <ModalButton onClick={handleCreateCampaign}>Запустить кампанию</ModalButton>
-            <div style={{ position: 'absolute', top: 18, right: 18, cursor: 'pointer', fontSize: 28, color: '#B84D8B' }} onClick={() => setShowCampaignModal(false)}>&#10005;</div>
-          </ModalWindow>
-        </ModalOverlay>
-      )}
+
+      {renderModal()}
+      {renderCreateModal()}
     </Container>
   );
 } 
