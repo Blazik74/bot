@@ -22,8 +22,9 @@ const Navigation = styled.nav`
   z-index: 100;
   box-shadow: 0 0 12px 0 rgba(0,0,0,0.04);
   transition: background 0.3s;
-  height: 72px;
-  min-height: 72px;
+  height: 84px;
+  min-height: 84px;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 `;
 
 const NavButton = styled.button`
@@ -81,7 +82,7 @@ const navigationItems = [
 export const BottomNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme().theme || 'light';
+  const theme = useTheme() || 'light';
   return (
     <Navigation theme={theme}>
       {navigationItems.map((item) => {
