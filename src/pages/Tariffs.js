@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import BottomNav from '../components/BottomNav';
-import { useTheme } from 'styled-components';
+import { motion } from 'framer-motion';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -10,7 +9,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding-bottom: 120px;
+  padding-bottom: 180px;
 `;
 
 const Title = styled.h1`
@@ -83,9 +82,13 @@ const PayButton = styled.button`
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
   margin: 0 auto;
   position: fixed;
-  left: 0; right: 0; bottom: 100px;
+  left: 0; right: 0; bottom: 110px;
   display: block;
   transition: background 0.2s;
+`;
+const Spacer = styled.div`
+  height: 48px;
+  width: 100%;
 `;
 
 const tariffs = [
@@ -136,7 +139,8 @@ const Tariffs = () => {
         ))}
       </TariffList>
       <PayButton>Оплатить</PayButton>
-      <BottomNav active='center' />
+      <Spacer />
+      <BottomNavigation />
     </Container>
   );
 };
