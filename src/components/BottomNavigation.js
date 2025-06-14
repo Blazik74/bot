@@ -10,11 +10,11 @@ import profileIconActive from '../assets/icons/profile-active.svg';
 
 const Navigation = styled.nav`
   position: fixed;
-  bottom: 16px;
+  bottom: 0;
   left: 0;
   right: 0;
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
-  padding: 0 0 4px 0;
+  padding: 0 0 2px 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
