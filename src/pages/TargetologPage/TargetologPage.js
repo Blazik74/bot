@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import useStore from '../../store';
 import {
   Box,
@@ -138,7 +139,11 @@ export const TargetologPage = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4">Campaigns</Typography>
         <Button
@@ -261,6 +266,6 @@ export const TargetologPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }; 
