@@ -11,8 +11,8 @@ const AppRoutes = () => {
   // + return <Notifications />;
   // return <AICenter />;
   // return <Targetolog />;
-  return <Tariffs />;
-  // return <Profile />;
+  // return <Tariffs />;
+  return <Profile />;
   // return <FacebookConnect />;
   // return <Targetolog />;
 };
