@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { themes } from './contexts/ThemeContext';
+import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
 import './App.css';
 
 // Импорт SVG-иконок
@@ -96,7 +96,7 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState('light');
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     if (location.pathname !== '/') {
@@ -134,14 +134,16 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <ThemeProvider theme={themes['light']}>
-    <NotificationProvider>
-      <ErrorBoundary>
-        <Router>
-          <AppContent />
-        </Router>
-      </ErrorBoundary>
-    </NotificationProvider>
+  <ThemeProvider>
+    <StyledThemeProvider theme={themes[useThemeContext().theme]}>
+      <NotificationProvider>
+        <ErrorBoundary>
+          <Router>
+            <AppContent />
+          </Router>
+        </ErrorBoundary>
+      </NotificationProvider>
+    </StyledThemeProvider>
   </ThemeProvider>
 );
 
