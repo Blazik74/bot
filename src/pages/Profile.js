@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -195,7 +196,9 @@ const ModalList = styled.ul`
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const navigate = useNavigate();
+  const { theme, setTheme } = useThemeContext();
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -209,48 +212,54 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   return (
-    <Container>
+    <Container theme={theme}>
       <ProfileHeader>
-        <Avatar src={avatar || ''} alt={nickname} />
-        <Nickname>{nickname}</Nickname>
+        <Avatar src={avatar || ''} alt={nickname} theme={theme} />
+        <Nickname theme={theme}>{nickname}</Nickname>
       </ProfileHeader>
-      <InfoBlock>
-        <InfoRow>
-          <InfoTitle>Аккаунт</InfoTitle>
-          <InfoValue>{username}</InfoValue>
+      <InfoBlock theme={theme}>
+        <InfoRow theme={theme}>
+          <InfoTitle theme={theme}>Аккаунт</InfoTitle>
+          <InfoValue theme={theme}>{username}</InfoValue>
         </InfoRow>
-        <InfoRow>
-          <InfoTitle>Тариф</InfoTitle>
-          <InfoValue>
-            <TariffButton onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
+        <InfoRow theme={theme}>
+          <InfoTitle theme={theme}>Тариф</InfoTitle>
+          <InfoValue theme={theme}>
+            <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow onClick={() => setShowModal(true)}>
-          <InfoTitle>Тема</InfoTitle>
-          <InfoValue>
-            Светлая
-            <Arrow open={showModal}>&#8250;</Arrow>
+        <ThemeRow theme={theme} onClick={() => setShowThemeDropdown((v) => !v)}>
+          <InfoTitle theme={theme}>Тема</InfoTitle>
+          <InfoValue theme={theme}>
+            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
+            <Arrow open={showThemeDropdown}>&#8250;</Arrow>
           </InfoValue>
         </ThemeRow>
+        {showThemeDropdown && (
+          <div style={{ position: 'relative', zIndex: 1001, background: theme === 'dark' ? '#23272F' : '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', margin: '0 16px', padding: 8 }}>
+            <div style={{ padding: 8, cursor: 'pointer', color: theme === 'dark' ? '#fff' : '#181A1B' }} onClick={() => { setTheme('light'); setShowThemeDropdown(false); }}>Светлая</div>
+            <div style={{ padding: 8, cursor: 'pointer', color: theme === 'dark' ? '#fff' : '#181A1B' }} onClick={() => { setTheme('dark'); setShowThemeDropdown(false); }}>Тёмная</div>
+          </div>
+        )}
       </InfoBlock>
-      <FacebookButton onClick={() => setShowModal(true)}>
+      <FacebookButton theme={theme} onClick={() => setShowModal(true)}>
         <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
         Подключить Facebook Ads Account
       </FacebookButton>
-      <LogoutButton>Выйти</LogoutButton>
+      <LogoutButton theme={theme}>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalWindow onClick={e => e.stopPropagation()}>
+          <ModalWindow theme={theme} onClick={e => e.stopPropagation()}>
             <MegaphoneIcon src={megaphoneIcon} alt="Megaphone" />
-            <ModalTitle>Подключение рекламного аккаунта</ModalTitle>
-            <ModalText>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
-            <ModalList>
+            <ModalTitle theme={theme}>Подключение рекламного аккаунта</ModalTitle>
+            <ModalText theme={theme}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
+            <ModalList theme={theme}>
               <li>Использовать ИИ автопилот</li>
               <li>Получать советы и диагностику от ИИ</li>
               <li>Просматривать метрики</li>
               <li>Загружать креативы</li>
             </ModalList>
-            <ModalButton onClick={() => setShowModal(false)}>Ок</ModalButton>
+            <ModalButton theme={theme} onClick={() => setShowModal(false)}>Ок</ModalButton>
           </ModalWindow>
         </ModalOverlay>
       )}
