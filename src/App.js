@@ -7,7 +7,6 @@ import { NotificationProvider } from './contexts/NotificationContext';
 import { themes } from './contexts/ThemeContext';
 import './App.css';
 
-// Импорт SVG-иконок
 import aiCenter from './assets/icons/ai-center.svg';
 import aiCenterActive from './assets/icons/ai-center-active.svg';
 import targetolog from './assets/icons/targetolog.svg';
