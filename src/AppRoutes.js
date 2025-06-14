@@ -11,10 +11,10 @@ const AppRoutes = () => {
   // + return <Notifications />;
   // return <AICenter />;
   // return <Targetolog />;
-  // return <Tariffs />;
+  return <Tariffs />;
   // return <Profile />;
   // return <FacebookConnect />;
-  return <Targetolog />;
+  // return <Targetolog />;
 };
 
 export default AppRoutes;
