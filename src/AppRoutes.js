@@ -33,7 +33,7 @@ const AppRoutes = () => {
     <>
       <Notifications />
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+        <Routes location={location} key={location.key}>
           <Route path="/" element={<AnimatedRoute><AICenter /></AnimatedRoute>} />
           <Route path="/targetolog" element={<AnimatedRoute><Targetolog /></AnimatedRoute>} />
           <Route path="/profile" element={<AnimatedRoute><Profile /></AnimatedRoute>} />
