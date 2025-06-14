@@ -12,7 +12,8 @@ const AppContainer = styled.div`
   min-height: 100vh;
   background-color: ${props => props.theme.background};
   color: ${props => props.theme.text};
-  padding-bottom: 60px; // Space for bottom navigation
+  display: flex;
+  flex-direction: column;
 `;
 
 const LoaderWrapper = styled.div`
@@ -39,12 +40,9 @@ class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { hasError: true };
   }
-  componentDidCatch(error, errorInfo) {
-    // Можно отправить лог на сервер
-  }
+  componentDidCatch(error, errorInfo) {}
   render() {
     if (this.state.hasError) {
-      // Перезагружаем мини-апп полностью
       if (window.Telegram?.WebApp?.close) {
         window.Telegram.WebApp.close();
       } else {
@@ -62,7 +60,6 @@ const Loader = ({ theme }) => (
   </LoaderWrapper>
 );
 
-// Функция для предзагрузки всех SVG и изображений
 const preloadImages = (imageList) => {
   return Promise.all(imageList.map(src => {
     return new Promise(resolve => {
@@ -85,29 +82,24 @@ const allImages = [
   require('./assets/icons/seller.svg'),
   require('./assets/icons/consultant.svg'),
   require('./assets/icons/file-upload.svg'),
-  // Добавь сюда другие изображения, если появятся
 ];
 
 const AppContent = () => {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    // Telegram Mini App Full Screen Mode
+    // Синхронизация body и html с темой
+    document.body.style.background = theme === 'dark' ? '#181A1B' : '#fff';
+    document.documentElement.style.background = theme === 'dark' ? '#181A1B' : '#fff';
+    // Telegram Mini App Full Screen Mode (как в Blum)
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
-      window.Telegram.WebApp.enableClosingConfirmation(false);
-      if (theme === 'dark') {
-        window.Telegram.WebApp.setHeaderColor('bg_color');
-        window.Telegram.WebApp.setBackgroundColor('#181A1B');
-      } else {
-        window.Telegram.WebApp.setHeaderColor('bg_color');
-        window.Telegram.WebApp.setBackgroundColor('#fff');
-      }
+      setTimeout(() => {
+        window.Telegram.WebApp.expand();
+      }, 100);
     }
-    // Предзагрузка всех иконок и изображений
     preloadImages(allImages).then(() => {
-      setTimeout(() => setLoading(false), 400); // Короткая задержка для плавности
+      setTimeout(() => setLoading(false), 400);
     });
   }, [theme]);
 
@@ -135,4 +127,4 @@ const App = () => (
   </ThemeProvider>
 );
 
-export default App; 
+export default App;
