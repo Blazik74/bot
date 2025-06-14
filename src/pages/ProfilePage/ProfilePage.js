@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import useStore from '../../store';
 import { Box, Typography, Button, Switch, Avatar } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -35,7 +36,11 @@ export const ProfilePage = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <StyledBox>
         <Box display="flex" alignItems="center" gap={2} mb={3}>
           <Avatar
@@ -71,25 +76,21 @@ export const ProfilePage = () => {
             color="primary"
           />
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          size="large"
-          sx={{ mt: 2 }}
-          onClick={handleFacebookConnect}
-        >
-          {user?.facebookConnected ? 'Disconnect Facebook' : 'Connect Facebook'}
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          fullWidth
-          size="large"
-          sx={{ mt: 2 }}
-        >
-          Sign Out
-        </Button>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="subtitle1">Facebook Integration</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Connect your Facebook account
+            </Typography>
+          </Box>
+          <Button
+            variant={user?.facebookConnected ? 'contained' : 'outlined'}
+            color={user?.facebookConnected ? 'success' : 'primary'}
+            onClick={handleFacebookConnect}
+          >
+            {user?.facebookConnected ? 'Connected' : 'Connect'}
+          </Button>
+        </Box>
       </StyledBox>
 
       <StyledBox>
@@ -131,6 +132,16 @@ export const ProfilePage = () => {
           </StatBox>
         </Box>
       </StyledBox>
-    </div>
+
+      <Button
+        variant="contained"
+        color="error"
+        fullWidth
+        size="large"
+        sx={{ mt: 2 }}
+      >
+        Sign Out
+      </Button>
+    </motion.div>
   );
 }; 
