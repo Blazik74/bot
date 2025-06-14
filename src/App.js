@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter as Router } from 'react-router-dom';
+import { HashRouter as Router, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { BottomNavigation } from './components/BottomNavigation';
 import styled, { ThemeProvider } from 'styled-components';
@@ -7,6 +7,7 @@ import { NotificationProvider } from './contexts/NotificationContext';
 import { themes } from './contexts/ThemeContext';
 import './App.css';
 
+// Импорт SVG-иконок
 import aiCenter from './assets/icons/ai-center.svg';
 import aiCenterActive from './assets/icons/ai-center-active.svg';
 import targetolog from './assets/icons/targetolog.svg';
@@ -93,9 +94,14 @@ const allImages = [
 
 const AppContent = () => {
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+    }
     document.body.style.background = '#fff';
     document.documentElement.style.background = '#fff';
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.postEvent) {
