@@ -19,7 +19,7 @@ export const themes = {
     text: '#FFFFFF',
     primary: '#005EFF',
     border: '#333333',
-    card: '#2A2A2A',ы
+    card: '#2A2A2A',
     button: '#005EFF',
     buttonText: '#fff',
     buttonSecondary: '#23272A',
