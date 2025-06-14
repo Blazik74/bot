@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import useStore from '../../store';
-import { Box, Typography, Button, Switch, Avatar } from '@mui/material';
+import { Box, Typography, Button, Switch, Avatar, Select, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -24,10 +24,6 @@ export const ProfilePage = () => {
   const user = useStore((state) => state.user);
   const setTheme = useStore((state) => state.setTheme);
   const updateUser = useStore((state) => state.updateUser);
-
-  const handleThemeToggle = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
 
   const handleFacebookConnect = () => {
     if (user) {
@@ -65,16 +61,20 @@ export const ProfilePage = () => {
         </Typography>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Box>
-            <Typography variant="subtitle1">Dark Mode</Typography>
+            <Typography variant="subtitle1">Тема</Typography>
             <Typography variant="body2" color="text.secondary">
-              Switch between light and dark theme
+              Выберите светлую или тёмную тему
             </Typography>
           </Box>
-          <Switch
-            checked={theme === 'dark'}
-            onChange={handleThemeToggle}
-            color="primary"
-          />
+          <Select
+            value={theme}
+            onChange={e => setTheme(e.target.value)}
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value="light">Светлая</MenuItem>
+            <MenuItem value="dark">Тёмная</MenuItem>
+          </Select>
         </Box>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
