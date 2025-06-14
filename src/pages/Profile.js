@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
+import profileIcon from '../assets/icons/profile-icon.svg';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: #fff;
+  background: ${({ theme }) => theme === 'light' ? '#fff' : '#181A1B'};
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -23,19 +24,19 @@ const Avatar = styled.img`
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: #E5E8EB;
+  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
   margin-bottom: 18px;
 `;
 
 const Nickname = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   margin-bottom: 18px;
 `;
 
 const InfoBlock = styled.div`
-  background: #E5E8EB;
+  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
   border-radius: 12px;
   margin: 0 16px 18px 16px;
   overflow: hidden;
@@ -45,14 +46,14 @@ const InfoRow = styled.div`
   display: flex;
   align-items: center;
   height: 48px;
-  border-bottom: 1px solid #D1D5DB;
+  border-bottom: 1px solid ${({ theme }) => theme === 'light' ? '#D1D5DB' : '#4D4F53'};
   &:last-child { border-bottom: none; }
 `;
 
 const InfoTitle = styled.div`
   flex: 0 0 110px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   font-size: 16px;
   padding-left: 18px;
 `;
@@ -61,7 +62,7 @@ const InfoValue = styled.div`
   flex: 1;
   text-align: right;
   font-weight: 400;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   font-size: 16px;
   padding-right: 18px;
   display: flex;
@@ -72,7 +73,7 @@ const InfoValue = styled.div`
 const TariffButton = styled.button`
   background: none;
   border: none;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   font-size: 16px;
   font-weight: 400;
   padding: 0;
@@ -98,7 +99,7 @@ const ThemeRow = styled(InfoRow)`
 `;
 
 const ThemeDropdown = styled.div`
-  background: #E5E8EB;
+  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
   border-radius: 0 0 12px 12px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
   z-index: 10;
@@ -108,17 +109,17 @@ const ThemeDropdown = styled.div`
 const ThemeOption = styled.div`
   padding: 12px 18px;
   font-size: 16px;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   cursor: pointer;
-  &:hover { background: #D1D5DB; }
+  &:hover { background: ${({ theme }) => theme === 'light' ? '#D1D5DB' : '#4D4F53'}; }
 `;
 
 const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
   padding: 16px;
-  background: #1877F2;
-  color: #fff;
+  background: ${({ theme }) => theme === 'light' ? '#1877F2' : '#2D2E33'};
+  color: ${({ theme }) => theme === 'light' ? '#fff' : '#E5E8EB'};
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -134,8 +135,8 @@ const LogoutButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px;
   padding: 16px;
-  background: #E5E8EB;
-  color: #005EFF;
+  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
+  color: ${({ theme }) => theme === 'light' ? '#005EFF' : '#E5E8EB'};
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -154,7 +155,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWindow = styled.div`
-  background: #E5E8EB;
+  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
   border-radius: 16px;
   padding: 32px 18px 0 18px;
   max-width: 340px;
@@ -167,21 +168,21 @@ const ModalWindow = styled.div`
 const ModalTitle = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: #B71C1C;
+  color: ${({ theme }) => theme === 'light' ? '#B71C1C' : '#E5E8EB'};
   margin-bottom: 18px;
 `;
 
 const ModalDivider = styled.div`
   width: 100%;
   height: 1px;
-  background: #BDBDBD;
+  background: ${({ theme }) => theme === 'light' ? '#BDBDBD' : '#4D4F53'};
   margin-bottom: 18px;
 `;
 
 const ModalButton = styled.button`
   background: none;
   border: none;
-  color: #005EFF;
+  color: ${({ theme }) => theme === 'light' ? '#005EFF' : '#E5E8EB'};
   font-size: 20px;
   font-weight: 600;
   margin: 18px 0 18px 0;
@@ -196,7 +197,7 @@ const MegaphoneIcon = styled.img`
 
 const ModalText = styled.div`
   font-size: 18px;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   margin-bottom: 18px;
 `;
 
@@ -204,13 +205,14 @@ const ModalList = styled.ul`
   text-align: left;
   margin: 0 0 18px 0;
   padding-left: 18px;
-  color: #181A1B;
+  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
   font-size: 16px;
 `;
 
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [themePanel, setThemePanel] = useState(false);
+  const [theme, setTheme] = useState('light');
   const [themeValue, setThemeValue] = useState('Светлая');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -237,10 +239,15 @@ export default function Profile() {
   const username = tgUser?.username || 'Имя пользователя';
   const tariff = tgUser?.tariff || 'Фрилансер';
 
+  const handleThemeChange = (val) => {
+    setThemeValue(val);
+    setTheme(val === 'Светлая' ? 'light' : 'dark');
+  };
+
   return (
-    <Container>
+    <Container theme={theme}>
       <ProfileHeader>
-        <Avatar src={avatar} alt={nickname} />
+        <Avatar src={avatar || profileIcon} alt={nickname} />
         <Nickname>{nickname}</Nickname>
       </ProfileHeader>
       <InfoBlock>
@@ -263,8 +270,8 @@ export default function Profile() {
         </ThemeRow>
         {themePanel && (
           <ThemeDropdown ref={themePanelRef}>
-            <ThemeOption onClick={() => { setThemeValue('Светлая'); setThemePanel(false); }}>Светлая</ThemeOption>
-            <ThemeOption onClick={() => { setThemeValue('Темная'); setThemePanel(false); }}>Темная</ThemeOption>
+            <ThemeOption onClick={() => { handleThemeChange('Светлая'); setThemePanel(false); }}>Светлая</ThemeOption>
+            <ThemeOption onClick={() => { handleThemeChange('Темная'); setThemePanel(false); }}>Темная</ThemeOption>
           </ThemeDropdown>
         )}
       </InfoBlock>
@@ -276,9 +283,16 @@ export default function Profile() {
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
           <ModalWindow onClick={e => e.stopPropagation()}>
-            <ModalTitle>Кампания остановлена</ModalTitle>
-            <ModalDivider />
-            <ModalButton onClick={() => setShowModal(false)}>Ok</ModalButton>
+            <MegaphoneIcon src={megaphoneIcon} alt="Megaphone" />
+            <ModalTitle>Подключение рекламного аккаунта</ModalTitle>
+            <ModalText>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
+            <ModalList>
+              <li>Использовать ИИ автопилот</li>
+              <li>Получать советы и диагностику от ИИ</li>
+              <li>Просматривать метрики</li>
+              <li>Загружать креативы</li>
+            </ModalList>
+            <ModalButton onClick={() => setShowModal(false)}>Ок</ModalButton>
           </ModalWindow>
         </ModalOverlay>
       )}
