@@ -211,12 +211,8 @@ const ModalList = styled.ul`
 
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
-  const [themePanel, setThemePanel] = useState(false);
-  const [theme, setTheme] = useState('light');
-  const [themeValue, setThemeValue] = useState('Светлая');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const themePanelRef = useRef();
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -224,28 +220,13 @@ export default function Profile() {
     }
   }, []);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (themePanelRef.current && !themePanelRef.current.contains(e.target)) {
-        setThemePanel(false);
-      }
-    }
-    if (themePanel) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [themePanel]);
-
   const avatar = tgUser?.photo_url || '';
   const nickname = tgUser?.first_name || 'Имя';
   const username = tgUser?.username || 'Имя пользователя';
   const tariff = tgUser?.tariff || 'Фрилансер';
 
-  const handleThemeChange = (val) => {
-    setThemeValue(val);
-    setTheme(val === 'Светлая' ? 'light' : 'dark');
-  };
-
   return (
-    <Container theme={theme}>
+    <Container>
       <ProfileHeader>
         <Avatar src={avatar || profileIcon} alt={nickname} />
         <Nickname>{nickname}</Nickname>
@@ -261,19 +242,13 @@ export default function Profile() {
             <TariffButton onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow onClick={() => setThemePanel(v => !v)}>
+        <ThemeRow onClick={() => setShowModal(true)}>
           <InfoTitle>Тема</InfoTitle>
           <InfoValue>
-            {themeValue}
-            <Arrow open={themePanel}>&#8250;</Arrow>
+            Светлая
+            <Arrow open={showModal}>&#8250;</Arrow>
           </InfoValue>
         </ThemeRow>
-        {themePanel && (
-          <ThemeDropdown ref={themePanelRef}>
-            <ThemeOption onClick={() => { handleThemeChange('Светлая'); setThemePanel(false); }}>Светлая</ThemeOption>
-            <ThemeOption onClick={() => { handleThemeChange('Темная'); setThemePanel(false); }}>Темная</ThemeOption>
-          </ThemeDropdown>
-        )}
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
         <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
