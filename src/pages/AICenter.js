@@ -27,20 +27,20 @@ const Title = styled.h1`
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 0 16px;
+  gap: 16px;
+  margin: 0 12px;
 `;
 
 const Card = styled.div`
   background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
   border: 2px solid #E5E8EB;
-  border-radius: 16px;
-  padding: 14px 16px 10px 16px;
+  border-radius: 20px;
+  padding: 18px 20px 14px 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-height: 60px;
-  max-height: 70px;
+  min-height: 72px;
+  max-height: 90px;
   box-sizing: border-box;
   cursor: ${({active}) => active ? 'pointer' : 'default'};
   opacity: ${({active}) => active ? 1 : 0.7};
@@ -51,12 +51,12 @@ const Card = styled.div`
 const CardRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 `;
 
 const CardIcon = styled.div`
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,17 +68,17 @@ const CardIcon = styled.div`
 `;
 
 const CardLabel = styled.div`
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 600;
   color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
 `;
 
 const Soon = styled.span`
-  font-size: 13px;
+  font-size: 15px;
   color: #FFD600;
   font-weight: 500;
   margin-left: 2px;
-  margin-top: 2px;
+  margin-top: 4px;
 `;
 
 const TariffButton = styled.button`
@@ -115,21 +115,21 @@ const AICenter = () => {
             <CardIcon><img src={buhgalterIcon} alt="ИИ Бухгалтер" /></CardIcon>
             <CardLabel theme={theme}>ИИ Бухгалтер</CardLabel>
           </CardRow>
-          <Soon>будет скоро</Soon>
+          <Soon>Будет скоро</Soon>
         </Card>
         <Card theme={theme}>
           <CardRow>
             <CardIcon><img src={sellerIcon} alt="ИИ Продавец" /></CardIcon>
             <CardLabel theme={theme}>ИИ Продавец</CardLabel>
           </CardRow>
-          <Soon>будет скоро</Soon>
+          <Soon>Будет скоро</Soon>
         </Card>
         <Card theme={theme}>
           <CardRow>
             <CardIcon><img src={consultantIcon} alt="ИИ Консультант" /></CardIcon>
             <CardLabel theme={theme}>ИИ Консультант</CardLabel>
           </CardRow>
-          <Soon>будет скоро</Soon>
+          <Soon>Будет скоро</Soon>
         </Card>
       </CardList>
       <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
