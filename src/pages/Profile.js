@@ -98,6 +98,16 @@ const Arrow = styled.span`
 
 const ThemeRow = styled(InfoRow)`
   cursor: pointer;
+  position: relative;
+`;
+
+const ArrowSvg = styled.svg`
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  transform: ${({ open }) => open ? 'rotate(90deg)' : 'rotate(0deg)'};
+  display: inline-block;
 `;
 
 const FacebookButton = styled.button`
@@ -303,11 +313,13 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow theme={themeObj} onClick={() => setShowThemeDropdown(!showThemeDropdown)} ref={dropdownRef}>
+        <ThemeRow theme={themeObj} ref={dropdownRef}>
           <InfoTitle theme={themeObj}>Тема</InfoTitle>
-          <InfoValue theme={themeObj}>
+          <InfoValue theme={themeObj} onClick={() => setShowThemeDropdown(v => !v)} style={{cursor:'pointer'}}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <Arrow open={showThemeDropdown}>&#8250;</Arrow>
+            <ArrowSvg open={showThemeDropdown} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 8L10 12L14 8" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </ArrowSvg>
           </InfoValue>
           <ThemeDropdown isOpen={showThemeDropdown} theme={themeObj}>
             <ThemeOption theme={themeObj} onClick={() => handleThemeChange('light')}>
