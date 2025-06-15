@@ -4,11 +4,12 @@ import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useStore from '../store';
-import { useThemeContext } from '../contexts/ThemeContext';
+import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -20,17 +21,17 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: center;
   margin: 36px 0 0 0;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
 `;
 
 const Divider = styled.hr`
   border: none;
-  border-top: 2px solid #E5E8EB;
+  border-top: 2px solid ${({ theme }) => theme.border};
   margin: 18px 0 24px 0;
 `;
 
 const UploadBlock = styled.div`
-  background: #F6F8FA;
+  background: ${({ theme }) => theme.card};
   border-radius: 12px;
   margin: 0 16px 18px 16px;
   padding: 18px 16px 14px 16px;
@@ -53,19 +54,19 @@ const FileLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #fff;
-  border: 1.5px solid #D1D5DB;
+  background: ${({ theme }) => theme.card};
+  border: 1.5px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 16px;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   cursor: pointer;
   flex: 1;
 `;
 
 const UploadButton = styled.button`
-  background: #005EFF;
-  color: #fff;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 8px;
   font-size: 15px;
@@ -86,8 +87,8 @@ const MainButton = styled.button`
   width: 90%;
   margin: 18px auto 0 auto;
   display: block;
-  background: #005EFF;
-  color: #fff;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 12px;
   font-size: 18px;
@@ -98,14 +99,14 @@ const MainButton = styled.button`
 `;
 
 const OverviewBlock = styled.div`
-  background: #F6F8FA;
+  background: ${({ theme }) => theme.card};
   border-radius: 12px;
   margin: 18px 16px 0 16px;
   padding: 14px 0 10px 0;
   display: flex;
   justify-content: space-around;
   font-size: 15px;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
 `;
 
 const OverviewItem = styled.div`
@@ -119,7 +120,7 @@ const CampaignsSection = styled.div`
 const CampaignsTitle = styled.div`
   font-size: 20px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 12px;
 `;
 
@@ -130,14 +131,14 @@ const CampaignList = styled.div`
 `;
 
 const CampaignCard = styled.div`
-  background: #fff;
+  background: ${({ theme }) => theme.card};
   border-radius: 14px;
   padding: 18px 16px 18px 16px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 2px solid #E5E8EB;
+  border: 2px solid ${({ theme }) => theme.border};
 `;
 
 const CampaignHeader = styled.div`
@@ -150,7 +151,7 @@ const CampaignHeader = styled.div`
 const CampaignName = styled.div`
   font-size: 18px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
 `;
 
 const CampaignStatus = styled.div`
@@ -172,12 +173,12 @@ const CampaignStats = styled.div`
   gap: 0;
   margin-top: 8px;
   font-size: 16px;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
 `;
 
 const CampaignAction = styled.button`
-  background: ${({ active }) => active ? '#F44336' : '#005EFF'};
-  color: #fff;
+  background: ${({ active, theme }) => active ? '#F44336' : theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 8px;
   font-size: 15px;
@@ -194,16 +195,16 @@ const AdviceSection = styled.div`
 const AdviceTitle = styled.div`
   font-size: 18px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 8px;
 `;
 
 const AdviceBox = styled.div`
-  background: #F6F8FA;
+  background: ${({ theme }) => theme.card};
   border-radius: 12px;
   padding: 16px;
   font-size: 15px;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   min-height: 60px;
 `;
 
@@ -214,7 +215,7 @@ const AutopilotSection = styled.div`
 const AutopilotTitle = styled.div`
   font-size: 18px;
   font-weight: 700;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 8px;
 `;
 
@@ -237,7 +238,7 @@ const HistoryList = styled.div`
 
 const HistoryItem = styled.div`
   font-size: 14px;
-  color: #181A1B;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 6px;
 `;
 
@@ -253,7 +254,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWindow = styled.div`
-  background: #E5E8EB;
+  background: ${({ theme }) => theme.card};
   border-radius: 16px;
   padding: 32px 18px 0 18px;
   max-width: 340px;
@@ -285,14 +286,14 @@ const ModalTitle = styled.div`
 const ModalDivider = styled.div`
   width: 100%;
   height: 1px;
-  background: #BDBDBD;
+  background: ${({ theme }) => theme.border};
   margin-bottom: 18px;
 `;
 
 const ModalButton = styled.button`
   background: none;
   border: none;
-  color: #005EFF;
+  color: ${({ theme }) => theme.primary};
   font-size: 20px;
   font-weight: 600;
   margin: 18px 0 18px 0;
@@ -308,15 +309,15 @@ const CitySearchContainer = styled.div`
 const CityInput = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid #D1D5DB;
+  border: 1.5px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
 
   &:focus {
     outline: none;
-    border-color: #005EFF;
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -325,8 +326,8 @@ const CitySuggestions = styled.div`
   top: 100%;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
-  border: 1px solid #D1D5DB;
+  background: ${({ theme }) => theme.card};
+  border: 1px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   margin-top: 4px;
   max-height: 200px;
@@ -338,16 +339,16 @@ const CitySuggestions = styled.div`
 const CitySuggestion = styled.div`
   padding: 10px 16px;
   cursor: pointer;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
   font-size: 15px;
 
   &:hover {
-    background: ${({ theme }) => theme === 'dark' ? '#3C3F40' : '#F6F8FA'};
+    background: ${({ theme }) => theme.buttonSecondary};
   }
 `;
 
 const citiesKZ = [
-  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
+  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
 
 const initialCampaigns = [
   {
@@ -382,60 +383,59 @@ const FormLabel = styled.label`
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
   margin-bottom: 8px;
 `;
 
 const FormInput = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid #D1D5DB;
+  border: 1.5px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
 
   &:focus {
     outline: none;
-    border-color: #005EFF;
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
 const FormSelect = styled.select`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid #D1D5DB;
+  border: 1.5px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
   cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: #005EFF;
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
 const FormDateInput = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 1.5px solid #D1D5DB;
+  border: 1.5px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   font-size: 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
-  background: ${({ theme }) => theme === 'dark' ? '#2C2F30' : '#fff'};
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
 
   &:focus {
     outline: none;
-    border-color: #005EFF;
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
 const Card = styled.div`
-  background: ${({ active }) => active ? '#005EFF' : '#F6F8FA'};
-  color: ${({ active }) => active ? '#fff' : '#181A1B'};
-  // ...остальные стили...
+  background: ${({ active, theme }) => active ? theme.primary : theme.card};
+  color: ${({ active, theme }) => active ? theme.buttonText : theme.text};
 `;
 
 const CampaignObjectiveGrid = styled.div`
@@ -447,12 +447,12 @@ const CampaignObjectiveGrid = styled.div`
 const ObjectiveBlock = styled.div`
   padding: 18px 0;
   border-radius: 12px;
-  background: ${({ selected }) => selected ? '#EAF1FF' : '#fff'};
-  color: ${({ selected }) => selected ? '#005EFF' : '#181A1B'};
+  background: ${({ selected, theme }) => selected ? theme.buttonSecondary : theme.card};
+  color: ${({ selected, theme }) => selected ? theme.primary : theme.text};
   font-weight: 600;
   font-size: 17px;
   text-align: center;
-  border: 2px solid ${({ selected }) => selected ? '#005EFF' : '#E5E8EB'};
+  border: 2px solid ${({ selected, theme }) => selected ? theme.primary : theme.border};
   cursor: pointer;
   transition: all 0.2s;
 `;
@@ -466,6 +466,7 @@ const OBJECTIVES = [
 
 export default function Targetolog() {
   const { theme } = useThemeContext();
+  const themeObj = themes[theme];
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);
@@ -647,11 +648,11 @@ export default function Targetolog() {
   }, [showCreateModal]);
 
   return (
-    <Container theme={theme}>
-      <Title theme={theme}>ИИ Таргетолог</Title>
-      <Divider />
+    <Container theme={themeObj}>
+      <Title theme={themeObj}>ИИ Таргетолог</Title>
+      <Divider theme={themeObj} />
       
-      <UploadBlock>
+      <UploadBlock theme={themeObj}>
         <FileInputRow>
           <FileInput
             type="file"
@@ -659,18 +660,18 @@ export default function Targetolog() {
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          <FileLabel htmlFor="file">
+          <FileLabel theme={themeObj} htmlFor="file">
             <img src={fileIcon} alt="Upload" />
             {selectedFile ? selectedFile.name : 'Загрузить креатив'}
           </FileLabel>
-          <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
+          <UploadButton theme={themeObj} onClick={handleUpload}>Загрузить</UploadButton>
         </FileInputRow>
         {uploadSuccess && <UploadSuccess>Креатив успешно загружен</UploadSuccess>}
       </UploadBlock>
 
-      <MainButton onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
+      <MainButton theme={themeObj} onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
 
-      <OverviewBlock>
+      <OverviewBlock theme={themeObj}>
         <OverviewItem>
           <div>Показы</div>
           <div>0</div>
@@ -686,7 +687,7 @@ export default function Targetolog() {
       </OverviewBlock>
 
       <CampaignsSection>
-        <CampaignsTitle>Кампании</CampaignsTitle>
+        <CampaignsTitle theme={themeObj}>Кампании</CampaignsTitle>
         {campaigns.length === 0 ? (
           <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
         ) : (
@@ -694,9 +695,9 @@ export default function Targetolog() {
             <TransitionGroup component={null}>
               {campaigns.map(campaign => (
                 <CSSTransition key={campaign.id} classNames="card" timeout={300}>
-                  <CampaignCard>
+                  <CampaignCard theme={themeObj}>
                     <CampaignHeader>
-                      <CampaignName>{campaign.name}</CampaignName>
+                      <CampaignName theme={themeObj}>{campaign.name}</CampaignName>
                     </CampaignHeader>
                     <CampaignStatus active={campaign.status === 'active'}>
                       {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
@@ -708,13 +709,14 @@ export default function Targetolog() {
                       {campaign.date && ` | Дата: ${campaign.date}`}
                       {campaign.time && ` | Время: ${campaign.time}`}
                     </CampaignMeta>
-                    <CampaignStats style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
+                    <CampaignStats theme={themeObj} style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
                       <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
                       <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
                       <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
                     </CampaignStats>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
                       <CampaignAction
+                        theme={themeObj}
                         active={campaign.status === 'active'}
                         onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
                       >
@@ -730,14 +732,14 @@ export default function Targetolog() {
       </CampaignsSection>
 
       <AdviceSection>
-        <AdviceTitle>Советы от ИИ</AdviceTitle>
-        <AdviceBox>
+        <AdviceTitle theme={themeObj}>Советы от ИИ</AdviceTitle>
+        <AdviceBox theme={themeObj}>
           Загрузите креатив, чтобы получить рекомендации по улучшению эффективности кампании
         </AdviceBox>
       </AdviceSection>
 
       <AutopilotSection>
-        <AutopilotTitle>Автопилот</AutopilotTitle>
+        <AutopilotTitle theme={themeObj}>Автопилот</AutopilotTitle>
         <AutopilotButton
           enabled={autopilotEnabled}
           onClick={handleAutopilot}
@@ -746,7 +748,7 @@ export default function Targetolog() {
         </AutopilotButton>
         <HistoryList>
           {autopilotEnabled && (
-            <HistoryItem>
+            <HistoryItem theme={themeObj}>
               Автопилот включен в {new Date().toLocaleTimeString()}
             </HistoryItem>
           )}
