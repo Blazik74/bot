@@ -5,7 +5,6 @@ import {
   BottomNavigationAction,
   Paper,
   Box,
-  useTheme,
 } from '@mui/material';
 import {
   Home as HomeIcon,
@@ -13,11 +12,12 @@ import {
   Campaign as CampaignIcon,
   Person as PersonIcon,
 } from '@mui/icons-material';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 const BottomNavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
+  const { theme } = useThemeContext();
 
   const handleChange = (event, newValue) => {
     navigate(newValue);
