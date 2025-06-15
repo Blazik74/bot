@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export const ThemeContext = createContext();
 
@@ -28,9 +28,31 @@ export const themes = {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.body.classList.add('theme-transition');
+    document.documentElement.style.backgroundColor = themes[theme].background;
+    document.body.style.backgroundColor = themes[theme].background;
+    
+    // Удаляем класс анимации после завершения перехода
+    const timer = setTimeout(() => {
+      document.body.classList.remove('theme-transition');
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
