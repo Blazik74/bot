@@ -135,7 +135,7 @@ const AppContent = () => {
 
 const App = () => (
   <ThemeProvider>
-    <StyledThemeProvider theme={themes[useThemeContext().theme]}>
+    <StyledThemeProvider theme={themes[theme]}>
       <NotificationProvider>
         <ErrorBoundary>
           <Router>
