@@ -355,7 +355,7 @@ const CitySuggestion = styled.div`
 `;
 
 const citiesKZ = [
-  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
+  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
 
 const initialCampaigns = [
   {
@@ -453,7 +453,7 @@ const CampaignObjectiveGrid = styled.div`
 `;
 const ObjectiveBlock = styled.div`
   padding: 18px 0;
-  border-radius: 12px;
+  border-radius: 10px;
   background: ${({ selected, theme }) => selected ? theme.buttonSecondary : theme.card};
   color: ${({ selected, theme }) => selected ? theme.primary : theme.text};
   font-weight: 600;
@@ -462,6 +462,41 @@ const ObjectiveBlock = styled.div`
   border: 2px solid ${({ selected, theme }) => selected ? theme.primary : theme.border};
   cursor: pointer;
   transition: all 0.2s;
+  min-width: 120px;
+  min-height: 48px;
+  box-sizing: border-box;
+`;
+
+const CountryCheckbox = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 15px;
+  color: #888;
+  cursor: pointer;
+`;
+const CheckboxInput = styled.input`
+  accent-color: #005EFF;
+`;
+
+const DateTimeRow = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+const DateSelect = styled.select`
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  font-size: 16px;
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
+  cursor: pointer;
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.primary};
+  }
 `;
 
 const OBJECTIVES = [
@@ -555,6 +590,25 @@ export default function Targetolog() {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const addNotification = useStore((state) => state.addNotification);
+  const [isWholeCountry, setIsWholeCountry] = useState(false);
+  const today = new Date();
+  const dateOptions = [
+    { value: '', label: 'Дата' },
+    { value: today.toISOString().slice(0,10), label: 'Сегодня' },
+    { value: new Date(today.getTime() + 86400000).toISOString().slice(0,10), label: 'Завтра' },
+  ];
+  const timeOptions = [
+    { value: '', label: 'Время' },
+    ...Array.from({length: 24}, (_,h) => h).flatMap(h => [
+      { value: `${h.toString().padStart(2,'0')}:00`, label: `${h.toString().padStart(2,'0')}:00` },
+      { value: `${h.toString().padStart(2,'0')}:30`, label: `${h.toString().padStart(2,'0')}:30` },
+    ])
+  ].filter(opt => {
+    if (date !== today.toISOString().slice(0,10)) return true;
+    const now = new Date();
+    const [h, m] = opt.value.split(':').map(Number);
+    return h > now.getHours() || (h === now.getHours() && m > now.getMinutes());
+  });
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -663,49 +717,52 @@ export default function Targetolog() {
             <FormLabel>Геолокация аудитории</FormLabel>
             <CitySearchContainer>
               <CityInput
-                value={cityInput}
-                onChange={handleCityInputChange}
-                placeholder="Выберите город"
+                value={isWholeCountry ? 'Казахстан' : cityInput}
+                onChange={e => {
+                  if (!isWholeCountry) handleCityInputChange(e);
+                }}
+                placeholder={isWholeCountry ? '' : 'Казахстан, Город'}
+                disabled={isWholeCountry}
+                style={{ background: isWholeCountry ? '#f5f5f5' : undefined, color: isWholeCountry ? '#aaa' : undefined }}
               />
-              {showCitySuggestions && (
+              {showCitySuggestions && !isWholeCountry && (
                 <CitySuggestions>
                   {filteredCities.map((city, index) => (
                     <CitySuggestion
                       key={index}
                       onClick={() => handleCitySelect(city)}
                     >
-                      {city}
+                      Казахстан, {city}
                     </CitySuggestion>
                   ))}
                 </CitySuggestions>
               )}
+              <CountryCheckbox>
+                <CheckboxInput type="checkbox" checked={isWholeCountry} onChange={e => setIsWholeCountry(e.target.checked)} />
+                Вся страна
+              </CountryCheckbox>
             </CitySearchContainer>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Бюджет кампании</FormLabel>
+            <FormLabel>Дневной бюджет</FormLabel>
             <FormInput
               type="number"
-              placeholder="Введите сумму"
-              min="0"
+              placeholder="В долларах, от 1$"
+              min={1}
               value={budget}
-              onChange={e => setBudget(e.target.value)}
+              onChange={e => setBudget(e.target.value.replace(/[^\d]/g, ''))}
             />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Дата начала</FormLabel>
-            <FormDateInput
-              type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormLabel>Время начала</FormLabel>
-            <FormDateInput
-              type="time"
-              value={time}
-              onChange={e => setTime(e.target.value)}
-            />
+            <FormLabel>Время публикации</FormLabel>
+            <DateTimeRow>
+              <DateSelect value={date} onChange={e => setDate(e.target.value)} theme={themeObj}>
+                {dateOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              </DateSelect>
+              <DateSelect value={time} onChange={e => setTime(e.target.value)} theme={themeObj}>
+                {timeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              </DateSelect>
+            </DateTimeRow>
           </FormGroup>
           <ModalButton onClick={handleSubmitCampaign}>Создать кампанию</ModalButton>
         </ModalWindow>
