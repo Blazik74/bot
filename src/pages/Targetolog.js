@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useStore from '../store';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -464,7 +465,7 @@ const OBJECTIVES = [
 ];
 
 export default function Targetolog() {
-  const theme = useTheme();
+  const { theme } = useThemeContext();
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);

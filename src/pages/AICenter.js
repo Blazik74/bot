@@ -1,11 +1,12 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import targetologIcon from '../assets/icons/targetolog.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
 import targetologActiveIcon from '../assets/icons/targetolog-active.svg';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -117,7 +118,7 @@ const DividerLine = styled.div`
 
 export default function AICenter() {
   const navigate = useNavigate();
-  const theme = 'light'; // временно, если нужно — подключи из стора или пропсов
+  const { theme } = useThemeContext();
   return (
     <Container theme={theme}>
       <Title theme={theme}>ИИ Центр</Title>

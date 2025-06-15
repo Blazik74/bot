@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -54,7 +54,7 @@ const Button = styled.button`
 `;
 
 const FacebookConnect = () => {
-  const { theme } = useTheme();
+  const { theme } = useThemeContext();
   return (
     <Container theme={theme}>
       <IconWrapper>

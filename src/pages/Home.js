@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 import BottomNav from '../components/BottomNav';
 
 const Container = styled.div`
@@ -29,7 +29,7 @@ const PaymentText = styled.p`
 `;
 
 const Home = () => {
-  const { theme } = useTheme();
+  const { theme } = useThemeContext();
 
   return (
     <Container theme={theme}>
