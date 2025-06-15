@@ -210,13 +210,6 @@ export default function AICenter() {
             <TargetologIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></TargetologIcon>
             <TargetologTitle theme={themeObj}>ИИ Таргетолог</TargetologTitle>
           </TargetologHeader>
-          <TargetologPreview theme={themeObj}>
-            Автоматизация и оптимизация рекламных кампаний
-          </TargetologPreview>
-          <TargetologStats theme={themeObj}>
-            <span>Активных кампаний: 2</span>
-            <span>CTR: 2.4%</span>
-          </TargetologStats>
         </TargetologCard>
         <Card theme={themeObj}>
           <CardRow>
