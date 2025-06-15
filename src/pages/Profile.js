@@ -106,7 +106,7 @@ const ArrowSvg = styled.svg`
   width: 18px;
   height: 18px;
   margin-left: 8px;
-  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1);
   transform: ${({ open }) => open ? 'rotate(90deg)' : 'rotate(0deg)'};
   display: inline-block;
 `;
@@ -221,6 +221,7 @@ const ThemeDropdown = styled.div`
   position: absolute;
   top: 100%;
   right: 16px;
+  left: auto;
   background: ${({ theme }) => theme.card};
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
