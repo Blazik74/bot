@@ -4,7 +4,7 @@ import AppRoutes from './AppRoutes';
 import BottomNavigation from './components/BottomNavigation';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
+import { ThemeProvider, useThemeContext } from './contexts/ThemeContext';
 import './App.css';
 
 // Импорт SVG-иконок
@@ -98,7 +98,6 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme } = useThemeContext();
 
   useEffect(() => {
     document.body.style.background = '#fff';
@@ -125,13 +124,13 @@ const AppContent = () => {
 };
 
 const ThemedApp = () => {
-  // const { theme } = useThemeContext();
+  const { theme } = useThemeContext();
   return (
-    <StyledThemeProvider theme={themes['light']}>
+    <StyledThemeProvider theme={themes[theme]}>
       <NotificationProvider>
         <ErrorBoundary>
           <Router>
-            <AppContainer className="theme-transition">
+            <AppContainer theme={themes[theme]} className="theme-transition">
               <AppContent />
             </AppContainer>
           </Router>
@@ -141,6 +140,10 @@ const ThemedApp = () => {
   );
 };
 
-const App = () => <ThemedApp />;
+const App = () => (
+  <ThemeProvider>
+    <ThemedApp />
+  </ThemeProvider>
+);
 
 export default App; 
