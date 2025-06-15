@@ -48,7 +48,11 @@ const Card = styled.div`
   cursor: ${({active}) => active ? 'pointer' : 'default'};
   opacity: ${({active}) => active ? 1 : 0.7};
   position: relative;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: ${({active}) => active ? 'translateY(-2px)' : 'none'};
+    box-shadow: ${({active}) => active ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'};
+  }
 `;
 
 const CardRow = styled.div`
@@ -101,13 +105,30 @@ const TariffButton = styled.button`
 `;
 
 const BlueCard = styled(Card)`
-  background: #EAF1FF;
-  border: 2px solid #005EFF;
-  color: #005EFF;
+  background: ${({ theme }) => theme.primary};
+  border: none;
+  color: ${({ theme }) => theme.buttonText};
+  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
 `;
 
 const BlueCardLabel = styled(CardLabel)`
-  color: #005EFF;
+  color: ${({ theme }) => theme.buttonText};
+`;
+
+const CardPreview = styled.div`
+  margin-top: 12px;
+  font-size: 14px;
+  color: ${({ theme }) => theme.text};
+  opacity: 0.8;
+`;
+
+const CardStats = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text};
+  opacity: 0.8;
 `;
 
 const DividerLine = styled.div`
@@ -131,6 +152,13 @@ export default function AICenter() {
             <CardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></CardIcon>
             <BlueCardLabel theme={themeObj}>ИИ Таргетолог</BlueCardLabel>
           </CardRow>
+          <CardPreview theme={themeObj}>
+            Автоматизация и оптимизация рекламных кампаний
+          </CardPreview>
+          <CardStats theme={themeObj}>
+            <span>Активных кампаний: 2</span>
+            <span>CTR: 2.4%</span>
+          </CardStats>
         </BlueCard>
         <Card theme={themeObj}>
           <CardRow>
