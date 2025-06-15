@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BottomNavigation } from '../components/BottomNavigation';
+import BottomNavigation from '../components/BottomNavigation';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Container = styled.div`
@@ -121,6 +121,7 @@ const Tariffs = () => {
         ))}
       </TariffList>
       <PayButton theme={themeObj} disabled={!selected}>Оплатить</PayButton>
+      <BottomNavigation activeTab="/" />
     </Container>
   );
 };
