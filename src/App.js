@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
-import { BottomNavigation } from './components/BottomNavigation';
+import BottomNavigation from './components/BottomNavigation';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
