@@ -194,10 +194,54 @@ const ModalList = styled.ul`
   font-size: 16px;
 `;
 
+const ThemeDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 16px;
+  background: ${({ theme }) => theme.card};
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 1001;
+  opacity: ${({ isOpen }) => isOpen ? 1 : 0};
+  transform: ${({ isOpen }) => isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  visibility: ${({ isOpen }) => isOpen ? 'visible' : 'hidden'};
+  transition: all 0.2s ease;
+`;
+
+const ThemeOption = styled.div`
+  padding: 12px 16px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text};
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: ${({ theme }) => theme.buttonSecondary};
+  }
+  
+  &:active {
+    background: ${({ theme }) => theme.buttonSecondary};
+    opacity: 0.8;
+  }
+`;
+
+const ThemeIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme === 'dark' ? '#fff' : '#000'};
+  border: 2px solid ${({ theme }) => theme.border};
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const themeObj = themes[theme];
@@ -207,6 +251,22 @@ export default function Profile() {
       setTgUser(window.Telegram.WebApp.initDataUnsafe.user);
     }
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowThemeDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    setShowThemeDropdown(false);
+  };
 
   const avatar = tgUser?.photo_url || '';
   const nickname = tgUser?.first_name || 'Имя';
@@ -230,19 +290,23 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow theme={themeObj} onClick={() => setShowThemeDropdown((v) => !v)}>
+        <ThemeRow theme={themeObj} onClick={() => setShowThemeDropdown(!showThemeDropdown)} ref={dropdownRef}>
           <InfoTitle theme={themeObj}>Тема</InfoTitle>
           <InfoValue theme={themeObj}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
             <Arrow open={showThemeDropdown}>&#8250;</Arrow>
           </InfoValue>
+          <ThemeDropdown isOpen={showThemeDropdown} theme={themeObj}>
+            <ThemeOption theme={themeObj} onClick={() => handleThemeChange('light')}>
+              <ThemeIcon theme="light" />
+              Светлая
+            </ThemeOption>
+            <ThemeOption theme={themeObj} onClick={() => handleThemeChange('dark')}>
+              <ThemeIcon theme="dark" />
+              Тёмная
+            </ThemeOption>
+          </ThemeDropdown>
         </ThemeRow>
-        {showThemeDropdown && (
-          <div style={{ position: 'relative', zIndex: 1001, background: themeObj.card, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', margin: '0 16px', padding: 8 }}>
-            <div style={{ padding: 8, cursor: 'pointer', color: themeObj.text }} onClick={() => { setTheme('light'); setShowThemeDropdown(false); }}>Светлая</div>
-            <div style={{ padding: 8, cursor: 'pointer', color: themeObj.text }} onClick={() => { setTheme('dark'); setShowThemeDropdown(false); }}>Тёмная</div>
-          </div>
-        )}
       </InfoBlock>
       <FacebookButton theme={themeObj} onClick={() => setShowModal(true)}>
         <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
