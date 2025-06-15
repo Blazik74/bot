@@ -100,6 +100,7 @@ const Arrow = styled.span`
 const ThemeRow = styled(InfoRow)`
   cursor: pointer;
   position: relative;
+  z-index: 2000;
 `;
 
 const ArrowSvg = styled.svg`
@@ -226,13 +227,12 @@ const ThemeDropdown = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
-  z-index: 1001;
+  z-index: 2000;
   transform: ${({ isOpen }) => isOpen ? 'scaleY(1)' : 'scaleY(0)'};
   transform-origin: top;
   opacity: ${({ isOpen }) => isOpen ? 1 : 0};
   pointer-events: ${({ isOpen }) => isOpen ? 'auto' : 'none'};
   transition: transform 0.22s cubic-bezier(.4,0,.2,1), opacity 0.18s;
-  visibility: ${({ isOpen }) => isOpen ? 'visible' : 'hidden'};
 `;
 
 const ThemeOption = styled.div`
@@ -321,8 +321,7 @@ export default function Profile() {
           <InfoValue theme={themeObj} onClick={() => setShowThemeDropdown(v => !v)} style={{cursor:'pointer'}}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
             <ArrowSvg open={showThemeDropdown} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 10L13 10" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M10 7L10 13" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </ArrowSvg>
           </InfoValue>
           <ThemeDropdown isOpen={showThemeDropdown} theme={themeObj}>
