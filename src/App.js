@@ -141,10 +141,6 @@ const ThemedApp = () => {
   );
 };
 
-const App = () => (
-  <ThemeProvider>
-    <ThemedApp />
-  </ThemeProvider>
-);
+const App = () => <ThemedApp />;
 
 export default App; 
