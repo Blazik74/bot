@@ -125,9 +125,9 @@ const AppContent = () => {
 };
 
 const ThemedApp = () => {
-  const { theme } = useThemeContext();
+  // const { theme } = useThemeContext();
   return (
-    <StyledThemeProvider theme={themes[theme]}>
+    // <StyledThemeProvider theme={themes[theme]}>
       <NotificationProvider>
         <ErrorBoundary>
           <Router>
@@ -137,7 +137,7 @@ const ThemedApp = () => {
           </Router>
         </ErrorBoundary>
       </NotificationProvider>
-    </StyledThemeProvider>
+    // </StyledThemeProvider>
   );
 };
 
