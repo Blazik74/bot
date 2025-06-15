@@ -26,10 +26,11 @@ import facebook from './assets/icons/facebook.svg';
 
 const AppContainer = styled.div`
   min-height: 100vh;
-  background-color: #fff;
-  color: #181A1B;
+  background-color: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 const LoaderWrapper = styled.div`
@@ -38,14 +39,15 @@ const LoaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  color: #181A1B;
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
   font-size: 24px;
   font-weight: 700;
   position: fixed;
   left: 0;
   top: 0;
   z-index: 9999;
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 class ErrorBoundary extends React.Component {
@@ -140,7 +142,9 @@ const ThemedApp = () => {
       <NotificationProvider>
         <ErrorBoundary>
           <Router>
-            <AppContent />
+            <AppContainer theme={themes[theme]} className="theme-transition">
+              <AppContent />
+            </AppContainer>
           </Router>
         </ErrorBoundary>
       </NotificationProvider>
