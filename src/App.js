@@ -109,20 +109,7 @@ const AppContent = () => {
         window.Telegram.WebApp.postEvent('web_app_request_fullscreen');
       }, 100);
     }
-    // Предзагрузка всех иконок и изображений
-    Promise.all(
-      allImages.map(src =>
-        new Promise(resolve => {
-          const img = new window.Image();
-          img.src = src;
-          img.onload = resolve;
-          img.onerror = resolve;
-          setTimeout(resolve, 1000); // <= добавлен таймаут
-        })
-      )
-    ).then(() => {
-      setTimeout(() => setLoading(false), 400);
-    });
+    setLoading(false);
   }, []);
 
   console.log('AppContent render', { loading });
