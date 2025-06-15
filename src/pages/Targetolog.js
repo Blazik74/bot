@@ -464,6 +464,73 @@ const OBJECTIVES = [
   { value: 'engagement', label: 'Вовлеченность' },
 ];
 
+const StatusBadge = styled.div`
+  display: inline-block;
+  min-width: 80px;
+  padding: 4px 16px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: ${({ active }) => active ? '#1BC47D' : '#BDBDBD'};
+  margin-right: 12px;
+  margin-top: 4px;
+  text-align: center;
+`;
+
+const CampaignCardRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const CampaignCardTitle = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 2px;
+`;
+
+const CampaignActionBtn = styled.button`
+  background: ${({ active }) => active ? '#F44336' : '#005EFF'};
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 22px;
+  cursor: pointer;
+  margin-left: 12px;
+  margin-top: 2px;
+  transition: background 0.2s;
+`;
+
+const CampaignStatsGrid = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 10px;
+  gap: 0;
+`;
+
+const StatCol = styled.div`
+  text-align: center;
+  flex: 1;
+`;
+
+const StatLabel = styled.div`
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 2px;
+`;
+
+const StatValue = styled.div`
+  font-size: 17px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text};
+`;
+
 export default function Targetolog() {
   const { theme } = useThemeContext();
   const themeObj = themes[theme];
@@ -696,33 +763,42 @@ export default function Targetolog() {
               {campaigns.map(campaign => (
                 <CSSTransition key={campaign.id} classNames="card" timeout={300}>
                   <CampaignCard theme={themeObj}>
-                    <CampaignHeader>
-                      <CampaignName theme={themeObj}>{campaign.name}</CampaignName>
-                    </CampaignHeader>
-                    <CampaignStatus active={campaign.status === 'active'}>
-                      {campaign.status === 'active' ? 'Активна' : 'Остановлена'}
-                    </CampaignStatus>
-                    <CampaignMeta>
-                      Цель: {OBJECTIVES.find(o=>o.value===campaign.objective)?.label || '-'}
-                      {campaign.city && ` | Город: ${campaign.city}`}
-                      {campaign.budget && ` | Бюджет: ${campaign.budget}`}
-                      {campaign.date && ` | Дата: ${campaign.date}`}
-                      {campaign.time && ` | Время: ${campaign.time}`}
-                    </CampaignMeta>
-                    <CampaignStats theme={themeObj} style={{width:'100%',display:'flex',justifyContent:'space-between'}}>
-                      <div style={{flex:1}}>Показы: {campaign.stats?.impressions ?? 0}</div>
-                      <div style={{flex:1}}>Клики: {campaign.stats?.clicks ?? 0}</div>
-                      <div style={{flex:1}}>CTR: {campaign.stats?.ctr ?? 0}%</div>
-                    </CampaignStats>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-                      <CampaignAction
-                        theme={themeObj}
+                    <CampaignCardRow>
+                      <div>
+                        <CampaignCardTitle theme={themeObj}>{campaign.name}</CampaignCardTitle>
+                        <StatusBadge active={campaign.status === 'active'}>
+                          {campaign.status === 'active' ? 'Активна' : 'Приостановлена'}
+                        </StatusBadge>
+                      </div>
+                      <CampaignActionBtn
                         active={campaign.status === 'active'}
                         onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
                       >
                         {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                      </CampaignAction>
-                    </div>
+                      </CampaignActionBtn>
+                    </CampaignCardRow>
+                    <CampaignStatsGrid>
+                      <StatCol>
+                        <StatLabel>Клики</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.clicks ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>Показы</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.impressions ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CTR</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.ctr ?? 0}%</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CPC</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.cpc ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CPM</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.cpm ?? 0}</StatValue>
+                      </StatCol>
+                    </CampaignStatsGrid>
                   </CampaignCard>
                 </CSSTransition>
               ))}
