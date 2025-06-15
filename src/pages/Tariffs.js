@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BottomNavigation } from '../components/BottomNavigation';
+import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'dark' ? '#181A1B' : '#fff'};
+  background: ${({ theme }) => theme.background};
   padding: 0 0 40px 0;
   animation: fadeInTariff 0.4s;
 `;
@@ -14,7 +15,7 @@ const Title = styled.h1`
   font-weight: 700;
   text-align: left;
   margin: 40px 0 32px 16px;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
 `;
 
 const TariffList = styled.div`
@@ -25,8 +26,8 @@ const TariffList = styled.div`
 `;
 
 const TariffCard = styled.div`
-  background: ${({ selected, theme }) => selected ? (theme === 'dark' ? '#23272F' : '#fff') : (theme === 'dark' ? '#23272F' : '#E5E8EB')};
-  border: 2px solid ${({ selected }) => selected ? '#005EFF' : 'transparent'};
+  background: ${({ selected, theme }) => selected ? theme.card : theme.buttonSecondary};
+  border: 2px solid ${({ selected, theme }) => selected ? theme.primary : 'transparent'};
   border-radius: 18px;
   padding: ${({ selected }) => selected ? '32px 24px 24px 24px' : '18px 18px 14px 18px'};
   margin-bottom: 0;
@@ -42,7 +43,7 @@ const TariffCard = styled.div`
 const TariffName = styled.div`
   font-size: 22px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
 `;
 
 const TariffPriceRow = styled.div`
@@ -55,7 +56,7 @@ const TariffPriceRow = styled.div`
 const TariffPrice = styled.div`
   font-size: 28px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'dark' ? '#fff' : '#181A1B'};
+  color: ${({ theme }) => theme.text};
 `;
 
 const TariffPerMonth = styled.div`
@@ -67,7 +68,7 @@ const TariffPerMonth = styled.div`
 const PayButton = styled.button`
   width: 90%;
   max-width: 400px;
-  background: ${({ disabled }) => disabled ? '#BDBDBD' : '#005EFF'};
+  background: ${({ disabled, theme }) => disabled ? '#BDBDBD' : theme.primary};
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -98,26 +99,29 @@ const tariffs = [
 
 const Tariffs = () => {
   const [selected, setSelected] = useState(1);
+  const { theme } = useThemeContext();
+  const themeObj = themes[theme];
   return (
-    <Container>
-      <Title>Тарифы и оплата</Title>
+    <Container theme={themeObj}>
+      <Title theme={themeObj}>Тарифы и оплата</Title>
       <TariffList>
         {tariffs.map(tariff => (
           <TariffCard
             key={tariff.id}
             selected={selected === tariff.id}
+            theme={themeObj}
             onClick={() => setSelected(tariff.id)}
           >
-            <TariffName>{tariff.name}</TariffName>
+            <TariffName theme={themeObj}>{tariff.name}</TariffName>
             <TariffPriceRow>
-              <TariffPrice>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPrice theme={themeObj}>{tariff.currency}{tariff.price}</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
             </TariffPriceRow>
           </TariffCard>
         ))}
       </TariffList>
-      <PayButton disabled={!selected}>Оплатить</PayButton>
-      <BottomNavigation />
+      <PayButton theme={themeObj} disabled={!selected}>Оплатить</PayButton>
+      <BottomNavigation activeTab="/" />
     </Container>
   );
 };
