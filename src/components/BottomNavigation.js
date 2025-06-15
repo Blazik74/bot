@@ -7,19 +7,19 @@ import targetologIcon from '../assets/icons/targetolog.svg';
 import targetologIconActive from '../assets/icons/targetolog-active.svg';
 import profileIcon from '../assets/icons/profile.svg';
 import profileIconActive from '../assets/icons/profile-active.svg';
-import { useThemeContext } from '../contexts/ThemeContext';
+import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Navigation = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme === 'dark' ? '#23272F' : '#fff'};
+  background: ${({ theme }) => theme.background};
   padding: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid #E5E8EB;
+  border-top: 1px solid ${({ theme }) => theme.border};
   z-index: 100;
   box-shadow: 0 0 12px 0 rgba(0,0,0,0.04);
   transition: background 0.3s;
@@ -37,7 +37,7 @@ const NavButton = styled.button`
   border: none;
   padding: 8px 0 0 0;
   cursor: pointer;
-  color: ${({ active, theme }) => active ? '#005EFF' : (theme === 'dark' ? '#BDBDBD' : '#BDBDBD')};
+  color: ${({ active, theme }) => active ? theme.primary : theme.text};
 `;
 
 const IconWrapper = styled.div`
@@ -80,20 +80,23 @@ const navigationItems = [
   }
 ];
 
-export const BottomNavigation = () => {
+export const BottomNavigation = ({ activeTab }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme } = useThemeContext() || {};
+  const themeObj = themes[theme] || themes.light;
   return (
-    <Navigation theme={theme}>
+    <Navigation theme={themeObj}>
       {navigationItems.map((item) => {
-        const isActive = location.pathname === item.path;
+        const isActive = activeTab
+          ? activeTab === item.path
+          : location.pathname === item.path;
         return (
           <NavButton
             key={item.path}
             onClick={() => navigate(item.path)}
             active={isActive}
-            theme={theme}
+            theme={themeObj}
           >
             <IconWrapper>
               <img src={isActive ? item.iconActive : item.icon} alt={item.label} />
