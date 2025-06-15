@@ -101,9 +101,6 @@ const AppContent = () => {
   const { theme } = useThemeContext();
 
   useEffect(() => {
-    if (location.pathname !== '/') {
-      navigate('/', { replace: true });
-    }
     document.body.style.background = '#fff';
     document.documentElement.style.background = '#fff';
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.ready) {
