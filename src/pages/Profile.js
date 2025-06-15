@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
+import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Container = styled.div`
@@ -91,8 +92,8 @@ const ArrowAnim = keyframes`
 const Arrow = styled.span`
   display: inline-block;
   margin-left: 8px;
-  transition: transform 0.3s;
-  transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(0)'};
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(90deg)'};
 `;
 
 const ThemeRow = styled(InfoRow)`
@@ -103,8 +104,8 @@ const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
   padding: 16px;
-  background: ${({ theme }) => theme.buttonSecondary};
-  color: ${({ theme }) => theme.buttonSecondaryText};
+  background: #1877F3;
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -113,7 +114,18 @@ const FacebookButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  transition: background 0.2s;
+  box-shadow: none;
+  &:hover {
+    background: #166fe0;
+  }
+`;
+
+const FacebookIcon = styled.img`
+  width: 22px;
+  height: 22px;
+  display: block;
 `;
 
 const LogoutButton = styled.button`
@@ -204,9 +216,10 @@ const ThemeDropdown = styled.div`
   overflow: hidden;
   z-index: 1001;
   opacity: ${({ isOpen }) => isOpen ? 1 : 0};
-  transform: ${({ isOpen }) => isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  max-height: ${({ isOpen }) => isOpen ? '200px' : '0'};
+  pointer-events: ${({ isOpen }) => isOpen ? 'auto' : 'none'};
+  transition: opacity 0.2s, max-height 0.25s cubic-bezier(.4,0,.2,1);
   visibility: ${({ isOpen }) => isOpen ? 'visible' : 'hidden'};
-  transition: all 0.2s ease;
 `;
 
 const ThemeOption = styled.div`
@@ -308,8 +321,8 @@ export default function Profile() {
           </ThemeDropdown>
         </ThemeRow>
       </InfoBlock>
-      <FacebookButton theme={themeObj} onClick={() => setShowModal(true)}>
-        <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
+      <FacebookButton onClick={() => setShowModal(true)}>
+        <FacebookIcon src={facebookIcon} alt="Facebook" />
         Подключить Facebook Ads Account
       </FacebookButton>
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
