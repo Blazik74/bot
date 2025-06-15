@@ -34,6 +34,64 @@ const CardList = styled.div`
   margin: 0 12px;
 `;
 
+const TargetologCard = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 14px;
+  padding: 18px 16px 18px 16px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid ${({ theme }) => theme.border};
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  &:hover {
+    box-shadow: 0 4px 16px 0 rgba(0,94,255,0.10);
+    transform: translateY(-2px);
+  }
+`;
+
+const TargetologHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+`;
+
+const TargetologIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`;
+
+const TargetologTitle = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text};
+`;
+
+const TargetologPreview = styled.div`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text};
+  opacity: 0.8;
+`;
+
+const TargetologStats = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text};
+  opacity: 0.8;
+`;
+
 const Card = styled.div`
   background: ${({ theme }) => theme.card};
   border: 2px solid ${({ theme }) => theme.border};
@@ -147,19 +205,19 @@ export default function AICenter() {
       <Title theme={themeObj}>ИИ Центр</Title>
       <DividerLine theme={themeObj} />
       <CardList>
-        <BlueCard theme={themeObj} active onClick={() => navigate('/targetolog')}>
-          <CardRow>
-            <CardIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></CardIcon>
-            <BlueCardLabel theme={themeObj}>ИИ Таргетолог</BlueCardLabel>
-          </CardRow>
-          <CardPreview theme={themeObj}>
+        <TargetologCard theme={themeObj} onClick={() => navigate('/targetolog')}>
+          <TargetologHeader>
+            <TargetologIcon><img src={targetologActiveIcon} alt="ИИ Таргетолог" /></TargetologIcon>
+            <TargetologTitle theme={themeObj}>ИИ Таргетолог</TargetologTitle>
+          </TargetologHeader>
+          <TargetologPreview theme={themeObj}>
             Автоматизация и оптимизация рекламных кампаний
-          </CardPreview>
-          <CardStats theme={themeObj}>
+          </TargetologPreview>
+          <TargetologStats theme={themeObj}>
             <span>Активных кампаний: 2</span>
             <span>CTR: 2.4%</span>
-          </CardStats>
-        </BlueCard>
+          </TargetologStats>
+        </TargetologCard>
         <Card theme={themeObj}>
           <CardRow>
             <CardIcon><img src={buhgalterIcon} alt="ИИ Бухгалтер" /></CardIcon>
