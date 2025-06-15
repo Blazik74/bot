@@ -101,18 +101,8 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.body.style.background = '#fff';
-    document.documentElement.style.background = '#fff';
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.ready) {
-      window.Telegram.WebApp.ready();
-      setTimeout(() => {
-        window.Telegram.WebApp.postEvent('web_app_request_fullscreen');
-      }, 100);
-    }
     setLoading(false);
   }, []);
-
-  console.log('AppContent render', { loading });
 
   if (loading) return <Loader />;
 
