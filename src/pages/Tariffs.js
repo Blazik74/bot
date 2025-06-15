@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import BottomNav from '../components/BottomNav';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -117,7 +117,7 @@ const Tariffs = () => {
         ))}
       </TariffList>
       <PayButton disabled={!selected}>Оплатить</PayButton>
-      <BottomNav active='center' />
+      <BottomNavigation />
     </Container>
   );
 };
