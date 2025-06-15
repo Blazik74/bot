@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 import homeIcon from '../assets/icons/home.svg';
 import homeActiveIcon from '../assets/icons/home-active.svg';
 import profileIcon from '../assets/icons/profile.svg';
@@ -51,7 +51,7 @@ const NavText = styled.span`
 const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { theme } = useThemeContext();
 
   const navItems = [
     { path: '/', icon: homeIcon, activeIcon: homeActiveIcon, text: 'Главная' },
