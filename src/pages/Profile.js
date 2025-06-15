@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
-import { useThemeContext } from '../contexts/ThemeContext';
+import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme === 'light' ? '#fff' : '#181A1B'};
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -24,19 +25,19 @@ const Avatar = styled.img`
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
+  background: ${({ theme }) => theme.card};
   margin-bottom: 18px;
 `;
 
 const Nickname = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
 
 const InfoBlock = styled.div`
-  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
+  background: ${({ theme }) => theme.card};
   border-radius: 12px;
   margin: 0 16px 18px 16px;
   overflow: hidden;
@@ -46,14 +47,14 @@ const InfoRow = styled.div`
   display: flex;
   align-items: center;
   height: 48px;
-  border-bottom: 1px solid ${({ theme }) => theme === 'light' ? '#D1D5DB' : '#4D4F53'};
+  border-bottom: 1px solid ${({ theme }) => theme.border};
   &:last-child { border-bottom: none; }
 `;
 
 const InfoTitle = styled.div`
   flex: 0 0 110px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
   padding-left: 18px;
 `;
@@ -62,7 +63,7 @@ const InfoValue = styled.div`
   flex: 1;
   text-align: right;
   font-weight: 400;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
   padding-right: 18px;
   display: flex;
@@ -73,7 +74,7 @@ const InfoValue = styled.div`
 const TariffButton = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
   font-weight: 400;
   padding: 0;
@@ -102,8 +103,8 @@ const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
   padding: 16px;
-  background: ${({ theme }) => theme === 'light' ? '#1877F2' : '#2D2E33'};
-  color: ${({ theme }) => theme === 'light' ? '#fff' : '#E5E8EB'};
+  background: ${({ theme }) => theme.buttonSecondary};
+  color: ${({ theme }) => theme.buttonSecondaryText};
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -119,8 +120,8 @@ const LogoutButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px;
   padding: 16px;
-  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
-  color: ${({ theme }) => theme === 'light' ? '#005EFF' : '#E5E8EB'};
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.primary};
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -139,7 +140,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWindow = styled.div`
-  background: ${({ theme }) => theme === 'light' ? '#E5E8EB' : '#2D2E33'};
+  background: ${({ theme }) => theme.card};
   border-radius: 16px;
   padding: 32px 18px 0 18px;
   max-width: 340px;
@@ -152,21 +153,21 @@ const ModalWindow = styled.div`
 const ModalTitle = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme === 'light' ? '#B71C1C' : '#E5E8EB'};
+  color: ${({ theme }) => theme.primary};
   margin-bottom: 18px;
 `;
 
 const ModalDivider = styled.div`
   width: 100%;
   height: 1px;
-  background: ${({ theme }) => theme === 'light' ? '#BDBDBD' : '#4D4F53'};
+  background: ${({ theme }) => theme.border};
   margin-bottom: 18px;
 `;
 
 const ModalButton = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme === 'light' ? '#005EFF' : '#E5E8EB'};
+  color: ${({ theme }) => theme.primary};
   font-size: 20px;
   font-weight: 600;
   margin: 18px 0 18px 0;
@@ -181,7 +182,7 @@ const MegaphoneIcon = styled.img`
 
 const ModalText = styled.div`
   font-size: 18px;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
 
@@ -189,7 +190,7 @@ const ModalList = styled.ul`
   text-align: left;
   margin: 0 0 18px 0;
   padding-left: 18px;
-  color: ${({ theme }) => theme === 'light' ? '#181A1B' : '#E5E8EB'};
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
 `;
 
@@ -199,6 +200,7 @@ export default function Profile() {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
+  const themeObj = themes[theme];
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -212,54 +214,54 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   return (
-    <Container theme={theme}>
+    <Container theme={themeObj}>
       <ProfileHeader>
-        <Avatar src={avatar || ''} alt={nickname} theme={theme} />
-        <Nickname theme={theme}>{nickname}</Nickname>
+        <Avatar src={avatar || ''} alt={nickname} theme={themeObj} />
+        <Nickname theme={themeObj}>{nickname}</Nickname>
       </ProfileHeader>
-      <InfoBlock theme={theme}>
-        <InfoRow theme={theme}>
-          <InfoTitle theme={theme}>Аккаунт</InfoTitle>
-          <InfoValue theme={theme}>{username}</InfoValue>
+      <InfoBlock theme={themeObj}>
+        <InfoRow theme={themeObj}>
+          <InfoTitle theme={themeObj}>Аккаунт</InfoTitle>
+          <InfoValue theme={themeObj}>{username}</InfoValue>
         </InfoRow>
-        <InfoRow theme={theme}>
-          <InfoTitle theme={theme}>Тариф</InfoTitle>
-          <InfoValue theme={theme}>
-            <TariffButton theme={theme} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
+        <InfoRow theme={themeObj}>
+          <InfoTitle theme={themeObj}>Тариф</InfoTitle>
+          <InfoValue theme={themeObj}>
+            <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow theme={theme} onClick={() => setShowThemeDropdown((v) => !v)}>
-          <InfoTitle theme={theme}>Тема</InfoTitle>
-          <InfoValue theme={theme}>
+        <ThemeRow theme={themeObj} onClick={() => setShowThemeDropdown((v) => !v)}>
+          <InfoTitle theme={themeObj}>Тема</InfoTitle>
+          <InfoValue theme={themeObj}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
             <Arrow open={showThemeDropdown}>&#8250;</Arrow>
           </InfoValue>
         </ThemeRow>
         {showThemeDropdown && (
-          <div style={{ position: 'relative', zIndex: 1001, background: theme === 'dark' ? '#23272F' : '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', margin: '0 16px', padding: 8 }}>
-            <div style={{ padding: 8, cursor: 'pointer', color: theme === 'dark' ? '#fff' : '#181A1B' }} onClick={() => { setTheme('light'); setShowThemeDropdown(false); }}>Светлая</div>
-            <div style={{ padding: 8, cursor: 'pointer', color: theme === 'dark' ? '#fff' : '#181A1B' }} onClick={() => { setTheme('dark'); setShowThemeDropdown(false); }}>Тёмная</div>
+          <div style={{ position: 'relative', zIndex: 1001, background: themeObj.card, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', margin: '0 16px', padding: 8 }}>
+            <div style={{ padding: 8, cursor: 'pointer', color: themeObj.text }} onClick={() => { setTheme('light'); setShowThemeDropdown(false); }}>Светлая</div>
+            <div style={{ padding: 8, cursor: 'pointer', color: themeObj.text }} onClick={() => { setTheme('dark'); setShowThemeDropdown(false); }}>Тёмная</div>
           </div>
         )}
       </InfoBlock>
-      <FacebookButton theme={theme} onClick={() => setShowModal(true)}>
+      <FacebookButton theme={themeObj} onClick={() => setShowModal(true)}>
         <span style={{fontSize:22,marginRight:8}}><b>f</b></span>
         Подключить Facebook Ads Account
       </FacebookButton>
-      <LogoutButton theme={theme}>Выйти</LogoutButton>
+      <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalWindow theme={theme} onClick={e => e.stopPropagation()}>
+          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
             <MegaphoneIcon src={megaphoneIcon} alt="Megaphone" />
-            <ModalTitle theme={theme}>Подключение рекламного аккаунта</ModalTitle>
-            <ModalText theme={theme}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
-            <ModalList theme={theme}>
+            <ModalTitle theme={themeObj}>Подключение рекламного аккаунта</ModalTitle>
+            <ModalText theme={themeObj}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
+            <ModalList theme={themeObj}>
               <li>Использовать ИИ автопилот</li>
               <li>Получать советы и диагностику от ИИ</li>
               <li>Просматривать метрики</li>
               <li>Загружать креативы</li>
             </ModalList>
-            <ModalButton theme={theme} onClick={() => setShowModal(false)}>Ок</ModalButton>
+            <ModalButton theme={themeObj} onClick={() => setShowModal(false)}>Ок</ModalButton>
           </ModalWindow>
         </ModalOverlay>
       )}
