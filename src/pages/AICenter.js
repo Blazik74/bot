@@ -197,6 +197,7 @@ const DividerLine = styled.div`
 `;
 
 export default function AICenter() {
+  console.log('AICenter RENDER');
   const navigate = useNavigate();
   const { theme } = useThemeContext();
   const themeObj = themes[theme];
