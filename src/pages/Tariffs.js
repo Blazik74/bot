@@ -121,7 +121,6 @@ const Tariffs = () => {
         ))}
       </TariffList>
       <PayButton theme={themeObj} disabled={!selected}>Оплатить</PayButton>
-      <BottomNavigation activeTab="/" />
     </Container>
   );
 };
