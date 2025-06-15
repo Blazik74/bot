@@ -127,17 +127,17 @@ const AppContent = () => {
 const ThemedApp = () => {
   // const { theme } = useThemeContext();
   return (
-    // <StyledThemeProvider theme={themes[theme]}>
+    <StyledThemeProvider theme={themes['light']}>
       <NotificationProvider>
         <ErrorBoundary>
           <Router>
-            <AppContainer theme={themes[theme]} className="theme-transition">
+            <AppContainer className="theme-transition">
               <AppContent />
             </AppContainer>
           </Router>
         </ErrorBoundary>
       </NotificationProvider>
-    // </StyledThemeProvider>
+    </StyledThemeProvider>
   );
 };
 
