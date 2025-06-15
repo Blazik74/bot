@@ -54,27 +54,34 @@ const FileLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: ${({ theme }) => theme.card};
-  border: 1.5px solid ${({ theme }) => theme.border};
+  background: #F5F5F5;
+  border: 1.5px solid #E5E5E5;
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 10px 18px;
   font-size: 16px;
-  color: ${({ theme }) => theme.text};
+  color: #222;
   cursor: pointer;
   flex: 1;
+  transition: border 0.2s;
+  &:hover {
+    border: 1.5px solid #005EFF;
+  }
 `;
 
 const UploadButton = styled.button`
-  background: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.buttonText};
+  background: #005EFF;
+  color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  padding: 10px 18px;
+  padding: 10px 28px;
   margin-left: 8px;
   cursor: pointer;
   transition: background 0.2s;
+  &:hover {
+    background: #1565c0;
+  }
 `;
 
 const UploadSuccess = styled.div`
@@ -727,11 +734,13 @@ export default function Targetolog() {
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          <FileLabel theme={themeObj} htmlFor="file">
-            <img src={fileIcon} alt="Upload" />
+          <FileLabel htmlFor="file">
+            <img src={fileIcon} alt="Upload" style={{width:22,height:22}} />
             {selectedFile ? selectedFile.name : 'Загрузить креатив'}
           </FileLabel>
-          <UploadButton theme={themeObj} onClick={handleUpload}>Загрузить</UploadButton>
+          {selectedFile && (
+            <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
+          )}
         </FileInputRow>
         {uploadSuccess && <UploadSuccess>Креатив успешно загружен</UploadSuccess>}
       </UploadBlock>
