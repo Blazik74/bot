@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
+import BottomNavigation from '../components/BottomNavigation';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -225,10 +226,11 @@ const ThemeDropdown = styled.div`
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
   z-index: 1001;
+  transform: ${({ isOpen }) => isOpen ? 'scaleY(1)' : 'scaleY(0)'};
+  transform-origin: top;
   opacity: ${({ isOpen }) => isOpen ? 1 : 0};
-  max-height: ${({ isOpen }) => isOpen ? '200px' : '0'};
   pointer-events: ${({ isOpen }) => isOpen ? 'auto' : 'none'};
-  transition: opacity 0.2s, max-height 0.25s cubic-bezier(.4,0,.2,1);
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1), opacity 0.18s;
   visibility: ${({ isOpen }) => isOpen ? 'visible' : 'hidden'};
 `;
 
@@ -318,7 +320,8 @@ export default function Profile() {
           <InfoValue theme={themeObj} onClick={() => setShowThemeDropdown(v => !v)} style={{cursor:'pointer'}}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
             <ArrowSvg open={showThemeDropdown} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 8L10 12L14 8" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M7 10L13 10" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M10 7L10 13" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </ArrowSvg>
           </InfoValue>
           <ThemeDropdown isOpen={showThemeDropdown} theme={themeObj}>
@@ -354,6 +357,7 @@ export default function Profile() {
           </ModalWindow>
         </ModalOverlay>
       )}
+      <BottomNavigation activeTab="/profile" />
     </Container>
   );
 } 
