@@ -107,4 +107,6 @@ export const BottomNavigation = ({ activeTab }) => {
       })}
     </Navigation>
   );
-}; 
+};
+
+export default BottomNavigation; 
