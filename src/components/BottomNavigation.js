@@ -35,21 +35,21 @@ const NavButton = styled.button`
   gap: 2px;
   background: none;
   border: none;
-  padding: 8px 0 0 0;
+  padding: 0 0 0 0;
   cursor: pointer;
   color: ${({ active, theme }) => active ? theme.primary : theme.text};
 `;
 
 const IconWrapper = styled.div`
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
   img {
-    width: 100%;
-    height: 100%;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
   }
 `;
