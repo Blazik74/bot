@@ -5,6 +5,7 @@ import BottomNavigation from './components/BottomNavigation';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext';
+import { themes } from './contexts/ThemeContext';
 import './App.css';
 
 // Импорт SVG-иконок
