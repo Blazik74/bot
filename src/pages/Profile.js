@@ -3,7 +3,6 @@ import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
-import fileIcon from '../assets/icons/file-upload.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 
@@ -233,7 +232,7 @@ const FacebookModalOverlay = styled(ModalOverlay)`
   background: rgba(0,0,0,0.18);
 `;
 const FacebookModalWindow = styled.div`
-  background: #fff;
+  background: ${({ theme }) => theme.card};
   border-radius: 16px;
   padding: 32px 18px 24px 18px;
   max-width: 340px;
@@ -254,24 +253,24 @@ const FacebookModalIcon = styled.img`
 const FacebookModalTitle = styled.div`
   font-size: 24px;
   font-weight: 700;
-  color: #222;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
 const FacebookModalText = styled.div`
   font-size: 16px;
-  color: #222;
+  color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
 const FacebookModalList = styled.ul`
-  color: #222;
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
   margin-bottom: 32px;
   padding-left: 18px;
   text-align: left;
 `;
 const FacebookModalButton = styled.button`
-  background: #005EFF;
-  color: #fff;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 10px;
   padding: 16px 0;
@@ -280,28 +279,6 @@ const FacebookModalButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   margin: 0 auto;
-  display: block;
-`;
-
-const UploadCreativeButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: ${({ theme }) => theme.card};
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 16px;
-  color: ${({ theme }) => theme.text};
-  cursor: pointer;
-  width: 100%;
-  margin: 18px 0 0 0;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
-  transition: background 0.2s, color 0.2s;
-`;
-const UploadIcon = styled.img`
-  width: 20px;
-  height: 20px;
   display: block;
 `;
 
@@ -380,27 +357,23 @@ export default function Profile() {
         <FacebookIcon src={facebookIcon} alt="Facebook" />
         Подключить Facebook Ads Account
       </FacebookButton>
-      <UploadCreativeButton theme={themeObj}>
-        <UploadIcon src={fileIcon} alt="upload" />
-        Загрузить креатив
-      </UploadCreativeButton>
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
         <FacebookModalOverlay onClick={() => setShowModal(false)}>
-          <FacebookModalWindow onClick={e => e.stopPropagation()}>
+          <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
             <FacebookModalIcon src={megaphoneIcon} alt="Megaphone" />
-            <FacebookModalTitle>Подключение рекламного аккаунта</FacebookModalTitle>
-            <FacebookModalText>
+            <FacebookModalTitle theme={themeObj}>Подключение рекламного аккаунта</FacebookModalTitle>
+            <FacebookModalText theme={themeObj}>
               Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
             </FacebookModalText>
-            <div style={{fontWeight:600, color:'#222', textAlign:'left', width:'100%', marginBottom:8}}>Это позволяет вам:</div>
-            <FacebookModalList>
+            <div style={{fontWeight:600, color:themeObj.text, textAlign:'left', width:'100%', marginBottom:8}}>Это позволяет вам:</div>
+            <FacebookModalList theme={themeObj}>
               <li>Использовать ИИ автопилот</li>
               <li>Получать советы и диагностику от ИИ</li>
               <li>Просматривать метрики</li>
               <li>Загружать креативы</li>
             </FacebookModalList>
-            <FacebookModalButton onClick={()=>setShowModal(false)}>
+            <FacebookModalButton theme={themeObj} onClick={()=>setShowModal(false)}>
               Подключить рекламный аккаунт
             </FacebookModalButton>
           </FacebookModalWindow>
