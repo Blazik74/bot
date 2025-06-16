@@ -203,36 +203,29 @@ const ModalList = styled.ul`
   font-size: 16px;
 `;
 
-const ThemeDropdown = styled.div`
-  position: absolute;
-  right: 18px;
-  top: 100%;
-  background: ${({ theme }) => theme.card};
-  border: 1.5px solid ${({ theme }) => theme.border};
-  border-radius: 10px;
-  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
-  z-index: 10;
-  min-width: 120px;
-  margin-top: 4px;
-  overflow: hidden;
-  animation: fadeIn 0.18s;
+const ThemeModalOverlay = styled(ModalOverlay)`
+  z-index: 2000;
 `;
-const ThemeDropdownOption = styled.button`
-  width: 100%;
-  background: none;
-  border: none;
-  color: ${({ selected, theme }) => selected ? theme.primary : theme.text};
-  font-size: 16px;
+const ThemeModalWindow = styled(ModalWindow)`
+  max-width: 320px;
+  padding: 32px 0 24px 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
+`;
+const ThemeOption = styled.button`
+  width: 80%;
+  margin: 0 auto 16px auto;
+  display: block;
+  padding: 16px 0;
+  font-size: 18px;
   font-weight: 600;
-  padding: 12px 18px;
-  text-align: left;
+  border-radius: 10px;
+  border: none;
+  background: ${({ selected }) => selected ? '#005EFF' : '#f2f2f2'};
+  color: ${({ selected }) => selected ? '#fff' : '#222'};
   cursor: pointer;
-  background: ${({ selected, theme }) => selected ? theme.buttonSecondary : 'none'};
-  transition: background 0.18s, color 0.18s;
-  &:hover {
-    background: ${({ theme }) => theme.buttonSecondary};
-    color: ${({ theme }) => theme.primary};
-  }
+  transition: background 0.2s, color 0.2s;
+  box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
 `;
 
 const FacebookModalOverlay = styled(ModalOverlay)`
@@ -297,8 +290,6 @@ export default function Profile() {
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const themeObj = themes[theme];
-  const [themeDropdownPos, setThemeDropdownPos] = useState({top:0,left:0,width:0});
-  const themeRowRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -337,25 +328,13 @@ export default function Profile() {
   const username = tgUser?.username || 'Имя пользователя';
   const tariff = tgUser?.tariff || 'Фрилансер';
 
-  const handleThemeRowClick = () => {
-    setShowThemeDropdown((prev) => !prev);
-    if (themeRowRef.current) {
-      const rect = themeRowRef.current.getBoundingClientRect();
-      setThemeDropdownPos({
-        top: rect.bottom,
-        left: rect.left,
-        width: rect.width
-      });
-    }
-  };
-
   return (
     <Container theme={themeObj}>
       <ProfileHeader>
         <Avatar src={avatar || ''} alt={nickname} theme={themeObj} />
         <Nickname theme={themeObj}>{nickname}</Nickname>
       </ProfileHeader>
-      <InfoBlock theme={themeObj} style={{position:'relative'}}>
+      <InfoBlock theme={themeObj}>
         <InfoRow theme={themeObj}>
           <InfoTitle theme={themeObj}>Аккаунт</InfoTitle>
           <InfoValue theme={themeObj}>{username}</InfoValue>
@@ -366,31 +345,12 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <InfoRow
-          theme={themeObj}
-          style={{cursor:'pointer', position:'relative'}}
-          onClick={handleThemeRowClick}
-          ref={themeRowRef}
-        >
+        <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={() => setShowThemeDropdown(true)}>
           <InfoTitle theme={themeObj}>Тема</InfoTitle>
           <InfoValue theme={themeObj}>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
             <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </InfoValue>
-          {showThemeDropdown && (
-            <ThemeDropdown ref={dropdownRef} theme={themeObj} style={{minWidth:themeDropdownPos.width}}>
-              <ThemeDropdownOption
-                theme={themeObj}
-                selected={theme==='light'}
-                onClick={()=>handleThemeChange('light')}
-              >Светлая</ThemeDropdownOption>
-              <ThemeDropdownOption
-                theme={themeObj}
-                selected={theme==='dark'}
-                onClick={()=>handleThemeChange('dark')}
-              >Тёмная</ThemeDropdownOption>
-            </ThemeDropdown>
-          )}
         </InfoRow>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
@@ -418,6 +378,15 @@ export default function Profile() {
             </FacebookModalButton>
           </FacebookModalWindow>
         </FacebookModalOverlay>
+      )}
+      {showThemeDropdown && (
+        <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
+          <ThemeModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
+            <div style={{fontSize:22,fontWeight:700,marginBottom:24,textAlign:'center'}}>Выберите тему</div>
+            <ThemeOption selected={theme==='light'} onClick={()=>handleThemeChange('light')}>Светлая</ThemeOption>
+            <ThemeOption selected={theme==='dark'} onClick={()=>handleThemeChange('dark')}>Тёмная</ThemeOption>
+          </ThemeModalWindow>
+        </ThemeModalOverlay>
       )}
       <BottomNavigation activeTab="/profile" />
     </Container>
