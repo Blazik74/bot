@@ -203,6 +203,31 @@ const ModalList = styled.ul`
   font-size: 16px;
 `;
 
+const ThemeModalOverlay = styled(ModalOverlay)`
+  z-index: 2000;
+`;
+const ThemeModalWindow = styled(ModalWindow)`
+  max-width: 320px;
+  padding: 32px 0 24px 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
+`;
+const ThemeOption = styled.button`
+  width: 80%;
+  margin: 0 auto 16px auto;
+  display: block;
+  padding: 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  background: ${({ selected }) => selected ? '#005EFF' : '#f2f2f2'};
+  color: ${({ selected }) => selected ? '#fff' : '#222'};
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -266,21 +291,13 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <div style={{position:'relative'}} ref={dropdownRef}>
-          <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={() => setShowThemeDropdown((v) => !v)}>
-            <InfoTitle theme={themeObj}>Тема</InfoTitle>
-            <InfoValue theme={themeObj}>
-              {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-              <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </InfoValue>
-          </InfoRow>
-          {showThemeDropdown && (
-            <div style={{position:'absolute',right:0,left:0,top:'100%',background:themeObj.card,borderRadius:8,boxShadow:'0 2px 8px 0 rgba(0,0,0,0.08)',zIndex:10}}>
-              <div style={{padding:'12px 18px',cursor:'pointer',color:theme==='light'?'#005EFF':themeObj.text,fontWeight:theme==='light'?600:400}} onClick={()=>handleThemeChange('light')}>Светлая</div>
-              <div style={{padding:'12px 18px',cursor:'pointer',color:theme==='dark'?'#005EFF':themeObj.text,fontWeight:theme==='dark'?600:400}} onClick={()=>handleThemeChange('dark')}>Тёмная</div>
-            </div>
-          )}
-        </div>
+        <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={() => setShowThemeDropdown(true)}>
+          <InfoTitle theme={themeObj}>Тема</InfoTitle>
+          <InfoValue theme={themeObj}>
+            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
+            <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </InfoValue>
+        </InfoRow>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
         <FacebookIcon src={facebookIcon} alt="Facebook" />
@@ -289,25 +306,34 @@ export default function Profile() {
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()} style={{padding:0}}>
+          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()} style={{padding:0,overflow:'hidden'}}>
             <div style={{background:'#005EFF',borderRadius:'16px 16px 0 0',display:'flex',justifyContent:'center',alignItems:'center',height:90}}>
               <img src={megaphoneIcon} alt="Megaphone" style={{width:44,height:44}} />
             </div>
             <div style={{padding:'28px 18px 0 18px'}}>
-              <div style={{fontSize:24,fontWeight:700,color:'#222',marginBottom:18}}>Подключение рекламного аккаунта</div>
+              <div style={{fontSize:24,fontWeight:700,color:'#222',marginBottom:18,textAlign:'center'}}>Подключение рекламного аккаунта</div>
               <div style={{fontSize:16,color:'#222',textAlign:'center',marginBottom:18}}>
                 Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
               </div>
-              <ul style={{color:'#222',fontSize:16,marginBottom:32,paddingLeft:0,textAlign:'left',listStyle:'none'}}>
-                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Использовать ИИ автопилот</li>
-                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Получать советы и диагностику от ИИ</li>
-                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Просматривать метрики</li>
-                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Загружать креативы</li>
+              <ul style={{color:'#222',fontSize:16,marginBottom:32,paddingLeft:0,textAlign:'left',listStyle:'disc',marginLeft:18}}>
+                <li style={{marginBottom:8}}>Использовать ИИ автопилот</li>
+                <li style={{marginBottom:8}}>Получать советы и диагностику от ИИ</li>
+                <li style={{marginBottom:8}}>Просматривать метрики</li>
+                <li style={{marginBottom:8}}>Загружать креативы</li>
               </ul>
-              <button style={{background:'#005EFF',color:'#fff',border:'none',borderRadius:10,padding:'16px 0',width:'100%',maxWidth:340,fontSize:17,fontWeight:600,cursor:'pointer',margin:'0 auto',display:'block',marginTop:18}} onClick={()=>setShowModal(false)}>Подключить рекламный аккаунт</button>
+              <button style={{background:'#005EFF',color:'#fff',border:'none',borderRadius:10,padding:'16px 0',width:'100%',fontSize:17,fontWeight:600,cursor:'pointer',display:'block',margin:'0 auto',marginTop:18}} onClick={()=>setShowModal(false)}>Подключить рекламный аккаунт</button>
             </div>
           </ModalWindow>
         </ModalOverlay>
+      )}
+      {showThemeDropdown && (
+        <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
+          <ThemeModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
+            <div style={{fontSize:22,fontWeight:700,marginBottom:24,textAlign:'center'}}>Выберите тему</div>
+            <ThemeOption selected={theme==='light'} onClick={()=>handleThemeChange('light')}>Светлая</ThemeOption>
+            <ThemeOption selected={theme==='dark'} onClick={()=>handleThemeChange('dark')}>Тёмная</ThemeOption>
+          </ThemeModalWindow>
+        </ThemeModalOverlay>
       )}
       <BottomNavigation activeTab="/profile" />
     </Container>
