@@ -255,27 +255,6 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <div style={{position:'relative'}}>
-          <div style={{display:'flex',alignItems:'center',height:48,borderBottom:`1px solid ${themeObj.border}`,cursor:'pointer'}} onClick={()=>setShowModal('theme')}>
-            <div style={{flex:'0 0 110px',fontWeight:700,color:themeObj.text,fontSize:16,paddingLeft:18}}>Тема</div>
-            <div style={{flex:1,textAlign:'right',fontWeight:400,color:themeObj.text,fontSize:16,paddingRight:18,display:'flex',alignItems:'center',justifyContent:'flex-end'}}>
-              {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-              <svg width="18" height="18" style={{marginLeft:8,transform:showModal==='theme'?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </div>
-          </div>
-          {showModal==='theme' && (
-            <div style={{position:'absolute',top:48,right:0,left:0,background:themeObj.card,borderRadius:12,boxShadow:'0 4px 12px rgba(0,0,0,0.1)',overflow:'hidden',zIndex:2000}}>
-              <div style={{padding:'12px 16px',cursor:'pointer',color:themeObj.text,fontSize:15,display:'flex',alignItems:'center',gap:8}} onClick={()=>{setTheme('light');setShowModal(false);}}>
-                <div style={{width:20,height:20,borderRadius:'50%',background:'#000',border:`2px solid ${themeObj.border}`}} />
-                Светлая
-              </div>
-              <div style={{padding:'12px 16px',cursor:'pointer',color:themeObj.text,fontSize:15,display:'flex',alignItems:'center',gap:8}} onClick={()=>{setTheme('dark');setShowModal(false);}}>
-                <div style={{width:20,height:20,borderRadius:'50%',background:'#fff',border:`2px solid ${themeObj.border}`}} />
-                Тёмная
-              </div>
-            </div>
-          )}
-        </div>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
         <FacebookIcon src={facebookIcon} alt="Facebook" />
