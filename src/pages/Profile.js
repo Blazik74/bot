@@ -378,7 +378,7 @@ export default function Profile() {
             <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </InfoValue>
           {showThemeDropdown && (
-            <ThemeDropdown theme={themeObj} style={{minWidth:themeDropdownPos.width}}>
+            <ThemeDropdown ref={dropdownRef} theme={themeObj} style={{minWidth:themeDropdownPos.width}}>
               <ThemeDropdownOption
                 theme={themeObj}
                 selected={theme==='light'}
