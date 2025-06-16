@@ -72,14 +72,13 @@ class ErrorBoundary extends React.Component {
 
 const Loader = ({ theme }) => (
   <LoaderWrapper theme={theme}>
-    <div className="loader-animation" style={{width:60,height:60,marginBottom:24}}>
+    <div className="loader-animation" style={{width:60,height:60}}>
       <svg width="60" height="60" viewBox="0 0 60 60">
         <circle cx="30" cy="30" r="24" stroke={theme.primary} strokeWidth="6" fill="none" strokeDasharray="120" strokeDashoffset="60">
           <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="1s" repeatCount="indefinite" />
         </circle>
       </svg>
     </div>
-    Загрузка…
   </LoaderWrapper>
 );
 
@@ -108,8 +107,17 @@ const AppContent = () => {
   const { theme } = useThemeContext();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
+    let loaded = 0;
+    allImages.forEach(src => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = img.onerror = () => {
+        loaded++;
+        if (loaded === allImages.length) {
+          setTimeout(() => setLoading(false), 400); // небольшая задержка для плавности
+        }
+      };
+    });
   }, []);
 
   if (loading) return <Loader theme={themes[theme]} />;
