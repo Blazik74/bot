@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
@@ -206,10 +206,22 @@ const ModalList = styled.ul`
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const themeObj = themes[theme];
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme && savedTheme !== theme) {
+      setTheme(savedTheme);
+    }
+  }, []);
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -223,7 +235,6 @@ export default function Profile() {
         setShowThemeDropdown(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -255,12 +266,20 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <div style={{display:'flex',alignItems:'center',height:48,borderBottom:`1px solid ${themeObj.border}`,cursor:'pointer',position:'relative'}} onClick={()=>setShowModal(showModal==='theme'?null:'theme')}>
-          <div style={{flex:'0 0 110px',fontWeight:700,color:themeObj.text,fontSize:16,paddingLeft:18}}>Тема</div>
-          <div style={{flex:1,textAlign:'right',fontWeight:400,color:themeObj.text,fontSize:16,paddingRight:18,display:'flex',alignItems:'center',justifyContent:'flex-end'}}>
-            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <svg width="18" height="18" style={{marginLeft:8,transform:showModal==='theme'?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
+        <div style={{position:'relative'}} ref={dropdownRef}>
+          <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={() => setShowThemeDropdown((v) => !v)}>
+            <InfoTitle theme={themeObj}>Тема</InfoTitle>
+            <InfoValue theme={themeObj}>
+              {theme === 'dark' ? 'Тёмная' : 'Светлая'}
+              <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </InfoValue>
+          </InfoRow>
+          {showThemeDropdown && (
+            <div style={{position:'absolute',right:0,left:0,top:'100%',background:themeObj.card,borderRadius:8,boxShadow:'0 2px 8px 0 rgba(0,0,0,0.08)',zIndex:10}}>
+              <div style={{padding:'12px 18px',cursor:'pointer',color:theme==='light'?'#005EFF':themeObj.text,fontWeight:theme==='light'?600:400}} onClick={()=>handleThemeChange('light')}>Светлая</div>
+              <div style={{padding:'12px 18px',cursor:'pointer',color:theme==='dark'?'#005EFF':themeObj.text,fontWeight:theme==='dark'?600:400}} onClick={()=>handleThemeChange('dark')}>Тёмная</div>
+            </div>
+          )}
         </div>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
