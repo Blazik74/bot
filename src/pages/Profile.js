@@ -228,6 +228,60 @@ const ThemeOption = styled.button`
   box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
 `;
 
+const FacebookModalOverlay = styled(ModalOverlay)`
+  background: rgba(0,0,0,0.18);
+`;
+const FacebookModalWindow = styled.div`
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 18px 24px 18px;
+  max-width: 340px;
+  width: 90vw;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const FacebookModalIcon = styled.img`
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px auto;
+  display: block;
+`;
+const FacebookModalTitle = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 18px;
+`;
+const FacebookModalText = styled.div`
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 18px;
+`;
+const FacebookModalList = styled.ul`
+  color: #222;
+  font-size: 16px;
+  margin-bottom: 32px;
+  padding-left: 18px;
+  text-align: left;
+`;
+const FacebookModalButton = styled.button`
+  background: #005EFF;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 16px 0;
+  width: 100%;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -305,26 +359,25 @@ export default function Profile() {
       </FacebookButton>
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
-        <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()} style={{padding:0,overflow:'hidden'}}>
-            <div style={{background:'#005EFF',borderRadius:'16px 16px 0 0',display:'flex',justifyContent:'center',alignItems:'center',height:90}}>
-              <img src={megaphoneIcon} alt="Megaphone" style={{width:44,height:44}} />
-            </div>
-            <div style={{padding:'28px 18px 0 18px'}}>
-              <div style={{fontSize:24,fontWeight:700,color:'#222',marginBottom:18,textAlign:'center'}}>Подключение рекламного аккаунта</div>
-              <div style={{fontSize:16,color:'#222',textAlign:'center',marginBottom:18}}>
-                Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
-              </div>
-              <ul style={{color:'#222',fontSize:16,marginBottom:32,paddingLeft:0,textAlign:'left',listStyle:'disc',marginLeft:18}}>
-                <li style={{marginBottom:8}}>Использовать ИИ автопилот</li>
-                <li style={{marginBottom:8}}>Получать советы и диагностику от ИИ</li>
-                <li style={{marginBottom:8}}>Просматривать метрики</li>
-                <li style={{marginBottom:8}}>Загружать креативы</li>
-              </ul>
-              <button style={{background:'#005EFF',color:'#fff',border:'none',borderRadius:10,padding:'16px 0',width:'100%',fontSize:17,fontWeight:600,cursor:'pointer',display:'block',margin:'0 auto',marginTop:18}} onClick={()=>setShowModal(false)}>Подключить рекламный аккаунт</button>
-            </div>
-          </ModalWindow>
-        </ModalOverlay>
+        <FacebookModalOverlay onClick={() => setShowModal(false)}>
+          <FacebookModalWindow onClick={e => e.stopPropagation()}>
+            <FacebookModalIcon src={megaphoneIcon} alt="Megaphone" />
+            <FacebookModalTitle>Подключение рекламного аккаунта</FacebookModalTitle>
+            <FacebookModalText>
+              Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
+            </FacebookModalText>
+            <div style={{fontWeight:600, color:'#222', textAlign:'left', width:'100%', marginBottom:8}}>Это позволяет вам:</div>
+            <FacebookModalList>
+              <li>Использовать ИИ автопилот</li>
+              <li>Получать советы и диагностику от ИИ</li>
+              <li>Просматривать метрики</li>
+              <li>Загружать креативы</li>
+            </FacebookModalList>
+            <FacebookModalButton onClick={()=>setShowModal(false)}>
+              Подключить рекламный аккаунт
+            </FacebookModalButton>
+          </FacebookModalWindow>
+        </FacebookModalOverlay>
       )}
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
