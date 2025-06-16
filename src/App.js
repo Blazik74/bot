@@ -4,8 +4,7 @@ import AppRoutes from './AppRoutes';
 import BottomNavigation from './components/BottomNavigation';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
-import { ThemeProvider, useThemeContext } from './contexts/ThemeContext';
-import { themes } from './contexts/ThemeContext';
+import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
 import './App.css';
 
 // Импорт SVG-иконок
@@ -71,8 +70,15 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const Loader = () => (
-  <LoaderWrapper>
+const Loader = ({ theme }) => (
+  <LoaderWrapper theme={theme}>
+    <div className="loader-animation" style={{width:60,height:60,marginBottom:24}}>
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="24" stroke={theme.primary} strokeWidth="6" fill="none" strokeDasharray="120" strokeDashoffset="60">
+          <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="1s" repeatCount="indefinite" />
+        </circle>
+      </svg>
+    </div>
     Загрузка…
   </LoaderWrapper>
 );
@@ -99,15 +105,14 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme } = useThemeContext();
 
   useEffect(() => {
-    console.log('useEffect called');
-    setLoading(false);
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
-  console.log('AppContent render', { loading });
-
-  if (loading) return <Loader />;
+  if (loading) return <Loader theme={themes[theme]} />;
 
   return (
     <AppContainer>
