@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
@@ -255,6 +255,13 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
+        <div style={{display:'flex',alignItems:'center',height:48,borderBottom:`1px solid ${themeObj.border}`,cursor:'pointer',position:'relative'}} onClick={()=>setShowModal(showModal==='theme'?null:'theme')}>
+          <div style={{flex:'0 0 110px',fontWeight:700,color:themeObj.text,fontSize:16,paddingLeft:18}}>Тема</div>
+          <div style={{flex:1,textAlign:'right',fontWeight:400,color:themeObj.text,fontSize:16,paddingRight:18,display:'flex',alignItems:'center',justifyContent:'flex-end'}}>
+            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
+            <svg width="18" height="18" style={{marginLeft:8,transform:showModal==='theme'?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+        </div>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
         <FacebookIcon src={facebookIcon} alt="Facebook" />
