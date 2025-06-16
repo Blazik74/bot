@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
+import fileIcon from '../assets/icons/file-upload.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 
@@ -282,6 +283,28 @@ const FacebookModalButton = styled.button`
   display: block;
 `;
 
+const UploadCreativeButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: ${({ theme }) => theme.card};
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 16px;
+  color: ${({ theme }) => theme.text};
+  cursor: pointer;
+  width: 100%;
+  margin: 18px 0 0 0;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s;
+`;
+const UploadIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  display: block;
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -357,6 +380,10 @@ export default function Profile() {
         <FacebookIcon src={facebookIcon} alt="Facebook" />
         Подключить Facebook Ads Account
       </FacebookButton>
+      <UploadCreativeButton theme={themeObj}>
+        <UploadIcon src={fileIcon} alt="upload" />
+        Загрузить креатив
+      </UploadCreativeButton>
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
         <FacebookModalOverlay onClick={() => setShowModal(false)}>
