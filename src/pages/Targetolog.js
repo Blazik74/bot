@@ -5,6 +5,7 @@ import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useStore from '../store';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
+import refreshArrows from '../assets/icons/refresh-arrows.svg';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -301,13 +302,21 @@ const ModalDivider = styled.div`
 `;
 
 const ModalButton = styled.button`
-  background: none;
+  width: 100%;
+  background: #005EFF;
+  color: #fff;
   border: none;
-  color: ${({ theme }) => theme.primary};
-  font-size: 20px;
+  border-radius: 12px;
+  font-size: 18px;
   font-weight: 600;
+  padding: 16px 0;
   margin: 18px 0 18px 0;
   cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
+  &:hover {
+    background: #1565c0;
+  }
 `;
 
 const CitySearchContainer = styled.div`
@@ -576,6 +585,38 @@ const StatValue = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
+const RefreshButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.primary};
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 auto;
+  margin-top: 8px;
+  transition: color 0.2s;
+  outline: none;
+  &:active {
+    color: #1565c0;
+  }
+  svg, img {
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    transform: ${({ spinning }) => spinning ? 'rotate(360deg)' : 'rotate(0deg)'};
+  }
+`;
+
+const AdviceBoxAnimated = styled(AdviceBox)`
+  max-height: ${({ expanded }) => expanded ? '320px' : '60px'};
+  min-height: 60px;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(.4,0,.2,1), box-shadow 0.2s;
+  box-shadow: ${({ expanded }) => expanded ? '0 4px 24px 0 rgba(0,94,255,0.10)' : 'none'};
+  cursor: pointer;
+`;
+
 export default function Targetolog() {
   const { theme } = useThemeContext();
   const themeObj = themes[theme];
@@ -612,6 +653,10 @@ export default function Targetolog() {
     const [h, m] = opt.value.split(':').map(Number);
     return h > now.getHours() || (h === now.getHours() && m > now.getMinutes());
   });
+  const [advice, setAdvice] = useState(['Загрузите креатив, чтобы получить рекомендации по улучшению эффективности кампании']);
+  const [adviceIndex, setAdviceIndex] = useState(0);
+  const [adviceSpinning, setAdviceSpinning] = useState(false);
+  const [adviceExpanded, setAdviceExpanded] = useState(false);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -693,6 +738,19 @@ export default function Targetolog() {
     setCampaigns([newCampaign, ...campaigns]);
     setShowCreateModal(false);
     addNotification('Кампания успешно создана', 'success');
+  };
+
+  const handleRefreshAdvice = () => {
+    setAdviceSpinning(true);
+    setTimeout(() => {
+      // Здесь можно добавить логику получения новых советов
+      setAdviceIndex((prev) => (prev + 1) % advice.length);
+      setAdviceSpinning(false);
+    }, 700);
+  };
+
+  const handleAdviceBoxClick = () => {
+    setAdviceExpanded((prev) => !prev);
   };
 
   const renderCreateModal = () => {
@@ -878,9 +936,22 @@ export default function Targetolog() {
 
       <AdviceSection>
         <AdviceTitle theme={themeObj}>Советы от ИИ</AdviceTitle>
-        <AdviceBox theme={themeObj}>
-          Загрузите креатив, чтобы получить рекомендации по улучшению эффективности кампании
-        </AdviceBox>
+        <AdviceBoxAnimated
+          theme={themeObj}
+          expanded={adviceExpanded}
+          onClick={handleAdviceBoxClick}
+        >
+          {advice[adviceIndex]}
+        </AdviceBoxAnimated>
+        <RefreshButton
+          theme={themeObj}
+          spinning={adviceSpinning}
+          onClick={handleRefreshAdvice}
+          aria-label="Обновить советы"
+        >
+          <img src={refreshArrows} alt="Обновить" style={{width:22,height:22}} />
+          Обновить советы
+        </RefreshButton>
       </AdviceSection>
 
       <AutopilotSection>
