@@ -101,8 +101,11 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('useEffect called');
     setLoading(false);
   }, []);
+
+  console.log('AppContent render', { loading });
 
   if (loading) return <Loader />;
 
