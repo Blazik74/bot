@@ -97,21 +97,6 @@ const Arrow = styled.span`
   transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(90deg)'};
 `;
 
-const ThemeRow = styled(InfoRow)`
-  cursor: pointer;
-  position: relative;
-  z-index: 2000;
-`;
-
-const ArrowSvg = styled.svg`
-  width: 18px;
-  height: 18px;
-  margin-left: 8px;
-  transition: transform 0.22s cubic-bezier(.4,0,.2,1);
-  transform: ${({ open }) => open ? 'rotate(90deg)' : 'rotate(0deg)'};
-  display: inline-block;
-`;
-
 const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
@@ -218,55 +203,9 @@ const ModalList = styled.ul`
   font-size: 16px;
 `;
 
-const ThemeDropdown = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 16px;
-  left: auto;
-  background: ${({ theme }) => theme.card};
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  overflow: hidden;
-  z-index: 2000;
-  transform: ${({ isOpen }) => isOpen ? 'scaleY(1)' : 'scaleY(0)'};
-  transform-origin: top;
-  opacity: ${({ isOpen }) => isOpen ? 1 : 0};
-  pointer-events: ${({ isOpen }) => isOpen ? 'auto' : 'none'};
-  transition: transform 0.22s cubic-bezier(.4,0,.2,1), opacity 0.18s;
-`;
-
-const ThemeOption = styled.div`
-  padding: 12px 16px;
-  cursor: pointer;
-  color: ${({ theme }) => theme.text};
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.2s;
-  
-  &:hover {
-    background: ${({ theme }) => theme.buttonSecondary};
-  }
-  
-  &:active {
-    background: ${({ theme }) => theme.buttonSecondary};
-    opacity: 0.8;
-  }
-`;
-
-const ThemeIcon = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme === 'dark' ? '#fff' : '#000'};
-  border: 2px solid ${({ theme }) => theme.border};
-`;
-
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
@@ -316,25 +255,6 @@ export default function Profile() {
             <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
           </InfoValue>
         </InfoRow>
-        <ThemeRow theme={themeObj} ref={dropdownRef}>
-          <InfoTitle theme={themeObj}>Тема</InfoTitle>
-          <InfoValue theme={themeObj} onClick={() => setShowThemeDropdown(v => !v)} style={{cursor:'pointer'}}>
-            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <ArrowSvg open={showThemeDropdown} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </ArrowSvg>
-          </InfoValue>
-          <ThemeDropdown isOpen={showThemeDropdown} theme={themeObj}>
-            <ThemeOption theme={themeObj} onClick={() => handleThemeChange('light')}>
-              <ThemeIcon theme="light" />
-              Светлая
-            </ThemeOption>
-            <ThemeOption theme={themeObj} onClick={() => handleThemeChange('dark')}>
-              <ThemeIcon theme="dark" />
-              Тёмная
-            </ThemeOption>
-          </ThemeDropdown>
-        </ThemeRow>
       </InfoBlock>
       <FacebookButton onClick={() => setShowModal(true)}>
         <FacebookIcon src={facebookIcon} alt="Facebook" />
@@ -343,17 +263,23 @@ export default function Profile() {
       <LogoutButton theme={themeObj}>Выйти</LogoutButton>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
-            <MegaphoneIcon src={megaphoneIcon} alt="Megaphone" />
-            <ModalTitle theme={themeObj}>Подключение рекламного аккаунта</ModalTitle>
-            <ModalText theme={themeObj}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</ModalText>
-            <ModalList theme={themeObj}>
-              <li>Использовать ИИ автопилот</li>
-              <li>Получать советы и диагностику от ИИ</li>
-              <li>Просматривать метрики</li>
-              <li>Загружать креативы</li>
-            </ModalList>
-            <ModalButton theme={themeObj} onClick={() => setShowModal(false)}>Ок</ModalButton>
+          <ModalWindow theme={themeObj} onClick={e => e.stopPropagation()} style={{padding:0}}>
+            <div style={{background:'#005EFF',borderRadius:'16px 16px 0 0',display:'flex',justifyContent:'center',alignItems:'center',height:90}}>
+              <img src={megaphoneIcon} alt="Megaphone" style={{width:44,height:44}} />
+            </div>
+            <div style={{padding:'28px 18px 0 18px'}}>
+              <div style={{fontSize:24,fontWeight:700,color:'#222',marginBottom:18}}>Подключение рекламного аккаунта</div>
+              <div style={{fontSize:16,color:'#222',textAlign:'center',marginBottom:18}}>
+                Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
+              </div>
+              <ul style={{color:'#222',fontSize:16,marginBottom:32,paddingLeft:0,textAlign:'left',listStyle:'none'}}>
+                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Использовать ИИ автопилот</li>
+                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Получать советы и диагностику от ИИ</li>
+                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Просматривать метрики</li>
+                <li style={{position:'relative',paddingLeft:18,marginBottom:8}}><span style={{position:'absolute',left:0,top:8,width:6,height:6,borderRadius:'50%',background:'#222',display:'inline-block'}}></span>Загружать креативы</li>
+              </ul>
+              <button style={{background:'#005EFF',color:'#fff',border:'none',borderRadius:10,padding:'16px 0',width:'100%',maxWidth:340,fontSize:17,fontWeight:600,cursor:'pointer',margin:'0 auto',display:'block',marginTop:18}} onClick={()=>setShowModal(false)}>Подключить рекламный аккаунт</button>
+            </div>
           </ModalWindow>
         </ModalOverlay>
       )}
