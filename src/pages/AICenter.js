@@ -18,17 +18,17 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 700;
   text-align: center;
   margin: 36px 0 0 0;
-  color: #111;
+  color: ${({ theme }) => theme.text};
 `;
 
 const Divider = styled.hr`
   border: none;
-  border-top: 2px solid #E0E0E0;
-  margin: 18px 0 32px 0;
+  border-top: 2px solid ${({ theme }) => theme.border};
+  margin: 18px 0 24px 0;
   width: 90%;
   align-self: center;
 `;
@@ -36,8 +36,8 @@ const Divider = styled.hr`
 const IconRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: 32px;
-  margin-bottom: 48px;
+  gap: 18px;
+  margin-bottom: 24px;
 `;
 
 const IconBlock = styled.div`
@@ -47,46 +47,48 @@ const IconBlock = styled.div`
 `;
 
 const IconCircle = styled.div`
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: ${({ active }) => active ? 'rgba(0,94,255,0.08)' : '#F5F5F5'};
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: ${({ active, theme }) => active ? (theme.mode === 'dark' ? 'rgba(0,94,255,0.18)' : 'rgba(0,94,255,0.08)') : (theme.mode === 'dark' ? '#23242A' : '#F5F5F5')};
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  transition: background 0.2s;
 `;
 
 const IconImg = styled.img`
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 `;
 
 const IconLabel = styled.div`
-  font-size: 16px;
+  font-size: 13px;
   font-weight: ${({ active }) => active ? 700 : 400};
-  color: ${({ active }) => active ? '#111' : '#BDBDBD'};
+  color: ${({ active, theme }) => active ? theme.text : theme.mode === 'dark' ? '#555' : '#BDBDBD'};
   text-align: center;
   margin-top: 0;
+  transition: color 0.2s;
 `;
 
 const TariffButton = styled.button`
   display: block;
   margin: 0 auto;
-  margin-top: 24px;
-  background: #005EFF;
-  color: #fff;
+  margin-top: 8px;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
-  border-radius: 18px;
-  font-size: 20px;
+  border-radius: 14px;
+  font-size: 16px;
   font-weight: 600;
-  padding: 18px 44px;
+  padding: 12px 32px;
   cursor: pointer;
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
   transition: background 0.2s;
   &:hover {
-    background: #1565c0;
+    background: ${({ theme }) => theme.primaryHover || '#1565c0'};
   }
 `;
 
@@ -94,37 +96,38 @@ export default function AICenter() {
   const navigate = useNavigate();
   const { theme } = useThemeContext();
   const themeObj = themes[theme];
+  const themeMode = theme === 'dark' ? { ...themeObj, mode: 'dark' } : { ...themeObj, mode: 'light' };
   return (
-    <Container theme={themeObj}>
-      <Title>ИИ Центр</Title>
-      <Divider />
+    <Container theme={themeMode}>
+      <Title theme={themeMode}>ИИ Центр</Title>
+      <Divider theme={themeMode} />
       <IconRow>
         <IconBlock>
-          <IconCircle active>
+          <IconCircle active theme={themeMode}>
             <IconImg src={targetologIconActive} alt="ИИ Таргетолог" />
           </IconCircle>
-          <IconLabel active>ИИ Таргетолог</IconLabel>
+          <IconLabel active theme={themeMode}>ИИ Таргетолог</IconLabel>
         </IconBlock>
         <IconBlock>
-          <IconCircle>
+          <IconCircle theme={themeMode}>
             <IconImg src={buhgalterIcon} alt="ИИ Бухгалтер" />
           </IconCircle>
-          <IconLabel>ИИ Бухгалтер</IconLabel>
+          <IconLabel theme={themeMode}>ИИ Бухгалтер</IconLabel>
         </IconBlock>
         <IconBlock>
-          <IconCircle>
+          <IconCircle theme={themeMode}>
             <IconImg src={sellerIcon} alt="ИИ Продавец" />
           </IconCircle>
-          <IconLabel>ИИ Продавец</IconLabel>
+          <IconLabel theme={themeMode}>ИИ Продавец</IconLabel>
         </IconBlock>
         <IconBlock>
-          <IconCircle>
+          <IconCircle theme={themeMode}>
             <IconImg src={consultantIcon} alt="ИИ Консультант" />
           </IconCircle>
-          <IconLabel>ИИ Консультант</IconLabel>
+          <IconLabel theme={themeMode}>ИИ Консультант</IconLabel>
         </IconBlock>
       </IconRow>
-      <TariffButton onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
+      <TariffButton theme={themeMode} onClick={() => navigate('/tariffs')}>Тарифы и оплата</TariffButton>
     </Container>
   );
 } 
