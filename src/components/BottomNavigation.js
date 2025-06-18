@@ -32,7 +32,7 @@ const NavButton = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0px;
   background: none;
   border: none;
   padding: 0 0 0 0;
@@ -46,7 +46,7 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   img {
     width: 32px;
     height: 32px;
