@@ -13,11 +13,47 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #FFFFFF;
   color: #000000;
+  /* Скрываем скроллбары в полноэкранном режиме */
+  overflow-x: hidden;
+}
+
+/* Стили для полноэкранного режима */
+:fullscreen {
+  background-color: #FFFFFF;
+}
+
+:-webkit-full-screen {
+  background-color: #FFFFFF;
+}
+
+:-moz-full-screen {
+  background-color: #FFFFFF;
+}
+
+:-ms-fullscreen {
+  background-color: #FFFFFF;
 }
 
 body.dark-mode {
   background-color: #1A1A1A;
   color: #FFFFFF;
+}
+
+/* Скрываем элементы браузера в полноэкранном режиме */
+:fullscreen body {
+  overflow: hidden;
+}
+
+:-webkit-full-screen body {
+  overflow: hidden;
+}
+
+:-moz-full-screen body {
+  overflow: hidden;
+}
+
+:-ms-fullscreen body {
+  overflow: hidden;
 }
 
 code {
