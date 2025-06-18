@@ -107,6 +107,26 @@ const AppContent = () => {
   const { theme } = useThemeContext();
 
   useEffect(() => {
+    // Попытка перехода в полноэкранный режим
+    const enterFullscreen = () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log('Fullscreen request failed:', err);
+        });
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen().catch(err => {
+          console.log('Webkit fullscreen request failed:', err);
+        });
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen().catch(err => {
+          console.log('MS fullscreen request failed:', err);
+        });
+      }
+    };
+
+    // Попытка перехода в полноэкранный режим при загрузке
+    enterFullscreen();
+
     let loaded = 0;
     allImages.forEach(src => {
       const img = new window.Image();
