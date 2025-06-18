@@ -5,6 +5,7 @@ import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
+import axios from 'axios';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -290,6 +291,8 @@ export default function Profile() {
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const themeObj = themes[theme];
+  const [fbName, setFbName] = useState('');
+  const [isFbConnected, setIsFbConnected] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -318,6 +321,24 @@ export default function Profile() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    // Можно получить имя из query-параметра или запросить с бэка
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('fb_name');
+    if (name) {
+      setFbName(name);
+      setIsFbConnected(true);
+    } else {
+      // Запросить с бэка
+      axios.get('/me').then(res => {
+        if (res.data.name) {
+          setFbName(res.data.name);
+          setIsFbConnected(true);
+        }
+      });
+    }
+  }, []);
+
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
     setShowThemeDropdown(false);
@@ -327,6 +348,17 @@ export default function Profile() {
   const nickname = tgUser?.first_name || 'Имя';
   const username = tgUser?.username || 'Имя пользователя';
   const tariff = tgUser?.tariff || 'Фрилансер';
+
+  const handleFbLogin = () => {
+    window.location.href = '/fb/login';
+  };
+
+  const handleFbLogout = () => {
+    axios.post('/fb/logout').then(() => {
+      setFbName('');
+      setIsFbConnected(false);
+    });
+  };
 
   return (
     <Container theme={themeObj}>
@@ -353,31 +385,13 @@ export default function Profile() {
           </InfoValue>
         </InfoRow>
       </InfoBlock>
-      <FacebookButton onClick={() => setShowModal(true)}>
-        <FacebookIcon src={facebookIcon} alt="Facebook" />
-        Подключить Facebook Ads Account
-      </FacebookButton>
-      <LogoutButton theme={themeObj}>Выйти</LogoutButton>
-      {showModal && (
-        <FacebookModalOverlay onClick={() => setShowModal(false)}>
-          <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
-            <FacebookModalIcon src={megaphoneIcon} alt="Megaphone" />
-            <FacebookModalTitle theme={themeObj}>Подключение рекламного аккаунта</FacebookModalTitle>
-            <FacebookModalText theme={themeObj}>
-              Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.
-            </FacebookModalText>
-            <div style={{fontWeight:600, color:themeObj.text, textAlign:'left', width:'100%', marginBottom:8}}>Это позволяет вам:</div>
-            <FacebookModalList theme={themeObj}>
-              <li>Использовать ИИ автопилот</li>
-              <li>Получать советы и диагностику от ИИ</li>
-              <li>Просматривать метрики</li>
-              <li>Загружать креативы</li>
-            </FacebookModalList>
-            <FacebookModalButton theme={themeObj} onClick={()=>setShowModal(false)}>
-              Подключить рекламный аккаунт
-            </FacebookModalButton>
-          </FacebookModalWindow>
-        </FacebookModalOverlay>
+      {isFbConnected ? (
+        <>
+          <div>Имя пользователя: {fbName}</div>
+          <button onClick={handleFbLogout}>Выйти</button>
+        </>
+      ) : (
+        <button onClick={handleFbLogin}>Подключить Facebook</button>
       )}
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
