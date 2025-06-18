@@ -15,8 +15,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 0;
-  overflow: hidden;
+  padding: 0 0 80px 0;
 `;
 
 const Title = styled.h1`
