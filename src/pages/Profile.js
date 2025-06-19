@@ -99,31 +99,21 @@ const Arrow = styled.span`
 `;
 
 const FacebookButton = styled.button`
-  width: calc(100% - 32px);
-  margin: 0 16px 16px 16px;
-  padding: 16px;
-  background: #1877F3;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
+  padding: 12px 24px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   transition: background 0.2s;
-  box-shadow: none;
   &:hover {
-    background: #166fe0;
+    background: ${({ theme }) => theme.primaryHover || '#1565c0'};
   }
-`;
-
-const FacebookIcon = styled.img`
-  width: 22px;
-  height: 22px;
-  display: block;
 `;
 
 const LogoutButton = styled.button`
@@ -229,8 +219,14 @@ const ThemeOption = styled.button`
   box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
 `;
 
-const FacebookModalOverlay = styled(ModalOverlay)`
+const FacebookModalOverlay = styled.div`
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 const FacebookModalWindow = styled.div`
   background: ${({ theme }) => theme.card};
@@ -293,6 +289,7 @@ export default function Profile() {
   const themeObj = themes[theme];
   const [fbName, setFbName] = useState('');
   const [isFbConnected, setIsFbConnected] = useState(false);
+  const [showFbModal, setShowFbModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -391,7 +388,10 @@ export default function Profile() {
           <button onClick={handleFbLogout}>Выйти</button>
         </>
       ) : (
-        <button onClick={handleFbLogin}>Подключить Facebook</button>
+        <FacebookButton theme={themeObj} onClick={() => setShowFbModal(true)}>
+          <img src={facebookIcon} alt="Facebook" style={{width:22, height:22}} />
+          Подключить Facebook Ads Account
+        </FacebookButton>
       )}
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
@@ -401,6 +401,25 @@ export default function Profile() {
             <ThemeOption selected={theme==='dark'} onClick={()=>handleThemeChange('dark')}>Тёмная</ThemeOption>
           </ThemeModalWindow>
         </ThemeModalOverlay>
+      )}
+      {showFbModal && (
+        <FacebookModalOverlay onClick={() => setShowFbModal(false)}>
+          <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
+            <img src={megaphoneIcon} alt="Megaphone" style={{width:64, height:64, marginBottom:18}} />
+            <div style={{fontSize:24, fontWeight:700, marginBottom:18}}>Подключение рекламного аккаунта</div>
+            <div style={{fontSize:16, marginBottom:18}}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</div>
+            <ul style={{textAlign:'left', margin:'0 0 18px 0', paddingLeft:18, color:themeObj.text, fontSize:16}}>
+              <li>Использовать ИИ автопилот</li>
+              <li>Получать советы и диагностику от ИИ</li>
+              <li>Просматривать метрики</li>
+              <li>Загружать креативы</li>
+            </ul>
+            <FacebookButton theme={themeObj} onClick={handleFbLogin}>
+              <img src={facebookIcon} alt="Facebook" style={{width:22, height:22}} />
+              Подключить рекламный аккаунт
+            </FacebookButton>
+          </FacebookModalWindow>
+        </FacebookModalOverlay>
       )}
       <BottomNavigation activeTab="/profile" />
     </Container>
