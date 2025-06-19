@@ -99,20 +99,25 @@ const Arrow = styled.span`
 `;
 
 const FacebookButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.buttonText};
+  width: calc(100% - 32px);
+  height: 48px;
+  margin: 0 16px 16px 16px;
+  padding: 0 16px;
+  background: #1877F3;
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  padding: 12px 24px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   transition: background 0.2s;
+  box-shadow: none;
   &:hover {
-    background: ${({ theme }) => theme.primaryHover || '#1565c0'};
+    background: #166fe0;
   }
 `;
 
@@ -389,7 +394,6 @@ export default function Profile() {
         </>
       ) : (
         <FacebookButton theme={themeObj} onClick={() => setShowFbModal(true)}>
-          <img src={facebookIcon} alt="Facebook" style={{width:22, height:22}} />
           Подключить Facebook Ads Account
         </FacebookButton>
       )}
@@ -414,10 +418,9 @@ export default function Profile() {
               <li>Просматривать метрики</li>
               <li>Загружать креативы</li>
             </ul>
-            <FacebookButton theme={themeObj} onClick={handleFbLogin}>
-              <img src={facebookIcon} alt="Facebook" style={{width:22, height:22}} />
+            <FacebookModalButton theme={themeObj} onClick={handleFbLogin}>
               Подключить рекламный аккаунт
-            </FacebookButton>
+            </FacebookModalButton>
           </FacebookModalWindow>
         </FacebookModalOverlay>
       )}
