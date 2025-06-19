@@ -352,7 +352,7 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   const handleFbLogin = () => {
-    window.location.href = '/fb/login';
+    window.location.href = 'http://127.0.0.1:8000/fb/login';
   };
 
   const handleFbLogout = () => {
