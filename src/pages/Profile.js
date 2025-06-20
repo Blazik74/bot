@@ -386,16 +386,16 @@ export default function Profile() {
           </InfoValue>
         </InfoRow>
       </InfoBlock>
-      <div className="profile-actions">
-        {isFbConnected ? (
-          <>
-            <div>Имя пользователя: {fbName}</div>
-            <button className="profile-button-logout" onClick={handleFbLogout}>Выйти</button>
-          </>
-        ) : (
-          <button className="profile-button" onClick={handleFbLogin}>Подключить Facebook</button>
-        )}
-      </div>
+      {isFbConnected ? (
+        <LogoutButton theme={themeObj} onClick={handleFbLogout}>
+          Выйти из Facebook ({fbName})
+        </LogoutButton>
+      ) : (
+        <FacebookButton onClick={handleFbLogin}>
+          <FacebookIcon src={facebookIcon} />
+          Подключить Facebook
+        </FacebookButton>
+      )}
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
           <ThemeModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
