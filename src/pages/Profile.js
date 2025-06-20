@@ -6,6 +6,7 @@ import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 import axios from 'axios';
+import api from '../../api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -100,9 +101,8 @@ const Arrow = styled.span`
 
 const FacebookButton = styled.button`
   width: calc(100% - 32px);
-  height: 48px;
   margin: 0 16px 16px 16px;
-  padding: 0 16px;
+  padding: 16px;
   background: #1877F3;
   color: #fff;
   border: none;
@@ -119,6 +119,12 @@ const FacebookButton = styled.button`
   &:hover {
     background: #166fe0;
   }
+`;
+
+const FacebookIcon = styled.img`
+  width: 22px;
+  height: 22px;
+  display: block;
 `;
 
 const LogoutButton = styled.button`
@@ -224,14 +230,8 @@ const ThemeOption = styled.button`
   box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
 `;
 
-const FacebookModalOverlay = styled.div`
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
+const FacebookModalOverlay = styled(ModalOverlay)`
   background: rgba(0,0,0,0.18);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 const FacebookModalWindow = styled.div`
   background: ${({ theme }) => theme.card};
@@ -294,7 +294,6 @@ export default function Profile() {
   const themeObj = themes[theme];
   const [fbName, setFbName] = useState('');
   const [isFbConnected, setIsFbConnected] = useState(false);
-  const [showFbModal, setShowFbModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -352,7 +351,7 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   const handleFbLogin = () => {
-    window.location.href = 'http://127.0.0.1:8000/fb/login';
+    window.location.href = `${api.defaults.baseURL}/fb/login`;
   };
 
   const handleFbLogout = () => {
@@ -387,16 +386,16 @@ export default function Profile() {
           </InfoValue>
         </InfoRow>
       </InfoBlock>
-      {isFbConnected ? (
-        <>
-          <div>Имя пользователя: {fbName}</div>
-          <button onClick={handleFbLogout}>Выйти</button>
-        </>
-      ) : (
-        <FacebookButton theme={themeObj} onClick={() => setShowFbModal(true)}>
-          Подключить Facebook Ads Account
-        </FacebookButton>
-      )}
+      <div className="profile-actions">
+        {isFbConnected ? (
+          <>
+            <div>Имя пользователя: {fbName}</div>
+            <button className="profile-button-logout" onClick={handleFbLogout}>Выйти</button>
+          </>
+        ) : (
+          <button className="profile-button" onClick={handleFbLogin}>Подключить Facebook</button>
+        )}
+      </div>
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
           <ThemeModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
@@ -405,24 +404,6 @@ export default function Profile() {
             <ThemeOption selected={theme==='dark'} onClick={()=>handleThemeChange('dark')}>Тёмная</ThemeOption>
           </ThemeModalWindow>
         </ThemeModalOverlay>
-      )}
-      {showFbModal && (
-        <FacebookModalOverlay onClick={() => setShowFbModal(false)}>
-          <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
-            <img src={megaphoneIcon} alt="Megaphone" style={{width:64, height:64, marginBottom:18}} />
-            <div style={{fontSize:24, fontWeight:700, marginBottom:18}}>Подключение рекламного аккаунта</div>
-            <div style={{fontSize:16, marginBottom:18}}>Подключите свой рекламный аккаунт Facebook, чтобы начать работу с ИИ-таргетологом.</div>
-            <ul style={{textAlign:'left', margin:'0 0 18px 0', paddingLeft:18, color:themeObj.text, fontSize:16}}>
-              <li>Использовать ИИ автопилот</li>
-              <li>Получать советы и диагностику от ИИ</li>
-              <li>Просматривать метрики</li>
-              <li>Загружать креативы</li>
-            </ul>
-            <FacebookModalButton theme={themeObj} onClick={handleFbLogin}>
-              Подключить рекламный аккаунт
-            </FacebookModalButton>
-          </FacebookModalWindow>
-        </FacebookModalOverlay>
       )}
       <BottomNavigation activeTab="/profile" />
     </Container>
