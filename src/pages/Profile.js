@@ -6,7 +6,7 @@ import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 import axios from 'axios';
-import api from '../../api';
+import api from '../api';
 
 const Container = styled.div`
   min-height: 100vh;
