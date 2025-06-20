@@ -288,6 +288,7 @@ export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
+  const [showFbModal, setShowFbModal] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
@@ -361,6 +362,10 @@ export default function Profile() {
     });
   };
 
+  const handleConnectFbClick = () => {
+    setShowFbModal(true);
+  };
+
   return (
     <Container theme={themeObj}>
       <ProfileHeader>
@@ -391,10 +396,28 @@ export default function Profile() {
           Выйти из Facebook ({fbName})
         </LogoutButton>
       ) : (
-        <FacebookButton onClick={handleFbLogin}>
+        <FacebookButton onClick={handleConnectFbClick}>
           <FacebookIcon src={facebookIcon} />
           Подключить Facebook
         </FacebookButton>
+      )}
+      {showFbModal && (
+        <FacebookModalOverlay onClick={() => setShowFbModal(false)}>
+          <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
+            <FacebookModalIcon src={facebookIcon} />
+            <FacebookModalTitle>Подключение Facebook</FacebookModalTitle>
+            <FacebookModalText>
+              Для доступа к управлению кампаниями необходимо предоставить разрешения.
+            </FacebookModalText>
+            <FacebookModalList>
+              <li>Управление рекламными кампаниями</li>
+              <li>Чтение статистики по рекламе</li>
+            </FacebookModalList>
+            <FacebookModalButton onClick={handleFbLogin}>
+              Перейти к подключению
+            </FacebookModalButton>
+          </FacebookModalWindow>
+        </FacebookModalOverlay>
       )}
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
