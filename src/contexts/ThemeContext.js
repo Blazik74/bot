@@ -13,6 +13,7 @@ export const themes = {
     buttonText: '#fff',
     buttonSecondary: '#E0E0E0',
     buttonSecondaryText: '#005EFF',
+    hint: '#818c99'
   },
   dark: {
     background: '#1A1A1A',
@@ -24,6 +25,7 @@ export const themes = {
     buttonText: '#fff',
     buttonSecondary: '#23272A',
     buttonSecondaryText: '#fff',
+    hint: '#98989e'
   }
 };
 
