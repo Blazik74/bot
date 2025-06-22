@@ -110,11 +110,11 @@ const AppContent = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const currentTheme = themes[theme];
-  const { user, hasAccess, loading: userLoading } = useUser();
+  const { user, hasAccess, isAdmin, loading: userLoading } = useUser();
   
   const token = localStorage.getItem('authToken');
-  // Показывать навигацию только если загрузка завершена и доступ есть
-  const showBottomNav = token && !userLoading && hasAccess && user;
+  // Показывать навигацию только если загрузка завершена и доступ есть (учитывая админов)
+  const showBottomNav = token && !userLoading && (hasAccess || isAdmin) && user;
 
   useEffect(() => {
     // Попытка перехода в полноэкранный режим
