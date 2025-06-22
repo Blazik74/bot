@@ -37,6 +37,7 @@ api.interceptors.response.use(
 // Facebook Auth
 export const facebookAuth = {
   login: () => window.location.href = `${API_URL}/api/fb/login`,
+  callback: (code) => api.post('/api/fb/callback', { code }),
   logout: () => api.post('/api/fb/logout'),
   getProfile: () => api.get('/api/fb/profile'),
   getAccounts: () => api.get('/api/fb/accounts'),
