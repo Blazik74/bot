@@ -385,24 +385,9 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    // Проверяем токен в URL (после Facebook авторизации)
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const fbName = params.get('fb_name');
-    
-    if (token) {
-      localStorage.setItem('authToken', token);
-      if (fbName) {
-        setFbProfile({ name: fbName });
-        setIsFbConnected(true);
-      }
-      // Очищаем URL
-      navigate('/profile', { replace: true });
-    }
-    
-    // Проверяем подключение к Facebook
+    // Проверяем подключение к Facebook при загрузке компонента
     checkFacebookConnection();
-  }, [location, navigate]);
+  }, []);
 
   const checkFacebookConnection = async () => {
     try {

@@ -61,7 +61,7 @@ const IconCircle = styled.div`
 const IconImg = styled.img`
   width: 28px;
   height: 28px;
-  object-fit: contain;
+    object-fit: contain;
 `;
 
 const IconLabel = styled.div`
