@@ -21,13 +21,13 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #f0f2f5;
+  background-color: var(--tg-theme-secondary-bg-color, #f0f2f5);
   margin-bottom: 24px;
 
   svg {
     width: 48px;
     height: 48px;
-    fill: #818c99;
+    fill: var(--tg-theme-hint-color, #818c99);
   }
 `;
 
@@ -39,7 +39,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 16px;
-  color: #818c99;
+  color: var(--tg-theme-hint-color, #818c99);
   max-width: 300px;
   line-height: 1.5;
 `;
@@ -49,14 +49,14 @@ const Button = styled.button`
   padding: 12px 24px;
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
-  background-color: #007bff;
+  color: var(--tg-theme-button-text-color, #fff);
+  background-color: var(--tg-theme-button-color, #007bff);
   border: none;
   border-radius: 8px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    filter: brightness(110%);
   }
 `;
 
@@ -64,7 +64,7 @@ const AccessDeniedPage = () => {
     // Можно добавить логику для кнопки, например, связаться с админом
     const handleRequestAccess = () => {
         // Например, открыть ссылку на Telegram-бота
-        window.open('https://t.me/YOUR_BOT_USERNAME', '_blank');
+        window.open('https://t.me/Tesssstttor_bot', '_blank');
     };
 
   return (
