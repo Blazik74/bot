@@ -6,6 +6,10 @@ import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
 import './App.css';
+import { AnimatePresence } from 'framer-motion';
+import BottomNav from './components/BottomNav.js';
+import { Notifications } from './components/Notifications.js';
+import { useUser } from './contexts/UserContext';
 
 // Импорт SVG-иконок
 import aiCenter from './assets/icons/ai-center.svg';
@@ -104,7 +108,13 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme } = useThemeContext();
+  const { theme, setTheme } = useThemeContext();
+  const currentTheme = themes[theme];
+  const { user, hasAccess, loading: userLoading } = useUser();
+  
+  const token = localStorage.getItem('authToken');
+  // Показывать навигацию только если загрузка завершена и доступ есть
+  const showBottomNav = token && !userLoading && hasAccess && user;
 
   useEffect(() => {
     // Попытка перехода в полноэкранный режим
@@ -140,12 +150,28 @@ const AppContent = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const tg = window.Telegram.WebApp;
+    if (tg) {
+      tg.ready();
+      // Устанавливаем тему из Telegram
+      setTheme(tg.colorScheme === 'dark' ? 'dark' : 'light');
+      tg.onEvent('themeChanged', () => {
+        setTheme(tg.colorScheme === 'dark' ? 'dark' : 'light');
+      });
+      tg.expand();
+    }
+  }, [setTheme]);
+
   if (loading) return <Loader theme={themes[theme]} />;
 
   return (
     <AppContainer>
-      <AppRoutes />
-      <BottomNavigation />
+      <Notifications />
+      <AnimatePresence mode="wait">
+        <AppRoutes />
+      </AnimatePresence>
+      {showBottomNav && <BottomNav />}
     </AppContainer>
   );
 };
