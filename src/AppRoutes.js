@@ -33,7 +33,7 @@ const Spinner = styled.div`
 `;
 
 const AppRoutes = () => {
-  const { user, loading, hasAccess } = useUser();
+  const { user, loading, hasAccess, isAdmin } = useUser();
   const token = localStorage.getItem('authToken');
 
   if (loading && token) {
@@ -44,9 +44,12 @@ const AppRoutes = () => {
     );
   }
 
-  // Если у пользователя нет токена или нет доступа, показываем страницу "Доступ запрещен"
+  // Определяем, есть ли у пользователя полный доступ
+  const canAccessApp = hasAccess || isAdmin;
+
+  // Если у пользователя нет токена или нет полного доступа, показываем страницу "Доступ запрещен"
   // Оставляем доступ к странице /facebook-callback, чтобы завершить авторизацию
-  if (!user || !hasAccess) {
+  if (!user || !canAccessApp) {
     return (
         <Routes>
             <Route path="/facebook-callback" element={<FacebookCallback />} />
