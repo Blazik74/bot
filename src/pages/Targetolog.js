@@ -659,6 +659,8 @@ export default function Targetolog() {
   const [adviceIndex, setAdviceIndex] = useState(0);
   const [adviceSpinning, setAdviceSpinning] = useState(false);
   const [adviceExpanded, setAdviceExpanded] = useState(false);
+  const [showAdvice, setShowAdvice] = useState(false);
+  const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
 
   const { user } = useUser();
   const [isLockModalOpen, setLockModalOpen] = useState(false);
