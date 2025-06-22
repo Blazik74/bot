@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 import axios from 'axios';
-import api from '../api';
+import api, { facebookAuth, userApi } from '../api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -127,6 +127,47 @@ const FacebookIcon = styled.img`
   display: block;
 `;
 
+const FacebookProfileCard = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 12px;
+  margin: 0 16px 16px 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: ${({ theme }) => theme.border};
+  }
+`;
+
+const FacebookAvatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f0f0f0;
+`;
+
+const FacebookInfo = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+const FacebookName = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 4px;
+`;
+
+const FacebookStatus = styled.div`
+  font-size: 14px;
+  color: #1877F3;
+  font-weight: 500;
+`;
+
 const LogoutButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px;
@@ -198,41 +239,23 @@ const ModalText = styled.div`
 `;
 
 const ModalList = styled.ul`
-  text-align: left;
-  margin: 0 0 18px 0;
-  padding-left: 18px;
   color: ${({ theme }) => theme.text};
-  font-size: 16px;
-`;
-
-const ThemeModalOverlay = styled(ModalOverlay)`
-  z-index: 2000;
-`;
-const ThemeModalWindow = styled(ModalWindow)`
-  max-width: 320px;
-  padding: 32px 0 24px 0;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
-`;
-const ThemeOption = styled.button`
-  width: 80%;
-  margin: 0 auto 16px auto;
-  display: block;
-  padding: 16px 0;
   font-size: 18px;
-  font-weight: 600;
-  border-radius: 10px;
-  border: none;
-  background: ${({ selected }) => selected ? '#005EFF' : '#f2f2f2'};
-  color: ${({ selected }) => selected ? '#fff' : '#222'};
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  box-shadow: ${({ selected }) => selected ? '0 2px 8px 0 rgba(0,94,255,0.08)' : 'none'};
+  margin-bottom: 32px;
+  padding-left: 18px;
+  text-align: left;
 `;
 
-const FacebookModalOverlay = styled(ModalOverlay)`
-  background: rgba(0,0,0,0.18);
+const FacebookModalOverlay = styled.div`
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.08);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+
 const FacebookModalWindow = styled.div`
   background: ${({ theme }) => theme.card};
   border-radius: 16px;
@@ -246,23 +269,27 @@ const FacebookModalWindow = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
 const FacebookModalIcon = styled.img`
   width: 64px;
   height: 64px;
   margin: 0 auto 18px auto;
   display: block;
 `;
+
 const FacebookModalTitle = styled.div`
   font-size: 24px;
   font-weight: 700;
   color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
+
 const FacebookModalText = styled.div`
   font-size: 16px;
   color: ${({ theme }) => theme.text};
   margin-bottom: 18px;
 `;
+
 const FacebookModalList = styled.ul`
   color: ${({ theme }) => theme.text};
   font-size: 16px;
@@ -270,6 +297,7 @@ const FacebookModalList = styled.ul`
   padding-left: 18px;
   text-align: left;
 `;
+
 const FacebookModalButton = styled.button`
   background: ${({ theme }) => theme.primary};
   color: ${({ theme }) => theme.buttonText};
@@ -284,17 +312,50 @@ const FacebookModalButton = styled.button`
   display: block;
 `;
 
+const ThemeModalOverlay = styled.div`
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.08);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ThemeModalWindow = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 16px;
+  padding: 32px 18px 24px 18px;
+  max-width: 340px;
+  width: 90vw;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
+`;
+
+const ThemeOption = styled.div`
+  padding: 16px;
+  margin: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  background: ${({ selected, theme }) => selected ? theme.primary : 'transparent'};
+  color: ${({ selected, theme }) => selected ? theme.buttonText : theme.text};
+  font-weight: ${({ selected }) => selected ? '600' : '400'};
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showFbModal, setShowFbModal] = useState(false);
+  const [fbProfile, setFbProfile] = useState(null);
+  const [isFbConnected, setIsFbConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, setTheme } = useThemeContext();
   const themeObj = themes[theme];
-  const [fbName, setFbName] = useState('');
-  const [isFbConnected, setIsFbConnected] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -324,22 +385,48 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    // Можно получить имя из query-параметра или запросить с бэка
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get('fb_name');
-    if (name) {
-      setFbName(name);
-      setIsFbConnected(true);
-    } else {
-      // Запросить с бэка
-      axios.get('/me').then(res => {
-        if (res.data.name) {
-          setFbName(res.data.name);
-          setIsFbConnected(true);
-        }
-      });
+    // Проверяем токен в URL (после Facebook авторизации)
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    const fbName = params.get('fb_name');
+    
+    if (token) {
+      localStorage.setItem('authToken', token);
+      if (fbName) {
+        setFbProfile({ name: fbName });
+        setIsFbConnected(true);
+      }
+      // Очищаем URL
+      navigate('/profile', { replace: true });
     }
-  }, []);
+    
+    // Проверяем подключение к Facebook
+    checkFacebookConnection();
+  }, [location, navigate]);
+
+  const checkFacebookConnection = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        // Проверяем статус подключения
+        const meResponse = await userApi.getMe();
+        if (meResponse.data.facebook_connected) {
+          setIsFbConnected(true);
+          // Получаем профиль Facebook
+          try {
+            const fbResponse = await facebookAuth.getProfile();
+            setFbProfile(fbResponse.data);
+          } catch (error) {
+            console.log('Facebook profile not available');
+          }
+        }
+      }
+    } catch (error) {
+      console.log('Not authenticated or Facebook not connected');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
@@ -352,19 +439,35 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   const handleFbLogin = () => {
-    window.location.href = `${api.defaults.baseURL}/fb/login`;
+    facebookAuth.login();
   };
 
-  const handleFbLogout = () => {
-    axios.post('/fb/logout').then(() => {
-      setFbName('');
+  const handleFbLogout = async () => {
+    try {
+      await facebookAuth.logout();
+      setFbProfile(null);
       setIsFbConnected(false);
-    });
+    } catch (error) {
+      console.error('Error logging out from Facebook:', error);
+    }
   };
 
   const handleConnectFbClick = () => {
     setShowFbModal(true);
   };
+
+  const handleFacebookProfileClick = () => {
+    // Открываем профиль Facebook в новой вкладке
+    window.open('https://www.facebook.com/profile.php', '_blank');
+  };
+
+  if (isLoading) {
+    return (
+      <Container theme={themeObj}>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>Загрузка...</div>
+      </Container>
+    );
+  }
 
   return (
     <Container theme={themeObj}>
@@ -391,16 +494,30 @@ export default function Profile() {
           </InfoValue>
         </InfoRow>
       </InfoBlock>
-      {isFbConnected ? (
-        <LogoutButton theme={themeObj} onClick={handleFbLogout}>
-          Выйти из Facebook ({fbName})
-        </LogoutButton>
+      
+      {isFbConnected && fbProfile ? (
+        <>
+          <FacebookProfileCard theme={themeObj} onClick={handleFacebookProfileClick}>
+            <FacebookAvatar src={fbProfile.picture || facebookIcon} alt={fbProfile.name} />
+            <FacebookInfo>
+              <FacebookName theme={themeObj}>{fbProfile.name}</FacebookName>
+              <FacebookStatus>Подключен к Facebook</FacebookStatus>
+            </FacebookInfo>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4L13 10L7 16" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </FacebookProfileCard>
+          <LogoutButton theme={themeObj} onClick={handleFbLogout}>
+            Отключить Facebook
+          </LogoutButton>
+        </>
       ) : (
         <FacebookButton onClick={handleConnectFbClick}>
           <FacebookIcon src={facebookIcon} />
           Подключить Facebook
         </FacebookButton>
       )}
+      
       {showFbModal && (
         <FacebookModalOverlay onClick={() => setShowFbModal(false)}>
           <FacebookModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
@@ -419,6 +536,7 @@ export default function Profile() {
           </FacebookModalWindow>
         </FacebookModalOverlay>
       )}
+      
       {showThemeDropdown && (
         <ThemeModalOverlay onClick={() => setShowThemeDropdown(false)}>
           <ThemeModalWindow theme={themeObj} onClick={e => e.stopPropagation()}>
@@ -428,6 +546,7 @@ export default function Profile() {
           </ThemeModalWindow>
         </ThemeModalOverlay>
       )}
+      
       <BottomNavigation activeTab="/profile" />
     </Container>
   );
