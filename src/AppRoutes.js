@@ -7,6 +7,7 @@ import Tariffs from './pages/Tariffs';
 import Profile from './pages/Profile';
 import { Notifications } from './components/Notifications';
 import FacebookConnect from './pages/FacebookConnect';
+import FacebookCallback from './pages/FacebookCallback';
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/tariffs" element={<Tariffs />} />
       <Route path="/facebook-connect" element={<FacebookConnect />} />
+      <Route path="/facebook-callback" element={<FacebookCallback />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
