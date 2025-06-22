@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_API_URL || "https://tg-miniapp-7li9.onrender.com";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -36,14 +36,16 @@ api.interceptors.response.use(
 
 // Facebook Auth
 export const facebookAuth = {
-  getAuthUrl: () => api.get('/api/auth/facebook/url'),
-  callback: (code) => api.post('/api/auth/facebook/callback', { code }),
-  logout: () => api.post('/api/auth/logout'),
+  login: () => window.location.href = `${API_URL}/api/fb/login`,
+  logout: () => api.post('/api/fb/logout'),
+  getProfile: () => api.get('/api/fb/profile'),
+  getAccounts: () => api.get('/api/fb/accounts'),
 };
 
 // User
 export const userApi = {
   getProfile: () => api.get('/api/user/profile'),
+  getMe: () => api.get('/api/me'),
   updateTariff: (tariffId) => api.put('/api/user/tariff', { tariff_id: tariffId }),
 };
 
