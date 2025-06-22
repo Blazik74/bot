@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as LockIcon } from '../assets/icons/lock.svg'; // Предполагается, что иконка замка будет добавлена
+// import { ReactComponent as LockIcon } from '../assets/icons/lock.svg'; // Убираем этот импорт, так как файла нет
 
 const Container = styled.div`
   display: flex;
