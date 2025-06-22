@@ -33,8 +33,37 @@ export const UserProvider = ({ children }) => {
 
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        // Добавляем слушатели событий, чтобы обновлять данные пользователя,
+        // когда он возвращается на вкладку.
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                refetchUser();
+            }
+        };
+
+        const handleFocus = () => {
+            refetchUser();
+        };
+
+        window.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('focus', handleFocus);
+
+        // Убираем слушатели при размонтировании компонента
+        return () => {
+            window.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, []);
     
     const refetchUser = async () => {
+        // Не обновляем, если токена нет
+        if (!localStorage.getItem('authToken')) {
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await userApi.getProfile();
