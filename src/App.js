@@ -151,8 +151,9 @@ const AppContent = () => {
   }, []);
 
   useEffect(() => {
-    const tg = window.Telegram.WebApp;
-    if (tg) {
+    // Проверяем, что мы внутри Telegram, прежде чем использовать tg
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
       tg.ready();
       // Устанавливаем тему из Telegram
       setTheme(tg.colorScheme === 'dark' ? 'dark' : 'light');
