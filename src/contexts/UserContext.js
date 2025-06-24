@@ -56,6 +56,12 @@ export const UserProvider = ({ children }) => {
             window.removeEventListener('focus', handleFocus);
         };
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            console.log('USER DEBUG:', user);
+        }
+    }, [user]);
     
     const refetchUser = async () => {
         // Не обновляем, если токена нет
@@ -88,7 +94,7 @@ export const UserProvider = ({ children }) => {
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
         canAccessApp:
             (user?.role === 'admin' || user?.role === 'superadmin') ||
-            (!!user?.tariff && user?.tariff !== 'free'),
+            (!!user?.tariff && user?.tariff.name && user?.tariff.name.toLowerCase() !== 'бесплатный'),
     };
 
     return (
