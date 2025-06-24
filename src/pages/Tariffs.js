@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import BottomNavigation from '../components/BottomNavigation';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
+import { useUser } from '../contexts/UserContext';
+import { tariffsApi, userApi } from '../api';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -82,25 +84,62 @@ const PayButton = styled.button`
   transition: background 0.2s;
 `;
 
-const tariffs = [
-  {
-    id: 1,
-    name: 'Фрилансер',
-    price: '50 000',
-    currency: '₸',
-  },
-  {
-    id: 2,
-    name: 'Компания',
-    price: '80 000',
-    currency: '₸',
-  },
-];
-
 const Tariffs = () => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(null);
+  const [tariffs, setTariffs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const { theme } = useThemeContext();
+  const { user, refetchUser } = useUser();
   const themeObj = themes[theme];
+
+  useEffect(() => {
+    const fetchTariffs = async () => {
+      try {
+        const response = await tariffsApi.getAll();
+        setTariffs(response.data);
+        // Устанавливаем текущий тариф пользователя как выбранный
+        if (user?.tariff?.id) {
+          setSelected(user.tariff.id);
+        }
+      } catch (error) {
+        console.error('Error fetching tariffs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTariffs();
+  }, [user]);
+
+  const handleTariffSelect = (tariffId) => {
+    setSelected(tariffId);
+  };
+
+  const handlePayClick = async () => {
+    if (!selected || updating) return;
+
+    setUpdating(true);
+    try {
+      await userApi.updateTariff(selected);
+      await refetchUser(); // Обновляем данные пользователя
+      alert('Тариф успешно обновлен!');
+    } catch (error) {
+      console.error('Error updating tariff:', error);
+      alert('Ошибка при обновлении тарифа. Попробуйте еще раз.');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container theme={themeObj}>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>Загрузка тарифов...</div>
+      </Container>
+    );
+  }
+
   return (
     <Container theme={themeObj}>
       <Title theme={themeObj}>Тарифы и оплата</Title>
@@ -110,17 +149,28 @@ const Tariffs = () => {
             key={tariff.id}
             selected={selected === tariff.id}
             theme={themeObj}
-            onClick={() => setSelected(tariff.id)}
+            onClick={() => handleTariffSelect(tariff.id)}
           >
             <TariffName theme={themeObj}>{tariff.name}</TariffName>
             <TariffPriceRow>
-              <TariffPrice theme={themeObj}>{tariff.currency}{tariff.price}</TariffPrice>
+              <TariffPrice theme={themeObj}>{tariff.price} ₸</TariffPrice>
               <TariffPerMonth>в месяц</TariffPerMonth>
             </TariffPriceRow>
+            {tariff.campaigns_limit > 0 && (
+              <div style={{ fontSize: '14px', color: '#888', marginTop: '8px' }}>
+                До {tariff.campaigns_limit} кампаний
+              </div>
+            )}
           </TariffCard>
         ))}
       </TariffList>
-      <PayButton theme={themeObj} disabled={!selected}>Оплатить</PayButton>
+      <PayButton 
+        theme={themeObj} 
+        disabled={!selected || updating}
+        onClick={handlePayClick}
+      >
+        {updating ? 'Обновление...' : 'Выбрать тариф'}
+      </PayButton>
       <BottomNavigation activeTab="/" />
     </Container>
   );
