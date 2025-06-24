@@ -128,26 +128,14 @@ export const UserProvider = ({ children }) => {
         refetchUser,
         hasAccess: user?.has_access ?? false,
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
-        canAccessApp: (() => {
-            const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
-            const hasAccess = user?.has_access === true;
-            const hasPaidTariff = user?.tariff && user?.tariff.id > 1;
-            
-            const canAccess = isAdmin || hasAccess || hasPaidTariff;
-            
-            console.log('Access Debug:', {
-                user: user?.id,
-                role: user?.role,
-                isAdmin,
-                hasAccess,
-                tariffId: user?.tariff?.id,
-                tariffName: user?.tariff?.name,
-                hasPaidTariff,
-                canAccess
-            });
-            
-            return canAccess;
-        })(),
+        canAccessApp: Boolean(
+            user && (
+                user.role === 'admin' ||
+                user.role === 'superadmin' ||
+                user.has_access === true ||
+                (user.tariff && user.tariff.id > 1)
+            )
+        ),
     };
 
     return (
