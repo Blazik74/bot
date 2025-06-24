@@ -72,6 +72,15 @@ const AccessDeniedPage = () => {
     window.open('https://t.me/Tesssstttor_bot', '_blank');
   };
 
+  const handleOpenTelegram = () => {
+    // Открываем бота в Telegram
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.openTelegramLink('https://t.me/Tesssstttor_bot');
+    } else {
+      window.open('https://t.me/Tesssstttor_bot', '_blank');
+    }
+  };
+
   return (
     <Container theme={currentTheme}>
       <IconWrapper theme={currentTheme}>
@@ -80,9 +89,15 @@ const AccessDeniedPage = () => {
       </IconWrapper>
       <Title>Доступ к приложению</Title>
       <Subtitle theme={currentTheme}>
-        Для использования сервиса ваш Telegram-аккаунт должен быть авторизован
+        Для использования сервиса необходимо:
+        <br /><br />
+        1. Запустить бота @Tesssstttor_bot
+        <br />
+        2. Получить доступ к платному тарифу
+        <br />
+        3. Открыть мини-приложение через бота
       </Subtitle>
-      <Button theme={currentTheme} onClick={handleRequestAccess}>Запросить доступ</Button>
+      <Button theme={currentTheme} onClick={handleOpenTelegram}>Открыть бота</Button>
     </Container>
   );
 };
