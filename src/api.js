@@ -43,6 +43,11 @@ export const facebookAuth = {
   getAccounts: () => api.get('/api/fb/accounts'),
 };
 
+// Telegram Auth
+export const telegramAuth = {
+  login: (initData) => api.post('/api/auth/telegram', { initData }),
+};
+
 // User
 export const userApi = {
   getProfile: () => api.get('/api/user/profile'),
