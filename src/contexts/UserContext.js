@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { userApi } from '../api';
+import { userApi, telegramAuth } from '../api';
 
 const UserContext = createContext(null);
 
@@ -32,6 +32,42 @@ export const UserProvider = ({ children }) => {
         };
 
         fetchUser();
+    }, []);
+
+    // Проверяем, запущено ли приложение в Telegram WebApp
+    useEffect(() => {
+        const initTelegramAuth = async () => {
+            // Проверяем, есть ли уже токен
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                return;
+            }
+
+            // Проверяем, запущено ли приложение в Telegram WebApp
+            if (window.Telegram && window.Telegram.WebApp) {
+                try {
+                    const initData = window.Telegram.WebApp.initData;
+                    if (initData) {
+                        setLoading(true);
+                        const response = await telegramAuth.login(initData);
+                        const { token, user: userData } = response.data;
+                        
+                        // Сохраняем токен и данные пользователя
+                        localStorage.setItem('authToken', token);
+                        setUser(userData);
+                    }
+                } catch (err) {
+                    console.error("Telegram auth failed:", err);
+                    setError(err);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+
+        initTelegramAuth();
     }, []);
 
     useEffect(() => {
@@ -92,10 +128,26 @@ export const UserProvider = ({ children }) => {
         refetchUser,
         hasAccess: user?.has_access ?? false,
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
-        canAccessApp:
-            (user?.role === 'admin' || user?.role === 'superadmin') ||
-            (user?.has_access === true) ||
-            (user?.tariff && user?.tariff.id > 1),
+        canAccessApp: (() => {
+            const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
+            const hasAccess = user?.has_access === true;
+            const hasPaidTariff = user?.tariff && user?.tariff.id > 1;
+            
+            const canAccess = isAdmin || hasAccess || hasPaidTariff;
+            
+            console.log('Access Debug:', {
+                user: user?.id,
+                role: user?.role,
+                isAdmin,
+                hasAccess,
+                tariffId: user?.tariff?.id,
+                tariffName: user?.tariff?.name,
+                hasPaidTariff,
+                canAccess
+            });
+            
+            return canAccess;
+        })(),
     };
 
     return (
