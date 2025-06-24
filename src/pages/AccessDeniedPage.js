@@ -66,38 +66,15 @@ const AccessDeniedPage = () => {
   const { theme } = useThemeContext();
   const currentTheme = themes[theme] || themes.light;
 
-  // Можно добавить логику для кнопки, например, связаться с админом
-  const handleRequestAccess = () => {
-    // Например, открыть ссылку на Telegram-бота
-    window.open('https://t.me/Tesssstttor_bot', '_blank');
-  };
-
-  const handleOpenTelegram = () => {
-    // Открываем бота в Telegram
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.openTelegramLink('https://t.me/Tesssstttor_bot');
-    } else {
-      window.open('https://t.me/Tesssstttor_bot', '_blank');
-    }
-  };
-
   return (
     <Container theme={currentTheme}>
       <IconWrapper theme={currentTheme}>
-        {/* Вместо иконки замка можно использовать любую другую */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v3H9V7c0-1.654 1.346-3 3-3z"></path></svg>
       </IconWrapper>
       <Title>Доступ к приложению</Title>
       <Subtitle theme={currentTheme}>
-        Для использования сервиса необходимо:
-        <br /><br />
-        1. Запустить бота @Tesssstttor_bot
-        <br />
-        2. Получить доступ к платному тарифу
-        <br />
-        3. Открыть мини-приложение через бота
+        Доступ к приложению запрещён. Обратитесь к администратору.
       </Subtitle>
-      <Button theme={currentTheme} onClick={handleOpenTelegram}>Открыть бота</Button>
     </Container>
   );
 };
