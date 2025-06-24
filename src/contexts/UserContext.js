@@ -94,7 +94,8 @@ export const UserProvider = ({ children }) => {
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
         canAccessApp:
             (user?.role === 'admin' || user?.role === 'superadmin') ||
-            (!!user?.tariff && user?.tariff.name && user?.tariff.name.toLowerCase() !== 'бесплатный'),
+            (user?.has_access === true) ||
+            (user?.tariff && user?.tariff.id > 1),
     };
 
     return (
