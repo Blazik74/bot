@@ -11,6 +11,7 @@ import FacebookConnect from './pages/FacebookConnect';
 import FacebookCallback from './pages/FacebookCallback';
 import AccessDeniedPage from './pages/AccessDeniedPage'; // Импортируем новую страницу
 import styled from 'styled-components';
+import AdminPanel from './pages/AdminPanel'; // если такой страницы нет, создайте заглушку
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -55,6 +56,9 @@ const AppRoutes = () => {
     );
   }
   
+  // Доступ к админ-панели только для админов и суперадминов
+  const isAdmin = user.role === 'admin' || user.role === 'superadmin';
+
   // Если доступ есть, показываем все страницы
   return (
     <Routes>
@@ -64,6 +68,7 @@ const AppRoutes = () => {
       <Route path="/tariffs" element={<Tariffs />} />
       <Route path="/facebook-connect" element={<FacebookConnect />} />
       <Route path="/facebook-callback" element={<FacebookCallback />} />
+      {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
