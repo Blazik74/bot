@@ -86,6 +86,9 @@ export const UserProvider = ({ children }) => {
         refetchUser,
         hasAccess: user?.has_access ?? false,
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
+        canAccessApp:
+            (user?.role === 'admin' || user?.role === 'superadmin') ||
+            (!!user?.tariff && user?.tariff !== 'free'),
     };
 
     return (
