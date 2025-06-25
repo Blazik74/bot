@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
+import { useUser } from '../contexts/UserContext';
 // import { ReactComponent as LockIcon } from '../assets/icons/lock.svg'; // Убираем этот импорт, так как файла нет
 
 const Container = styled.div`
@@ -65,6 +66,7 @@ const Button = styled.button`
 const AccessDeniedPage = () => {
   const { theme } = useThemeContext();
   const currentTheme = themes[theme] || themes.light;
+  const { refetchUser, loading } = useUser();
 
   return (
     <Container theme={currentTheme}>
@@ -75,6 +77,9 @@ const AccessDeniedPage = () => {
       <Subtitle theme={currentTheme}>
         Доступ к приложению запрещён. Обратитесь к администратору.
       </Subtitle>
+      <Button theme={currentTheme} onClick={refetchUser} disabled={loading}>
+        {loading ? 'Обновление...' : 'Обновить профиль'}
+      </Button>
     </Container>
   );
 };
