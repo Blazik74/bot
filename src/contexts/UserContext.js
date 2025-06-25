@@ -100,12 +100,10 @@ export const UserProvider = ({ children }) => {
     }, [user]);
     
     const refetchUser = async () => {
-        // Не обновляем, если токена нет
         if (!localStorage.getItem('authToken')) {
             setLoading(false);
             return;
         }
-
         setLoading(true);
         try {
             const response = await userApi.getProfile();
@@ -118,7 +116,6 @@ export const UserProvider = ({ children }) => {
             setLoading(false);
         }
     };
-
 
     const value = {
         user,
