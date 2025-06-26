@@ -161,15 +161,11 @@ export default function Tariffs() {
       <Title>Тарифы и оплата</Title>
       <Subtitle theme={themeObj}>Подберите идеальный тариф для вашего бизнеса</Subtitle>
       {error && <div style={{color:'red',margin:'16px',textAlign:'center'}}>Ошибка загрузки тарифов: {error}</div>}
-      <div style={{fontSize:12,background:'#222',color:'#fff',padding:8,margin:'8px 0',borderRadius:8}}>
-        <b>user:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(user,null,2)}</pre>
-        <b>tariffs:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(tariffs,null,2)}</pre>
-      </div>
       <TariffList>
         {loading ? (
           Array(2).fill(0).map((_, i) => <SkeletonCard key={i} theme={themeObj} />)
         ) : tariffs.length === 0 ? (
-          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет тарифов</div>
+          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет доступных тарифов</div>
         ) : (
           tariffs.map(tariff => (
             <TariffCard
