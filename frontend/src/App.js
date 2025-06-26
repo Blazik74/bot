@@ -104,67 +104,15 @@ const allImages = [
 ];
 
 const AppContent = () => {
-  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
-  const currentTheme = themes[theme];
-  const { user, hasAccess, isAdmin, loading: userLoading } = useUser();
+  const { user, loading: userLoading } = useUser();
   
   const token = localStorage.getItem('authToken');
   
   // Определяем, на каких страницах показывать нижнюю панель
   const showBottomNav = ['/', '/targetolog', '/profile'].includes(location.pathname);
-
-  useEffect(() => {
-    // Попытка перехода в полноэкранный режим
-    const enterFullscreen = () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.log('Fullscreen request failed:', err);
-        });
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen().catch(err => {
-          console.log('Webkit fullscreen request failed:', err);
-        });
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen().catch(err => {
-          console.log('MS fullscreen request failed:', err);
-        });
-      }
-    };
-
-    // Попытка перехода в полноэкранный режим при загрузке
-    enterFullscreen();
-
-    let loaded = 0;
-    allImages.forEach(src => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = img.onerror = () => {
-        loaded++;
-        if (loaded === allImages.length) {
-          setTimeout(() => setLoading(false), 400); // небольшая задержка для плавности
-        }
-      };
-    });
-  }, []);
-
-  useEffect(() => {
-    // Проверяем, что мы внутри Telegram, прежде чем использовать tg
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      // Устанавливаем тему из Telegram
-      setTheme(tg.colorScheme === 'dark' ? 'dark' : 'light');
-      tg.onEvent('themeChanged', () => {
-        setTheme(tg.colorScheme === 'dark' ? 'dark' : 'light');
-      });
-      tg.expand();
-    }
-  }, [setTheme]);
-
-  if (loading) return <Loader theme={themes[theme]} />;
 
   return (
     <AppContainer>
