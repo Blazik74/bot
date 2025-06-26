@@ -346,7 +346,15 @@ async def authenticate_telegram_user(init_data: str, request) -> Optional[User]:
     user_info = user_data.get('user')
     if not user_info:
         return None
-        
+
+    # Если user_info — строка, парсим как JSON
+    if isinstance(user_info, str):
+        import json
+        try:
+            user_info = json.loads(user_info)
+        except Exception:
+            return None
+
     telegram_id = str(user_info['id'])
     
     user_service = UserService()
