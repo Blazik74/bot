@@ -79,12 +79,6 @@ const navigationItems = [
     label: 'Профиль',
     icon: profileIcon,
     iconActive: profileIconActive
-  },
-  {
-    path: '/tariffs',
-    label: 'Тарифы',
-    icon: targetIcon,
-    iconActive: targetActiveIcon
   }
 ];
 
