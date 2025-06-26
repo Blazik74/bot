@@ -477,16 +477,6 @@ export default function Profile() {
     navigate(0); // Перезагружаем приложение
   };
 
-  if (!user) {
-    return (
-      <Container theme={themeObj}>
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-      </Container>
-    );
-  }
-
   // Определяем имя тарифа
   const tariffName = user.tariff?.name === 'Бесплатный' ? 'Нет' : user.tariff?.name || 'Нет';
   
