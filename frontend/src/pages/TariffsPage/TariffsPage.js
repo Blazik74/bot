@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useUser } from '../../contexts/UserContext';
-import { api } from '../../api'; // Предполагается, что у вас есть настроенный api
+import api from '../../api';
 import { Box, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
