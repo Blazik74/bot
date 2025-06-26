@@ -99,7 +99,7 @@ const PayButton = styled.button`
   padding: 18px 0;
   cursor: pointer;
   box-shadow: 0 2px 12px 0 rgba(0,94,255,0.08);
-  margin: 32px auto 0 auto;
+  margin: 24px auto 24px auto;
   display: block;
   transition: background 0.2s;
 `;
