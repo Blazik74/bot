@@ -113,8 +113,8 @@ const AppContent = () => {
   const { user, hasAccess, isAdmin, loading: userLoading } = useUser();
   
   const token = localStorage.getItem('authToken');
-  // Показывать навигацию только если загрузка завершена и доступ есть (учитывая админов)
-  const showBottomNav = token && !userLoading && (hasAccess || isAdmin) && user;
+  // Показывать навигацию только если пользователь авторизован
+  const showBottomNav = token && !userLoading;
 
   useEffect(() => {
     // Попытка перехода в полноэкранный режим
