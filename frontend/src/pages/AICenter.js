@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import targetologIconActive from '../assets/icons/targetolog-active.svg';
 import buhgalterIcon from '../assets/icons/buhgalter.svg';
@@ -92,11 +92,34 @@ const TariffButton = styled.button`
   }
 `;
 
+const LoaderAnim = keyframes`
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+`;
+
+const SkeletonBlock = styled.div`
+  height: 120px;
+  border-radius: 18px;
+  background: ${({ theme }) => theme.card};
+  margin: 24px 16px;
+  animation: ${LoaderAnim} 1.2s infinite;
+`;
+
 export default function AICenter() {
   const navigate = useNavigate();
   const { theme } = useThemeContext();
   const themeObj = themes[theme];
   const themeMode = theme === 'dark' ? { ...themeObj, mode: 'dark' } : { ...themeObj, mode: 'light' };
+  if (!user) {
+    return (
+      <Container theme={themeObj}>
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
+      </Container>
+    );
+  }
   return (
     <Container theme={themeMode}>
       <Title theme={themeMode}>ИИ Центр</Title>
