@@ -364,24 +364,24 @@ async def authenticate_telegram_user(init_data: str, request) -> Optional[User]:
     # ua = get_user_agent(request)
     
     if user:
-        # Пользователь найден, обновляем данные, если нужно
+        # Обновляем name, username, avatar_url при каждом входе
         update_data = {
             "name": f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip(),
             "username": user_info.get("username"),
             "avatar_url": user_info.get("photo_url"),
         }
-        user = await user_service.update_user(user.id, {k: v for k, v in update_data.items() if v is not None})
+        user = await user_service.update_user(user.id, {k: v for k, v in update_data.items() if v})
         # await user_service.log_user_action(user.id, "login_telegram", {"ip": ip, "user_agent": ua})
     else:
-        # Пользователь не найден, создаем нового
+        # Создаём нового пользователя
         new_user_data = {
             "telegram_id": telegram_id,
             "name": f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip(),
             "username": user_info.get("username"),
             "avatar_url": user_info.get("photo_url"),
-            "source": "telegram" 
+            "source": "telegram"
         }
-        user = await user_service.create_user({k: v for k, v in new_user_data.items() if v is not None})
+        user = await user_service.create_user({k: v for k, v in new_user_data.items() if v})
         # await user_service.log_user_action(user.id, "register_telegram", {"ip": ip, "user_agent": ua})
         
     return user
