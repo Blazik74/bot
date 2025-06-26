@@ -100,6 +100,20 @@ const Arrow = styled.span`
   transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 
+const ArrowRight = styled.svg`
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  fill: ${({ theme }) => theme.text};
+`;
+
+const ArrowDown = styled.svg`
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  fill: ${({ theme }) => theme.text};
+`;
+
 const FacebookButton = styled.button`
   width: calc(100% - 32px);
   margin: 0 16px 16px 16px;
@@ -401,14 +415,14 @@ export default function Profile() {
           <InfoTitle>Тариф</InfoTitle>
           <InfoValue>
             {tariff}
-            <Arrow>›</Arrow>
+            <ArrowRight theme={themeObj} viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></ArrowRight>
           </InfoValue>
         </InfoRow>
         <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={()=>setShowThemeModal(true)}>
           <InfoTitle>Тема</InfoTitle>
           <InfoValue>
             {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <Arrow>▼</Arrow>
+            <ArrowDown theme={themeObj} viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></ArrowDown>
           </InfoValue>
         </InfoRow>
       </InfoBlock>
