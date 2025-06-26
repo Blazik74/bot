@@ -1,0 +1,229 @@
+.facebook-login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.facebook-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #1877f2;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  min-height: 48px;
+}
+
+.facebook-login-btn:hover:not(:disabled) {
+  background: #166fe5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(24, 119, 242, 0.3);
+}
+
+.facebook-login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.facebook-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Стили для профиля пользователя */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #1877f2;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2);
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-details p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-tariff {
+  color: #1877f2 !important;
+  font-weight: 500;
+}
+
+.user-campaigns {
+  color: #28a745 !important;
+  font-weight: 500;
+}
+
+.facebook-logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  min-height: 40px;
+}
+
+.facebook-logout-btn:hover:not(:disabled) {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.facebook-logout-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .facebook-login-container {
+    padding: 16px;
+    margin: 0 10px;
+  }
+  
+  .user-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .user-details h3 {
+    font-size: 16px;
+  }
+  
+  .user-details p {
+    font-size: 13px;
+  }
+}
+
+/* Темная тема */
+[data-theme="dark"] .facebook-login-container {
+  background: var(--card-bg-dark, #2d3748);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .user-info {
+  background: var(--bg-secondary-dark, #4a5568);
+}
+
+[data-theme="dark"] .user-details h3 {
+  color: var(--text-primary-dark, #e2e8f0);
+}
+
+[data-theme="dark"] .user-details p {
+  color: var(--text-secondary-dark, #a0aec0);
+}
+
+[data-theme="dark"] .user-tariff {
+  color: #1877f2 !important;
+}
+
+[data-theme="dark"] .user-campaigns {
+  color: #28a745 !important;
+}
+
+[data-theme="dark"] .error-message {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+[data-theme="dark"] .facebook-logout-btn {
+  background: #dc3545;
+}
+
+[data-theme="dark"] .facebook-logout-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+[data-theme="dark"] .facebook-logout-btn:disabled {
+  opacity: 0.7;
+} 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Login Callback</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loading">
+            <div class="spinner"></div>
+            <h2>Обработка входа...</h2>
+            <p>Пожалуйста, подождите</p>
+        </div>
+        
+        <div id="error" style="display: none;">
+            <h2>Ошибка входа</h2>
+            <p id="error-message"></p>
+            <button onclick="window.close()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // Получаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const errorReason = urlParams.get('error_reason');
+        const errorDescription = urlParams.get('error_description');
+
+        // Проверяем наличие ошибок
+        if (error) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            
+            let errorMessage = 'Произошла ошибка при входе через Facebook.';
+            if (errorDescription) {
+                errorMessage += ' ' + errorDescription;
+            }
+            
+            document.getElementById('error-message').textContent = errorMessage;
+            
+            // Отправляем сообщение об ошибке родительскому окну
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'FACEBOOK_LOGIN_ERROR',
+                    error: error,
+                    reason: errorReason,
+                    description: errorDescription
+                }, window.location.origin);
+            }
+        } else if (code) {
+            // Отправляем код авторизации родительскому окну
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'FACEBOOK_LOGIN_SUCCESS',
+                    code: code
+                }, window.location.origin);
+                
+                // Закрываем окно через небольшую задержку
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
+            } else {
+                // Если нет родительского окна, показываем ошибку
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error-message').textContent = 
+                    'Это окно должно быть открыто из основного приложения.';
+            }
+        } else {
+            // Нет ни кода, ни ошибки
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error-message').textContent = 
+                'Неожиданный ответ от Facebook. Попробуйте войти еще раз.';
+        }
+
+        // Обработка закрытия окна
+        window.addEventListener('beforeunload', () => {
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'FACEBOOK_LOGIN_CANCELLED'
+                }, window.location.origin);
+            }
+        });
+    </script>
+</body>
+</html> 

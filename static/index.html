@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Facebook Ads Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <h1>🤖 AI Facebook Ads Manager</h1>
+        <div class="status">
+            <h2>✅ Backend успешно запущен!</h2>
+            <p>API готов к работе</p>
+        </div>
+        <button class="button" onclick="testAPI()">Тест API</button>
+        <button class="button" onclick="window.location.href='/facebook-callback.html'">Facebook Login</button>
+    </div>
+
+    <script>
+        async function testAPI() {
+            try {
+                const response = await fetch('/api/tariffs');
+                const data = await response.json();
+                alert('API работает! Тарифов: ' + data.length);
+            } catch (error) {
+                alert('Ошибка API: ' + error.message);
+            }
+        }
+    </script>
+  </body>
+</html>
