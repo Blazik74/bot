@@ -6,6 +6,7 @@ import buhgalterIcon from '../assets/icons/buhgalter.svg';
 import sellerIcon from '../assets/icons/seller.svg';
 import consultantIcon from '../assets/icons/consultant.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
+import { useUser } from '../contexts/UserContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -109,6 +110,7 @@ const SkeletonBlock = styled.div`
 export default function AICenter() {
   const navigate = useNavigate();
   const { theme } = useThemeContext();
+  const { user } = useUser();
   const themeObj = themes[theme];
   const themeMode = theme === 'dark' ? { ...themeObj, mode: 'dark' } : { ...themeObj, mode: 'light' };
   if (!user) {
