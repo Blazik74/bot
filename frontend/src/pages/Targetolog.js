@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import fileIcon from '../assets/icons/file-upload.svg';
 import megaphoneIcon from '../assets/icons/megaphone-bg.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -619,6 +619,20 @@ const AdviceBoxAnimated = styled(AdviceBox)`
   cursor: pointer;
 `;
 
+const LoaderAnim = keyframes`
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+`;
+
+const SkeletonBlock = styled.div`
+  height: 120px;
+  border-radius: 18px;
+  background: ${({ theme }) => theme.card};
+  margin: 24px 16px;
+  animation: ${LoaderAnim} 1.2s infinite;
+`;
+
 export default function Targetolog() {
   const { theme, setTheme, themeName, setThemeByName } = useThemeContext();
   const themeObj = themes[theme];
@@ -839,6 +853,16 @@ export default function Targetolog() {
       document.body.style.overflow = '';
     }
   }, [showCreateModal]);
+
+  if (!user) {
+    return (
+      <Container theme={themeObj}>
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
+      </Container>
+    );
+  }
 
   return (
     <Container theme={themeObj}>
