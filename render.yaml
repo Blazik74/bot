@@ -38,12 +38,12 @@ services:
           property: connectionString
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: static_site
           name: frontend
           property: url
 
   # Frontend Service (React App)
-  - type: static
+  - type: static_site
     name: frontend
     env: node
     region: frankfurt
