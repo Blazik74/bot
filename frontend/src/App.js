@@ -120,7 +120,7 @@ const AppContent = () => {
       <AnimatePresence mode="wait">
         <AppRoutes />
       </AnimatePresence>
-      {showBottomNav && <BottomNavigation />}
+      {showBottomNav && <BottomNavigation activeTab={location.pathname === '/profile' ? '/' : location.pathname} />}
     </AppContainer>
   );
 };
