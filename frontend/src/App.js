@@ -108,11 +108,20 @@ const AppContent = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useThemeContext();
   const { user, loading: userLoading } = useUser();
-  
-  const token = localStorage.getItem('authToken');
-  
+  const [splash, setSplash] = useState(true);
+
+  useEffect(() => {
+    if (!userLoading && theme) {
+      setSplash(false);
+    }
+  }, [userLoading, theme]);
+
   // Определяем, на каких страницах показывать нижнюю панель
   const showBottomNav = ['/', '/targetolog', '/profile', '/tariffs'].includes(location.pathname);
+
+  if (splash) {
+    return <Loader theme={themes[theme] || themes.light} />;
+  }
 
   return (
     <AppContainer>
@@ -120,7 +129,7 @@ const AppContent = () => {
       <AnimatePresence mode="wait">
         <AppRoutes />
       </AnimatePresence>
-      {showBottomNav && <BottomNavigation activeTab={location.pathname === '/profile' ? '/' : location.pathname} />}
+      {showBottomNav && <BottomNavigation activeTab={location.pathname === '/tariffs' ? '/tariffs' : location.pathname} />}
     </AppContainer>
   );
 };
