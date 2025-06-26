@@ -129,7 +129,7 @@ const AppContent = () => {
       <AnimatePresence mode="wait">
         <AppRoutes />
       </AnimatePresence>
-      {showBottomNav && <BottomNavigation activeTab={location.pathname === '/tariffs' ? '/tariffs' : location.pathname} />}
+      {showBottomNav && <BottomNavigation activeTab={location.pathname} />}
     </AppContainer>
   );
 };
