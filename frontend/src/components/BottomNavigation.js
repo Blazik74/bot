@@ -73,8 +73,8 @@ const navigationItems = [
     iconActive: targetologIconActive
   },
   {
-    path: '/profile',
-    label: 'Профиль',
+    path: '/tariffs',
+    label: 'Тарифы',
     icon: profileIcon,
     iconActive: profileIconActive
   }
