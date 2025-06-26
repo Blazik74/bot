@@ -10,52 +10,46 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchUser = async () => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await userApi.getProfile();
+            setUser(response.data);
+        } catch (err) {
+            console.error("Failed to fetch user profile", err);
+            setError(err);
+            // Если токен невалидный, интерцептор в api.js должен будет его удалить
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchUser = async () => {
+        const initAuth = async () => {
+            setLoading(true);
             const token = localStorage.getItem('authToken');
-            if (!token) {
-                setLoading(false);
-                return;
-            }
 
-            try {
-                setLoading(true);
-                const response = await userApi.getProfile();
-                setUser(response.data);
-            } catch (err) {
-                console.error("Failed to fetch user profile", err);
-                setError(err);
-                // Если токен невалидный, интерцептор в api.js должен будет его удалить
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    // Проверяем, запущено ли приложение в Telegram WebApp
-    useEffect(() => {
-        const initTelegramAuth = async () => {
-            // Проверяем, есть ли уже токен
-            const token = localStorage.getItem('authToken');
             if (token) {
+                await fetchUser();
+                setLoading(false);
                 return;
             }
 
-            // Проверяем, запущено ли приложение в Telegram WebApp
-            if (window.Telegram && window.Telegram.WebApp) {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
                 try {
                     const initData = window.Telegram.WebApp.initData;
-                    if (initData) {
-                        setLoading(true);
-                        const response = await telegramAuth.login(initData);
-                        const { token, user: userData } = response.data;
-                        
-                        // Сохраняем токен и данные пользователя
-                        localStorage.setItem('authToken', token);
-                        setUser(userData);
-                    }
+                    const response = await telegramAuth.login(initData);
+                    const { token: newToken } = response.data;
+                    
+                    localStorage.setItem('authToken', newToken);
+                    
+                    // После получения токена, загружаем профиль
+                    await fetchUser();
                 } catch (err) {
                     console.error("Telegram auth failed:", err);
                     setError(err);
@@ -63,11 +57,12 @@ export const UserProvider = ({ children }) => {
                     setLoading(false);
                 }
             } else {
+                // Если мы не в телеграме и токена нет, просто заканчиваем загрузку
                 setLoading(false);
             }
         };
 
-        initTelegramAuth();
+        initAuth();
     }, []);
 
     useEffect(() => {
@@ -91,7 +86,7 @@ export const UserProvider = ({ children }) => {
             window.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('focus', handleFocus);
         };
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         if (user) {
