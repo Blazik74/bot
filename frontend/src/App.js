@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
-import BottomNavigation from './components/BottomNavigation';
+import { BottomNavigation } from './components/BottomNavigation';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ThemeProvider, useThemeContext, themes } from './contexts/ThemeContext';
 import './App.css';
 import { AnimatePresence } from 'framer-motion';
-import BottomNav from './components/BottomNav.js';
 import { Notifications } from './components/Notifications.js';
 import { useUser } from './contexts/UserContext';
 
@@ -113,8 +112,9 @@ const AppContent = () => {
   const { user, hasAccess, isAdmin, loading: userLoading } = useUser();
   
   const token = localStorage.getItem('authToken');
-  // Показывать навигацию только если пользователь авторизован
-  const showBottomNav = token && !userLoading;
+  
+  // Определяем, на каких страницах показывать нижнюю панель
+  const showBottomNav = ['/', '/targetolog', '/profile'].includes(location.pathname);
 
   useEffect(() => {
     // Попытка перехода в полноэкранный режим
@@ -172,7 +172,7 @@ const AppContent = () => {
       <AnimatePresence mode="wait">
         <AppRoutes />
       </AnimatePresence>
-      {showBottomNav && <BottomNav />}
+      {showBottomNav && <BottomNavigation />}
     </AppContainer>
   );
 };
