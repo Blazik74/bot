@@ -7,6 +7,8 @@ import targetologIcon from '../assets/icons/targetolog.svg';
 import targetologIconActive from '../assets/icons/targetolog-active.svg';
 import profileIcon from '../assets/icons/profile.svg';
 import profileIconActive from '../assets/icons/profile-active.svg';
+import targetIcon from '../assets/icons/target.svg';
+import targetActiveIcon from '../assets/icons/target-active.svg';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 
 const Navigation = styled.nav`
@@ -73,10 +75,16 @@ const navigationItems = [
     iconActive: targetologIconActive
   },
   {
-    path: '/tariffs',
-    label: 'Тарифы',
+    path: '/profile',
+    label: 'Профиль',
     icon: profileIcon,
     iconActive: profileIconActive
+  },
+  {
+    path: '/tariffs',
+    label: 'Тарифы',
+    icon: targetIcon,
+    iconActive: targetActiveIcon
   }
 ];
 
