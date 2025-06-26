@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import useStore from '../../store';
-import { Box, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { useUser } from '../../contexts/UserContext';
+import { api } from '../../api'; // Предполагается, что у вас есть настроенный api
+import { Box, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -15,6 +16,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   '&:hover': {
     transform: 'translateY(-4px)',
   },
+  marginBottom: theme.spacing(1),
 }));
 
 const Price = styled(Typography)(({ theme }) => ({
@@ -28,43 +30,71 @@ const FeatureList = styled(List)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-const tariffs = [
-  {
-    id: 'freelancer',
-    name: 'Freelancer',
-    price: 49,
-    features: [
-      'Up to 5 campaigns',
-      'Basic analytics',
-      'Email support',
-      'Facebook integration',
-    ],
-  },
-  {
-    id: 'company',
-    name: 'Company',
-    price: 149,
-    features: [
-      'Unlimited campaigns',
-      'Advanced analytics',
-      'Priority support',
-      'All platform integrations',
-      'Custom reporting',
-      'API access',
-    ],
-  },
-];
-
 export const TariffsPage = () => {
-  const theme = useStore((state) => state.theme);
-  const user = useStore((state) => state.user);
-  const updateUser = useStore((state) => state.updateUser);
+  const { user } = useUser();
+  const [tariffs, setTariffs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSelectTariff = (tariffId) => {
-    if (user) {
-      updateUser({ tariff: tariffId });
+  useEffect(() => {
+    const fetchTariffs = async () => {
+      try {
+        setLoading(true);
+        // Предполагается, что есть эндпоинт для получения тарифов
+        const response = await api.get('/tariffs/'); 
+        // Фильтруем бесплатный тариф, чтобы он не отображался
+        setTariffs(response.data.filter(t => t.name !== 'Бесплатный'));
+      } catch (error) {
+        console.error("Failed to fetch tariffs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTariffs();
+  }, []);
+
+  const getButtonState = (tariff) => {
+    const userTariffName = user?.tariff?.name;
+
+    if (userTariffName === tariff.name) {
+      return { text: 'Продлить', action: 'renew' };
     }
+    if (userTariffName === 'Фрилансер' && tariff.name === 'Компания') {
+      return { text: 'Улучшить', action: 'upgrade' };
+    }
+    if (userTariffName === 'Компания' && tariff.name === 'Фрилансер') {
+      return { text: 'Перейти', action: 'downgrade' };
+    }
+    return { text: 'Выбрать', action: 'select' };
   };
+
+  const handleButtonClick = (tariff) => {
+    const { action } = getButtonState(tariff);
+    const tg = window.Telegram?.WebApp;
+
+    if (action === 'renew') {
+      // Логика продления
+      console.log('Renewing', tariff.name);
+    } else if (action === 'upgrade') {
+      console.log('Upgrading to', tariff.name);
+      tg?.sendData(JSON.stringify({ command: 'upgrade_tariff', tariff_id: tariff.id }));
+    } else if (action === 'downgrade') {
+      console.log('Downgrading to', tariff.name);
+      tg?.sendData(JSON.stringify({ command: 'downgrade_tariff', tariff_id: tariff.id }));
+    } else {
+      // Логика выбора нового тарифа
+      console.log('Selecting', tariff.name);
+    }
+     // Можно добавить tg.close() если нужно закрыть приложение
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <motion.div
@@ -74,52 +104,53 @@ export const TariffsPage = () => {
     >
       <Box textAlign="center" mb={6}>
         <Typography variant="h3" gutterBottom>
-          Choose Your Plan
+          Выберите ваш план
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          Select the perfect plan for your business needs
+          Подберите идеальный тариф для вашего бизнеса
         </Typography>
       </Box>
 
       <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={4}>
-        {tariffs.map((tariff) => (
-          <StyledCard key={tariff.id}>
-            <CardContent>
-              <Typography variant="h4" gutterBottom>
-                {tariff.name}
-              </Typography>
-              <Price>
-                ${tariff.price}
-                <Typography component="span" variant="subtitle1" color="text.secondary">
-                  /month
+        {tariffs.map((tariff) => {
+          const { text } = getButtonState(tariff);
+          return (
+            <StyledCard key={tariff.id}>
+              <CardContent>
+                <Typography variant="h4" gutterBottom>
+                  {tariff.name}
                 </Typography>
-              </Price>
+                <Price>
+                  {tariff.price}₽
+                  <Typography component="span" variant="subtitle1" color="text.secondary">
+                    /месяц
+                  </Typography>
+                </Price>
 
-              <FeatureList>
-                {tariff.features.map((feature, index) => (
-                  <ListItem key={index} disableGutters>
-                    <ListItemIcon>
-                      <CheckCircleIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText primary={feature} />
-                  </ListItem>
-                ))}
-              </FeatureList>
+                <FeatureList>
+                  {tariff.features && Object.entries(tariff.features).map(([key, value]) => (
+                    value && <ListItem key={key} disableGutters>
+                      <ListItemIcon>
+                        <CheckCircleIcon color="primary" />
+                      </ListItemIcon>
+                      <ListItemText primary={key.replace(/_/g, ' ')} />
+                    </ListItem>
+                  ))}
+                </FeatureList>
 
-              <Button
-                variant={user?.tariff === tariff.id ? 'outlined' : 'contained'}
-                color={user?.tariff === tariff.id ? 'default' : 'primary'}
-                fullWidth
-                size="large"
-                onClick={() => handleSelectTariff(tariff.id)}
-                disabled={user?.tariff === tariff.id}
-                sx={{ mt: 'auto' }}
-              >
-                {user?.tariff === tariff.id ? 'Current Plan' : 'Select Plan'}
-              </Button>
-            </CardContent>
-          </StyledCard>
-        ))}
+                <Button
+                  variant={user?.tariff?.name === tariff.name ? 'outlined' : 'contained'}
+                  fullWidth
+                  size="large"
+                  onClick={() => handleButtonClick(tariff)}
+                  sx={{ mt: 'auto' }}
+                >
+                  {text}
+                </Button>
+              </CardContent>
+            </StyledCard>
+          );
+        })}
       </Box>
 
       <Box mt={6} p={4} bgcolor="background.paper" borderRadius={2}>
