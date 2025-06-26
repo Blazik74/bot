@@ -466,7 +466,10 @@ export default function Profile() {
   if (!user) {
     return (
       <Container theme={themeObj}>
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>Загрузка...</div>
+        <div style={{ textAlign: 'center', marginTop: '50px', color: 'red' }}>Пользователь не загружен</div>
+        <div style={{fontSize:12,background:'#222',color:'#fff',padding:8,margin:'8px 0',borderRadius:8}}>
+          <b>user:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(user,null,2)}</pre>
+        </div>
       </Container>
     );
   }
