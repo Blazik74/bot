@@ -344,6 +344,20 @@ const ThemeOption = styled.div`
   font-weight: ${({ selected }) => selected ? '600' : '400'};
 `;
 
+const LoaderAnim = keyframes`
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+`;
+
+const SkeletonBlock = styled.div`
+  height: 120px;
+  border-radius: 18px;
+  background: ${({ theme }) => theme.card};
+  margin: 24px 16px;
+  animation: ${LoaderAnim} 1.2s infinite;
+`;
+
 export default function Profile() {
   const [tgUser, setTgUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -466,10 +480,9 @@ export default function Profile() {
   if (!user) {
     return (
       <Container theme={themeObj}>
-        <div style={{ textAlign: 'center', marginTop: '50px', color: 'red' }}>Пользователь не загружен</div>
-        <div style={{fontSize:12,background:'#222',color:'#fff',padding:8,margin:'8px 0',borderRadius:8}}>
-          <b>user:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(user,null,2)}</pre>
-        </div>
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
+        <SkeletonBlock theme={themeObj} />
       </Container>
     );
   }
