@@ -113,15 +113,6 @@ export default function AICenter() {
   const { user } = useUser();
   const themeObj = themes[theme];
   const themeMode = theme === 'dark' ? { ...themeObj, mode: 'dark' } : { ...themeObj, mode: 'light' };
-  if (!user) {
-    return (
-      <Container theme={themeObj}>
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-      </Container>
-    );
-  }
   return (
     <Container theme={themeMode}>
       <Title theme={themeMode}>ИИ Центр</Title>
