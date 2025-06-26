@@ -103,14 +103,7 @@ export const UserProvider = ({ children }) => {
         refetchUser,
         hasAccess: user?.has_access ?? false,
         isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
-        canAccessApp: Boolean(
-            user && (
-                user.role === 'admin' ||
-                user.role === 'superadmin' ||
-                user.has_access === true ||
-                (user.tariff && user.tariff.id > 1)
-            )
-        ),
+        canAccessApp: user?.has_access ?? false,
     };
 
     return (
