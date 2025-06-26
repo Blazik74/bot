@@ -170,6 +170,8 @@ class UserService:
             return {
                 "id": user.id,
                 "name": user.name,
+                "username": user.username,
+                "avatar_url": user.avatar_url,
                 "email": user.email,
                 "picture": user.picture,
                 "role": user.role,
@@ -335,61 +337,43 @@ def verify_telegram_webapp_data(init_data: str) -> Optional[Dict[str, Any]]:
         return None
 
 async def authenticate_telegram_user(init_data: str, request) -> Optional[User]:
-    """Аутентификация пользователя через Telegram WebApp"""
-    telegram_data = verify_telegram_webapp_data(init_data)
-    if not telegram_data:
+    """Аутентификация или создание пользователя через Telegram WebApp"""
+    
+    user_data = verify_telegram_webapp_data(init_data)
+    if not user_data:
         return None
+        
+    user_info = user_data.get('user')
+    if not user_info:
+        return None
+        
+    telegram_id = str(user_info['id'])
     
     user_service = UserService()
-    
-    # Получаем данные пользователя из Telegram
-    user_data = telegram_data.get("user", "{}")
-    if isinstance(user_data, str):
-        import json
-        try:
-            user_data = json.loads(user_data)
-        except:
-            return None
-    
-    telegram_id = str(user_data.get("id"))
-    if not telegram_id:
-        return None
-    
-    # Ищем существующего пользователя
     user = await user_service.get_user_by_telegram_id(telegram_id)
     
+    # ip = get_client_ip(request)
+    # ua = get_user_agent(request)
+    
     if user:
-        # Обновляем информацию
+        # Пользователь найден, обновляем данные, если нужно
         update_data = {
-            "name": user_data.get("first_name", "") + " " + user_data.get("last_name", ""),
-            "username": user_data.get("username"),
-            "updated_at": datetime.utcnow()
+            "name": f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip(),
+            "username": user_info.get("username"),
+            "avatar_url": user_info.get("photo_url"),
         }
-        # Удаляем ключ username, если он None, чтобы не перезаписать существующее значение
-        if update_data["username"] is None:
-            del update_data["username"]
-            
-        user = await user_service.update_user(user.id, update_data)
+        user = await user_service.update_user(user.id, {k: v for k, v in update_data.items() if v is not None})
+        # await user_service.log_user_action(user.id, "login_telegram", {"ip": ip, "user_agent": ua})
     else:
-        # Создаем нового пользователя
+        # Пользователь не найден, создаем нового
         new_user_data = {
             "telegram_id": telegram_id,
-            "username": user_data.get("username"),
-            "name": user_data.get("first_name", "") + " " + user_data.get("last_name", ""),
-            "tariff_id": 1,
-            "is_active": True
+            "name": f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip(),
+            "username": user_info.get("username"),
+            "avatar_url": user_info.get("photo_url"),
+            "source": "telegram" 
         }
-        user = await user_service.create_user(new_user_data)
-    
-    # Логируем вход
-    await user_service.log_user_action(
-        user.id,
-        "telegram_login",
-        {"telegram_id": telegram_id},
-        # get_client_ip(request),
-        # get_user_agent(request)
-        None,
-        None
-    )
-    
-    return user 
+        user = await user_service.create_user({k: v for k, v in new_user_data.items() if v is not None})
+        # await user_service.log_user_action(user.id, "register_telegram", {"ip": ip, "user_agent": ua})
+        
+    return user
