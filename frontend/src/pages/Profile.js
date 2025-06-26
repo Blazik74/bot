@@ -463,7 +463,7 @@ export default function Profile() {
     navigate(0); // Перезагружаем приложение
   };
 
-  if (isLoading) {
+  if (!user) {
     return (
       <Container theme={themeObj}>
         <div style={{ textAlign: 'center', marginTop: '50px' }}>Загрузка...</div>
