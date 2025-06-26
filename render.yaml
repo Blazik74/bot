@@ -12,7 +12,7 @@ services:
         - "start.sh"
         - "requirements.txt"
     buildCommand: "pip install -r requirements.txt && python -m backend.initialise"
-    startCommand: "python -m backend.initialise && gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.main:app"
+    startCommand: "python -m backend.initialise && gunicorn -k uvicorn.workers.UvicornWorker backend.main:app"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.1
