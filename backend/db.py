@@ -33,6 +33,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=True)
     facebook_id = Column(String, unique=True, index=True, nullable=True)
     name = Column(String, nullable=False)
+    avatar_url = Column(String, nullable=True)
     email = Column(String, nullable=True)
     picture = Column(String, nullable=True)
     facebook_access_token = Column(Text, nullable=True)
