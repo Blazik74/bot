@@ -51,11 +51,13 @@ const TariffCard = styled.div`
   margin-bottom: 0;
   box-shadow: ${({ selected }) => selected ? '0 2px 12px 0 rgba(0,94,255,0.08)' : 'none'};
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
   min-height: ${({ selected }) => selected ? '120px' : '70px'};
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  z-index: ${({ selected }) => selected ? 2 : 1};
 `;
 
 const TariffName = styled.div`
@@ -182,13 +184,15 @@ export default function Tariffs() {
                 <TariffPrice>{tariff.price}₽</TariffPrice>
                 <TariffPerMonth>в месяц</TariffPerMonth>
               </TariffPriceRow>
+              {selected === tariff.id && (
+                <PayButton theme={themeObj} style={{marginTop:24}}>
+                  {getButtonText()}
+                </PayButton>
+              )}
             </TariffCard>
           ))
         )}
       </TariffList>
-      <PayButton theme={themeObj} disabled={!selected}>
-        {getButtonText()}
-      </PayButton>
     </Page>
   );
 }
