@@ -112,7 +112,7 @@ const AppContent = () => {
   const token = localStorage.getItem('authToken');
   
   // Определяем, на каких страницах показывать нижнюю панель
-  const showBottomNav = ['/', '/targetolog', '/profile'].includes(location.pathname);
+  const showBottomNav = ['/', '/targetolog', '/profile', '/tariffs'].includes(location.pathname);
 
   return (
     <AppContainer>
