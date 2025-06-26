@@ -7,6 +7,7 @@ import { useThemeContext, themes } from '../contexts/ThemeContext';
 import BottomNavigation from '../components/BottomNavigation';
 import axios from 'axios';
 import api, { facebookAuth, userApi } from '../api';
+import { useUser } from '../contexts/UserContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -96,7 +97,7 @@ const Arrow = styled.span`
   display: inline-block;
   margin-left: 8px;
   transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-  transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(90deg)'};
+  transform: ${({ open }) => open ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 
 const FacebookButton = styled.button`
@@ -355,6 +356,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useThemeContext();
+  const { user, refetchUser } = useUser();
   const themeObj = themes[theme];
 
   useEffect(() => {
@@ -388,6 +390,11 @@ export default function Profile() {
     // Проверяем подключение к Facebook при загрузке компонента
     checkFacebookConnection();
   }, []);
+
+  useEffect(() => {
+    // Обновляем состояние при изменении пользователя из контекста
+    setIsFbConnected(user?.facebook_connected ?? false);
+  }, [user]);
 
   const checkFacebookConnection = async () => {
     try {
@@ -424,16 +431,21 @@ export default function Profile() {
   const tariff = tgUser?.tariff || 'Фрилансер';
 
   const handleFbLogin = () => {
-    facebookAuth.login();
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      // Открываем страницу подключения в браузере, так как в TG может быть заблокировано
+      tg.openLink(`https://your-backend-url.com/api/auth/facebook`);
+    } else {
+      window.location.href = `https://your-backend-url.com/api/auth/facebook`;
+    }
   };
 
   const handleFbLogout = async () => {
     try {
-      await facebookAuth.logout();
-      setFbProfile(null);
-      setIsFbConnected(false);
+      await userApi.disconnectFacebook();
+      refetchUser(); // Обновляем данные пользователя
     } catch (error) {
-      console.error('Error logging out from Facebook:', error);
+      console.error("Failed to disconnect Facebook", error);
     }
   };
 
@@ -446,6 +458,11 @@ export default function Profile() {
     window.open('https://www.facebook.com/profile.php', '_blank');
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    navigate(0); // Перезагружаем приложение
+  };
+
   if (isLoading) {
     return (
       <Container theme={themeObj}>
@@ -454,54 +471,57 @@ export default function Profile() {
     );
   }
 
+  // Определяем имя тарифа
+  const tariffName = user.tariff?.name === 'Бесплатный' ? 'Нет' : user.tariff?.name || 'Нет';
+  
+  // URL для аватара, с заглушкой
+  const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=random`;
+
   return (
     <Container theme={themeObj}>
       <ProfileHeader>
-        <Avatar src={avatar || ''} alt={nickname} theme={themeObj} />
-        <Nickname theme={themeObj}>{nickname}</Nickname>
+        <Avatar src={avatarUrl} alt="User Avatar" />
+        <Nickname>{user.username || user.name}</Nickname>
       </ProfileHeader>
+      
       <InfoBlock theme={themeObj}>
         <InfoRow theme={themeObj}>
-          <InfoTitle theme={themeObj}>Аккаунт</InfoTitle>
-          <InfoValue theme={themeObj}>{username}</InfoValue>
+          <InfoTitle>Тариф</InfoTitle>
+          <InfoValue>
+            <TariffButton onClick={() => navigate('/tariffs')} theme={themeObj}>
+              {tariffName}
+              <Arrow open={false}>›</Arrow>
+            </TariffButton>
+          </InfoValue>
         </InfoRow>
         <InfoRow theme={themeObj}>
-          <InfoTitle theme={themeObj}>Тариф</InfoTitle>
-          <InfoValue theme={themeObj}>
-            <TariffButton theme={themeObj} onClick={() => navigate('/tariffs')}>{tariff} <span style={{fontSize:20,marginLeft:4}}>&#8250;</span></TariffButton>
-          </InfoValue>
+          <InfoTitle>Роль</InfoTitle>
+          <InfoValue>{user.role}</InfoValue>
         </InfoRow>
-        <InfoRow theme={themeObj} style={{cursor:'pointer'}} onClick={() => setShowThemeDropdown(true)}>
-          <InfoTitle theme={themeObj}>Тема</InfoTitle>
-          <InfoValue theme={themeObj}>
-            {theme === 'dark' ? 'Тёмная' : 'Светлая'}
-            <svg width="18" height="18" style={{marginLeft:8,transform:showThemeDropdown?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.22s'}} viewBox="0 0 20 20" fill="none"><path d="M8 6L12 10L8 14" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </InfoValue>
+        <InfoRow theme={themeObj}>
+          <InfoTitle>ID</InfoTitle>
+          <InfoValue>{user.telegram_id || user.id}</InfoValue>
         </InfoRow>
       </InfoBlock>
       
-      {isFbConnected && fbProfile ? (
-        <>
-          <FacebookProfileCard theme={themeObj} onClick={handleFacebookProfileClick}>
-            <FacebookAvatar src={fbProfile.picture || facebookIcon} alt={fbProfile.name} />
-            <FacebookInfo>
-              <FacebookName theme={themeObj}>{fbProfile.name}</FacebookName>
-              <FacebookStatus>Подключен к Facebook</FacebookStatus>
-            </FacebookInfo>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M7 4L13 10L7 16" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </FacebookProfileCard>
-          <LogoutButton theme={themeObj} onClick={handleFbLogout}>
-            Отключить Facebook
-          </LogoutButton>
-        </>
+      {isFbConnected ? (
+        <FacebookProfileCard theme={themeObj} onClick={handleFbLogout}>
+          <FacebookAvatar src={user.picture || facebookIcon} />
+          <FacebookInfo>
+            <FacebookName>{user.name}</FacebookName>
+            <FacebookStatus>Отключить</FacebookStatus>
+          </FacebookInfo>
+        </FacebookProfileCard>
       ) : (
-        <FacebookButton onClick={handleConnectFbClick}>
+        <FacebookButton onClick={handleFbLogin}>
           <FacebookIcon src={facebookIcon} />
           Подключить Facebook
         </FacebookButton>
       )}
+
+      <LogoutButton theme={themeObj} onClick={handleLogout}>
+        Выйти
+      </LogoutButton>
       
       {showFbModal && (
         <FacebookModalOverlay onClick={() => setShowFbModal(false)}>
