@@ -854,16 +854,6 @@ export default function Targetolog() {
     }
   }, [showCreateModal]);
 
-  if (!user) {
-    return (
-      <Container theme={themeObj}>
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-        <SkeletonBlock theme={themeObj} />
-      </Container>
-    );
-  }
-
   return (
     <Container theme={themeObj}>
       <Title theme={themeObj}>ИИ Таргетолог</Title>
