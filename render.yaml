@@ -36,11 +36,8 @@ services:
         fromDatabase:
           name: pixel-ai-db
           property: connectionString
-      - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: frontend
-          property: url
+      # - key: FRONTEND_URL
+      #   value: https://frontend-xxxx.onrender.com  # <-- добавить вручную после деплоя фронта
 
   # Frontend Service (React App)
   - type: web
