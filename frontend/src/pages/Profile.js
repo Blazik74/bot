@@ -478,16 +478,42 @@ export default function Profile() {
   };
 
   // Определяем имя тарифа
-  const tariffName = user.tariff?.name === 'Бесплатный' ? 'Нет' : user.tariff?.name || 'Нет';
+  const tariffName = user?.tariff?.name === 'Бесплатный' ? 'Нет' : user?.tariff?.name || 'Нет';
   
   // URL для аватара, с заглушкой
-  const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=random`;
+  const avatarUrl = user?.avatar_url || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`;
+
+  if (!user) {
+    return (
+      <Container theme={themeObj}>
+        <ProfileHeader>
+          <Avatar src={`https://ui-avatars.com/api/?name=User&background=random`} alt="User Avatar" />
+          <Nickname>Гость</Nickname>
+        </ProfileHeader>
+        <InfoBlock theme={themeObj}>
+          <InfoRow theme={themeObj}>
+            <InfoTitle>Тариф</InfoTitle>
+            <InfoValue>Нет данных</InfoValue>
+          </InfoRow>
+          <InfoRow theme={themeObj}>
+            <InfoTitle>Роль</InfoTitle>
+            <InfoValue>Нет данных</InfoValue>
+          </InfoRow>
+          <InfoRow theme={themeObj}>
+            <InfoTitle>ID</InfoTitle>
+            <InfoValue>Нет данных</InfoValue>
+          </InfoRow>
+        </InfoBlock>
+        <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Пользователь не авторизован</div>
+      </Container>
+    );
+  }
 
   return (
     <Container theme={themeObj}>
       <ProfileHeader>
         <Avatar src={avatarUrl} alt="User Avatar" />
-        <Nickname>{user.username || user.name}</Nickname>
+        <Nickname>{user?.username || user?.name}</Nickname>
       </ProfileHeader>
       
       <InfoBlock theme={themeObj}>
@@ -502,19 +528,19 @@ export default function Profile() {
         </InfoRow>
         <InfoRow theme={themeObj}>
           <InfoTitle>Роль</InfoTitle>
-          <InfoValue>{user.role}</InfoValue>
+          <InfoValue>{user?.role}</InfoValue>
         </InfoRow>
         <InfoRow theme={themeObj}>
           <InfoTitle>ID</InfoTitle>
-          <InfoValue>{user.telegram_id || user.id}</InfoValue>
+          <InfoValue>{user?.telegram_id || user?.id}</InfoValue>
         </InfoRow>
       </InfoBlock>
       
       {isFbConnected ? (
         <FacebookProfileCard theme={themeObj} onClick={handleFbLogout}>
-          <FacebookAvatar src={user.picture || facebookIcon} />
+          <FacebookAvatar src={user?.picture || facebookIcon} />
           <FacebookInfo>
-            <FacebookName>{user.name}</FacebookName>
+            <FacebookName>{user?.name}</FacebookName>
             <FacebookStatus>Отключить</FacebookStatus>
           </FacebookInfo>
         </FacebookProfileCard>
