@@ -10,83 +10,81 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchUser = async () => {
+    // Эта функция теперь единственный источник для загрузки профиля
+    const fetchUserProfile = async () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
             setLoading(false);
             return;
         }
 
+        setLoading(true);
         try {
             const response = await userApi.getProfile();
             setUser(response.data);
+            setError(null);
         } catch (err) {
             console.error("Failed to fetch user profile", err);
             setError(err);
-            // Если токен невалидный, интерцептор в api.js должен будет его удалить
+            // Токен может быть невалидным, интерцептор в api.js его удалит
         } finally {
             setLoading(false);
         }
     };
 
+    // Основной хук для инициализации
     useEffect(() => {
-        const initAuth = async () => {
-            setLoading(true);
-            const token = localStorage.getItem('authToken');
+        const initializeAuth = async () => {
+            let token = localStorage.getItem('authToken');
 
-            if (token) {
-                await fetchUser();
-                setLoading(false);
-                return;
-            }
-
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+            // Если токена нет, пробуем получить его через Telegram
+            if (!token && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
                 try {
+                    setLoading(true);
                     const initData = window.Telegram.WebApp.initData;
                     const response = await telegramAuth.login(initData);
-                    const { token: newToken } = response.data;
-                    
-                    localStorage.setItem('authToken', newToken);
-                    
-                    // После получения токена, загружаем профиль
-                    await fetchUser();
+                    token = response.data.token; // Получаем токен
+                    localStorage.setItem('authToken', token);
                 } catch (err) {
                     console.error("Telegram auth failed:", err);
                     setError(err);
-                } finally {
                     setLoading(false);
+                    return; // Прерываем выполнение если авторизация в ТГ не удалась
                 }
+            }
+
+            // Если после всех проверок есть токен, загружаем профиль
+            if (token) {
+                await fetchUserProfile();
             } else {
-                // Если мы не в телеграме и токена нет, просто заканчиваем загрузку
+                // Если токена нет и мы не в ТГ, просто заканчиваем загрузку
                 setLoading(false);
             }
         };
 
-        initAuth();
+        initializeAuth();
     }, []);
 
+    // Хук для обновления данных при возвращении на вкладку
     useEffect(() => {
-        // Добавляем слушатели событий, чтобы обновлять данные пользователя,
-        // когда он возвращается на вкладку.
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
-                refetchUser();
+                fetchUserProfile(); // Используем ту же функцию
             }
         };
 
         const handleFocus = () => {
-            refetchUser();
+            fetchUserProfile(); // Используем ту же функцию
         };
 
         window.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('focus', handleFocus);
 
-        // Убираем слушатели при размонтировании компонента
         return () => {
             window.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('focus', handleFocus);
         };
-    }, [user]);
+    }, []); // Зависимости не нужны, т.к. fetchUserProfile не меняется
 
     useEffect(() => {
         if (user) {
@@ -94,23 +92,8 @@ export const UserProvider = ({ children }) => {
         }
     }, [user]);
     
-    const refetchUser = async () => {
-        if (!localStorage.getItem('authToken')) {
-            setLoading(false);
-            return;
-        }
-        setLoading(true);
-        try {
-            const response = await userApi.getProfile();
-            setUser(response.data);
-            setError(null);
-        } catch (err) {
-            console.error("Failed to refetch user profile", err);
-            setError(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // refetchUser теперь просто псевдоним для fetchUserProfile
+    const refetchUser = fetchUserProfile;
 
     const value = {
         user,
