@@ -7,7 +7,7 @@ import useStore from '../store';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import refreshArrows from '../assets/icons/refresh-arrows.svg';
 import { useUser } from '../contexts/UserContext';
-import FeatureLockModal from '../components/FeatureLockModal';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -369,7 +369,7 @@ const CitySuggestion = styled.div`
 `;
 
 const citiesKZ = [
-  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз', 'Аксай', 'Арал', 'Арыс', 'Абай', 'Актау', 'Актобе', 'Алматы', 'Астана', 'Атырау', 'Байконур', 'Балхаш', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Караганда', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
+  'Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Усть-Каменогорск', 'Семей', 'Атырау', 'Кызылорда', 'Костанай', 'Петропавловск', 'Актау', 'Темиртау', 'Туркестан', 'Экибастуз', 'Талдыкорган', 'Жезказган', 'Рудный', 'Кокшетау', 'Кентау', 'Балхаш', 'Жанаозен', 'Степногорск', 'Сатпаев', 'Аксай', 'Шу', 'Сарыагаш', 'Аягоз', 'Шахтинск', 'Лисаковск', 'Щучинск', 'Арыс', 'Кульсары', 'Жаркент', 'Каратау', 'Шардара', 'Сергеевка', 'Капшагай', 'Житикара', 'Каскелен', 'Текели', 'Форт-Шевченко', 'Арал', 'Абай', 'Байконур', 'Булаево', 'Есик', 'Зайсан', 'Зыряновск', 'Кандыагаш', 'Каражал', 'Карасу', 'Карасук', 'Каратау', 'Каражал', 'Каскелен', 'Кентау', 'Кокшетау', 'Костанай', 'Кульсары', 'Кызылорда', 'Лисаковск', 'Павлодар', 'Петропавловск', 'Риддер', 'Рудный', 'Сарань', 'Сарыагаш', 'Сатпаев', 'Семей', 'Степногорск', 'Талдыкорган', 'Тараз', 'Текели', 'Темиртау', 'Туркестан', 'Уральск', 'Усть-Каменогорск', 'Шахтинск', 'Шардара', 'Шымкент', 'Щучинск', 'Экибастуз', 'Жезказган', 'Житикара', 'Жаркент', 'Аягоз'];
 
 const initialCampaigns = [
   {
@@ -620,8 +620,9 @@ const AdviceBoxAnimated = styled(AdviceBox)`
 `;
 
 export default function Targetolog() {
-  const { theme } = useThemeContext();
+  const { theme, setTheme, themeName, setThemeByName } = useThemeContext();
   const themeObj = themes[theme];
+  const { addNotification } = useNotifications();
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);
@@ -635,8 +636,6 @@ export default function Targetolog() {
   const [budget, setBudget] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const addNotification = useStore((state) => state.addNotification);
-  const [isWholeCountry, setIsWholeCountry] = useState(false);
   const today = new Date();
   const dateOptions = [
     { value: '', label: 'Дата' },
@@ -663,7 +662,6 @@ export default function Targetolog() {
   const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
 
   const { user } = useUser();
-  const [isLockModalOpen, setLockModalOpen] = useState(false);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -672,11 +670,6 @@ export default function Targetolog() {
   };
 
   const handleUpload = () => {
-    if (!user || user.tariff.campaigns_limit === 0) {
-      setLockModalOpen(true);
-      return;
-    }
-
     if (selectedFile) {
       setUploadSuccess(true);
       setSelectedFile(null);
@@ -702,19 +695,11 @@ export default function Targetolog() {
   };
 
   const handleAutopilot = () => {
-    if (!user || user.tariff.campaigns_limit === 0) {
-      setLockModalOpen(true);
-      return;
-    }
     setAutopilotEnabled(!autopilotEnabled);
-    addNotification(!autopilotEnabled ? 'Автопилот включён' : 'Автопилот выключен', 'success');
+    addNotification(autopilotEnabled ? 'Автопилот выключен' : 'Автопилот включен, бот будет автоматически управлять кампанией');
   };
 
   const handleCreateCampaign = () => {
-    if (!user || user.tariff.campaigns_limit === 0) {
-      setLockModalOpen(true);
-      return;
-    }
     setShowCreateModal(true);
     setObjective('traffic');
     setBudget('');
@@ -722,6 +707,8 @@ export default function Targetolog() {
     setTime('');
     setCityInput('');
   };
+
+  const [cities, setCities] = useState([]);
 
   const handleCityInputChange = (e) => {
     const value = e.target.value;
@@ -761,23 +748,15 @@ export default function Targetolog() {
   };
 
   const handleRefreshAdvice = () => {
-    if (!user || user.tariff.campaigns_limit === 0) {
-      setLockModalOpen(true);
-      return;
-    }
     setAdviceSpinning(true);
     setTimeout(() => {
-      // Здесь можно добавить логику получения новых советов
-      setAdviceIndex((prev) => (prev + 1) % advice.length);
+      const newIndex = (adviceIndex + 1) % advice.length;
+      setAdviceIndex(newIndex);
       setAdviceSpinning(false);
-    }, 700);
+    }, 500);
   };
 
   const handleAdviceBoxClick = () => {
-    if (!user || user.tariff.campaigns_limit === 0) {
-      setLockModalOpen(true);
-      return;
-    }
     if (!showAdvice) {
       handleRefreshAdvice();
     }
@@ -808,15 +787,11 @@ export default function Targetolog() {
             <FormLabel>Геолокация аудитории</FormLabel>
             <CitySearchContainer>
               <CityInput
-                value={isWholeCountry ? 'Казахстан' : cityInput}
-                onChange={e => {
-                  if (!isWholeCountry) handleCityInputChange(e);
-                }}
-                placeholder={isWholeCountry ? '' : 'Казахстан, Город'}
-                disabled={isWholeCountry}
-                style={{ background: isWholeCountry ? '#f5f5f5' : undefined, color: isWholeCountry ? '#aaa' : undefined }}
+                value={cityInput}
+                onChange={handleCityInputChange}
+                placeholder="Казахстан, Город"
               />
-              {showCitySuggestions && !isWholeCountry && (
+              {showCitySuggestions && (
                 <CitySuggestions>
                   {filteredCities.map((city, index) => (
                     <CitySuggestion
@@ -828,10 +803,6 @@ export default function Targetolog() {
                   ))}
                 </CitySuggestions>
               )}
-              <CountryCheckbox>
-                <CheckboxInput type="checkbox" checked={isWholeCountry} onChange={e => setIsWholeCountry(e.target.checked)} />
-                Вся страна
-              </CountryCheckbox>
             </CitySearchContainer>
           </FormGroup>
           <FormGroup>
@@ -870,145 +841,142 @@ export default function Targetolog() {
   }, [showCreateModal]);
 
   return (
-    <>
-      <Container theme={themeObj}>
-        <Title theme={themeObj}>ИИ Таргетолог</Title>
-        <Divider theme={themeObj} />
-        
-        <UploadBlock theme={themeObj}>
-          <FileInputRow>
-            <FileInput
-              type="file"
-              id="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-            <FileLabel htmlFor="file">
-              <img src={fileIcon} alt="Upload" style={{width:22,height:22}} />
-              {selectedFile ? selectedFile.name : 'Загрузить креатив'}
-            </FileLabel>
-            {selectedFile && (
-              <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
-            )}
-          </FileInputRow>
-          {uploadSuccess && <UploadSuccess>Креатив успешно загружен</UploadSuccess>}
-        </UploadBlock>
-
-        <MainButton theme={themeObj} onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
-
-        <OverviewBlock theme={themeObj}>
-          <OverviewItem>
-            <div>Показы</div>
-            <div>0</div>
-          </OverviewItem>
-          <OverviewItem>
-            <div>Клики</div>
-            <div>0</div>
-          </OverviewItem>
-          <OverviewItem>
-            <div>CTR</div>
-            <div>0%</div>
-          </OverviewItem>
-        </OverviewBlock>
-
-        <CampaignsSection>
-          <CampaignsTitle theme={themeObj}>Кампании</CampaignsTitle>
-          {campaigns.length === 0 ? (
-            <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
-          ) : (
-            <CampaignList>
-              <TransitionGroup component={null}>
-                {campaigns.map(campaign => (
-                  <CSSTransition key={campaign.id} classNames="card" timeout={300}>
-                    <CampaignCard theme={themeObj}>
-                      <CampaignCardRow>
-                        <div>
-                          <CampaignCardTitle theme={themeObj}>{campaign.name}</CampaignCardTitle>
-                          <StatusBadge active={campaign.status === 'active'}>
-                            {campaign.status === 'active' ? 'Активна' : 'Приостановлена'}
-                          </StatusBadge>
-                        </div>
-                        <CampaignActionBtn
-                          active={campaign.status === 'active'}
-                          onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
-                        >
-                          {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
-                        </CampaignActionBtn>
-                      </CampaignCardRow>
-                      <CampaignStatsGrid>
-                        <StatCol>
-                          <StatLabel>Клики</StatLabel>
-                          <StatValue theme={themeObj}>{campaign.stats?.clicks ?? 0}</StatValue>
-                        </StatCol>
-                        <StatCol>
-                          <StatLabel>Показы</StatLabel>
-                          <StatValue theme={themeObj}>{campaign.stats?.impressions ?? 0}</StatValue>
-                        </StatCol>
-                        <StatCol>
-                          <StatLabel>CTR</StatLabel>
-                          <StatValue theme={themeObj}>{campaign.stats?.ctr ?? 0}%</StatValue>
-                        </StatCol>
-                        <StatCol>
-                          <StatLabel>CPC</StatLabel>
-                          <StatValue theme={themeObj}>{campaign.stats?.cpc ?? 0}</StatValue>
-                        </StatCol>
-                        <StatCol>
-                          <StatLabel>CPM</StatLabel>
-                          <StatValue theme={themeObj}>{campaign.stats?.cpm ?? 0}</StatValue>
-                        </StatCol>
-                      </CampaignStatsGrid>
-                    </CampaignCard>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-            </CampaignList>
+    <Container theme={themeObj}>
+      <Title theme={themeObj}>ИИ Таргетолог</Title>
+      <Divider theme={themeObj} />
+      
+      <UploadBlock theme={themeObj}>
+        <FileInputRow>
+          <FileInput
+            type="file"
+            id="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+          <FileLabel htmlFor="file">
+            <img src={fileIcon} alt="Upload" style={{width:22,height:22}} />
+            {selectedFile ? selectedFile.name : 'Загрузить креатив'}
+          </FileLabel>
+          {selectedFile && (
+            <UploadButton onClick={handleUpload}>Загрузить</UploadButton>
           )}
-        </CampaignsSection>
+        </FileInputRow>
+        {uploadSuccess && <UploadSuccess>Креатив успешно загружен</UploadSuccess>}
+      </UploadBlock>
 
-        <AdviceSection>
-          <AdviceTitle theme={themeObj}>Советы от ИИ</AdviceTitle>
-          <AdviceBoxAnimated
-            theme={themeObj}
-            expanded={adviceExpanded}
-            onClick={handleAdviceBoxClick}
-          >
-            {advice[adviceIndex]}
-          </AdviceBoxAnimated>
-          <RefreshButton
-            theme={themeObj}
-            spinning={adviceSpinning}
-            onClick={handleRefreshAdvice}
-            aria-label="Обновить советы"
-          >
-            <img src={refreshArrows} alt="Обновить" style={{width:22,height:22}} />
-            Обновить советы
-          </RefreshButton>
-        </AdviceSection>
+      <MainButton theme={themeObj} onClick={handleCreateCampaign}>Запустить кампанию</MainButton>
 
-        <AutopilotSection>
-          <AutopilotTitle theme={themeObj}>Автопилот</AutopilotTitle>
-          <AutopilotButton
-            enabled={autopilotEnabled}
-            onClick={handleAutopilot}
-          >
-            {autopilotEnabled ? 'Выключить автопилот' : 'Включить автопилот'}
-          </AutopilotButton>
-          <HistoryList>
-            {autopilotEnabled && (
-              <HistoryItem theme={themeObj}>
-                Автопилот включен в {new Date().toLocaleTimeString()}
-              </HistoryItem>
-            )}
-          </HistoryList>
-        </AutopilotSection>
+      <OverviewBlock theme={themeObj}>
+        <OverviewItem>
+          <div>Показы</div>
+          <div>0</div>
+        </OverviewItem>
+        <OverviewItem>
+          <div>Клики</div>
+          <div>0</div>
+        </OverviewItem>
+        <OverviewItem>
+          <div>CTR</div>
+          <div>0%</div>
+        </OverviewItem>
+      </OverviewBlock>
 
-        {showCreateModal && (
-          <CSSTransition in={showCreateModal} timeout={200} classNames="modal" unmountOnExit>
-            {renderCreateModal()}
-          </CSSTransition>
+      <CampaignsSection>
+        <CampaignsTitle theme={themeObj}>Кампании</CampaignsTitle>
+        {campaigns.length === 0 ? (
+          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет кампаний</div>
+        ) : (
+          <CampaignList>
+            <TransitionGroup component={null}>
+              {campaigns.map(campaign => (
+                <CSSTransition key={campaign.id} classNames="card" timeout={300}>
+                  <CampaignCard theme={themeObj}>
+                    <CampaignCardRow>
+                      <div>
+                        <CampaignCardTitle theme={themeObj}>{campaign.name}</CampaignCardTitle>
+                        <StatusBadge active={campaign.status === 'active'}>
+                          {campaign.status === 'active' ? 'Активна' : 'Приостановлена'}
+                        </StatusBadge>
+                      </div>
+                      <CampaignActionBtn
+                        active={campaign.status === 'active'}
+                        onClick={() => handleCampaignAction(campaign.id, campaign.status === 'active' ? 'stop' : 'start')}
+                      >
+                        {campaign.status === 'active' ? 'Остановить' : 'Запустить'}
+                      </CampaignActionBtn>
+                    </CampaignCardRow>
+                    <CampaignStatsGrid>
+                      <StatCol>
+                        <StatLabel>Клики</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.clicks ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>Показы</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.impressions ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CTR</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.ctr ?? 0}%</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CPC</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.cpc ?? 0}</StatValue>
+                      </StatCol>
+                      <StatCol>
+                        <StatLabel>CPM</StatLabel>
+                        <StatValue theme={themeObj}>{campaign.stats?.cpm ?? 0}</StatValue>
+                      </StatCol>
+                    </CampaignStatsGrid>
+                  </CampaignCard>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
+          </CampaignList>
         )}
-      </Container>
-      <FeatureLockModal isOpen={isLockModalOpen} onClose={() => setLockModalOpen(false)} />
-    </>
+      </CampaignsSection>
+
+      <AdviceSection>
+        <AdviceTitle theme={themeObj}>Советы от ИИ</AdviceTitle>
+        <AdviceBoxAnimated
+          theme={themeObj}
+          expanded={adviceExpanded}
+          onClick={handleAdviceBoxClick}
+        >
+          {advice[adviceIndex]}
+        </AdviceBoxAnimated>
+        <RefreshButton
+          theme={themeObj}
+          spinning={adviceSpinning}
+          onClick={handleRefreshAdvice}
+          aria-label="Обновить советы"
+        >
+          <img src={refreshArrows} alt="Обновить" style={{width:22,height:22}} />
+          Обновить советы
+        </RefreshButton>
+      </AdviceSection>
+
+      <AutopilotSection>
+        <AutopilotTitle theme={themeObj}>Автопилот</AutopilotTitle>
+        <AutopilotButton
+          enabled={autopilotEnabled}
+          onClick={handleAutopilot}
+        >
+          {autopilotEnabled ? 'Выключить автопилот' : 'Включить автопилот'}
+        </AutopilotButton>
+        <HistoryList>
+          {autopilotEnabled && (
+            <HistoryItem theme={themeObj}>
+              Автопилот включен в {new Date().toLocaleTimeString()}
+            </HistoryItem>
+          )}
+        </HistoryList>
+      </AutopilotSection>
+
+      {showCreateModal && (
+        <CSSTransition in={showCreateModal} timeout={200} classNames="modal" unmountOnExit>
+          {renderCreateModal()}
+        </CSSTransition>
+      )}
+    </Container>
   );
 } 
