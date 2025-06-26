@@ -7,7 +7,7 @@ import useStore from '../store';
 import { useThemeContext, themes } from '../contexts/ThemeContext';
 import refreshArrows from '../assets/icons/refresh-arrows.svg';
 import { useUser } from '../contexts/UserContext';
-import { useNotifications } from '../contexts/NotificationContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -622,7 +622,7 @@ const AdviceBoxAnimated = styled(AdviceBox)`
 export default function Targetolog() {
   const { theme, setTheme, themeName, setThemeByName } = useThemeContext();
   const themeObj = themes[theme];
-  const { addNotification } = useNotifications();
+  const { showNotification } = useNotification();
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [campaigns, setCampaigns] = useState(initialCampaigns);
@@ -676,9 +676,9 @@ export default function Targetolog() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-      addNotification('Креатив успешно загружен', 'success');
+      showNotification('Креатив успешно загружен', 'success');
     } else {
-      addNotification('Ошибка при загрузке', 'error');
+      showNotification('Ошибка при загрузке', 'error');
     }
   };
 
@@ -686,7 +686,7 @@ export default function Targetolog() {
     const updatedCampaigns = campaigns.map(campaign => {
       if (campaign.id === id) {
         const newStatus = action === 'start' ? 'active' : 'stopped';
-        addNotification(action === 'start' ? 'Кампания запущена' : 'Кампания остановлена', action === 'start' ? 'success' : 'error');
+        showNotification(action === 'start' ? 'Кампания запущена' : 'Кампания остановлена', action === 'start' ? 'success' : 'error');
         return { ...campaign, status: newStatus };
       }
       return campaign;
@@ -696,7 +696,7 @@ export default function Targetolog() {
 
   const handleAutopilot = () => {
     setAutopilotEnabled(!autopilotEnabled);
-    addNotification(autopilotEnabled ? 'Автопилот выключен' : 'Автопилот включен, бот будет автоматически управлять кампанией');
+    showNotification(autopilotEnabled ? 'Автопилот выключен' : 'Автопилот включен, бот будет автоматически управлять кампанией');
   };
 
   const handleCreateCampaign = () => {
@@ -744,7 +744,7 @@ export default function Targetolog() {
     };
     setCampaigns([newCampaign, ...campaigns]);
     setShowCreateModal(false);
-    addNotification('Кампания успешно создана', 'success');
+    showNotification('Кампания успешно создана', 'success');
   };
 
   const handleRefreshAdvice = () => {
