@@ -119,17 +119,19 @@ export default function Tariffs() {
   const [tariffs, setTariffs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTariffs = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await api.get('/tariffs/');
         const filtered = response.data.filter(t => t.name !== 'Бесплатный');
         setTariffs(filtered);
-        // Если у пользователя есть тариф — выделяем его
         if (user?.tariff?.id) setSelected(user.tariff.id);
-      } catch (error) {
+      } catch (err) {
+        setError(err?.message || String(err));
         setTariffs([]);
       } finally {
         setLoading(false);
@@ -156,9 +158,16 @@ export default function Tariffs() {
     <Page theme={themeObj}>
       <Title>Тарифы и оплата</Title>
       <Subtitle theme={themeObj}>Подберите идеальный тариф для вашего бизнеса</Subtitle>
+      {error && <div style={{color:'red',margin:'16px',textAlign:'center'}}>Ошибка загрузки тарифов: {error}</div>}
+      <div style={{fontSize:12,background:'#222',color:'#fff',padding:8,margin:'8px 0',borderRadius:8}}>
+        <b>user:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(user,null,2)}</pre>
+        <b>tariffs:</b> <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(tariffs,null,2)}</pre>
+      </div>
       <TariffList>
         {loading ? (
           Array(2).fill(0).map((_, i) => <SkeletonCard key={i} theme={themeObj} />)
+        ) : tariffs.length === 0 ? (
+          <div style={{textAlign:'center',color:'#888',margin:'32px 0'}}>Нет тарифов</div>
         ) : (
           tariffs.map(tariff => (
             <TariffCard
