@@ -126,7 +126,7 @@ export default function Tariffs() {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get('/tariffs/');
+        const response = await api.get('/api/tariffs');
         const filtered = response.data.filter(t => t.name !== 'Бесплатный');
         setTariffs(filtered);
         if (user?.tariff?.id) setSelected(user.tariff.id);
