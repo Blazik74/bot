@@ -45,19 +45,8 @@ const AppRoutes = () => {
     );
   }
 
-  // Если у пользователя нет токена или нет полного доступа, показываем страницу "Доступ запрещен"
-  // Оставляем доступ к странице /facebook-callback, чтобы завершить авторизацию
-  if (!user || !canAccessApp) {
-    return (
-        <Routes>
-            <Route path="/facebook-callback" element={<FacebookCallback />} />
-            <Route path="*" element={<AccessDeniedPage />} />
-        </Routes>
-    );
-  }
-  
   // Доступ к админ-панели только для админов и суперадминов
-  const isAdmin = user.role === 'admin' || user.role === 'superadmin';
+  const isAdmin = user && (user.role === 'admin' || user.role === 'superadmin');
 
   // Если доступ есть, показываем все страницы
   return (
