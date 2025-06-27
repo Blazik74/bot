@@ -379,7 +379,6 @@ async def authenticate_telegram_user(init_data: str, request) -> Optional[User]:
             "name": f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}".strip(),
             "username": user_info.get("username"),
             "avatar_url": user_info.get("photo_url"),
-            "source": "telegram"
         }
         user = await user_service.create_user({k: v for k, v in new_user_data.items() if v})
         # await user_service.log_user_action(user.id, "register_telegram", {"ip": ip, "user_agent": ua})
