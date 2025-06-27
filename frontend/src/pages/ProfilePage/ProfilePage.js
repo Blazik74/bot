@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import useStore from '../../store';
-import { Box, Typography, Button, Switch, Avatar, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Button, Switch, Avatar, Select, MenuItem, Snackbar, IconButton } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -24,6 +25,21 @@ export const ProfilePage = () => {
   const setTheme = useStore((state) => state.setTheme);
   const updateUser = useStore((state) => state.updateUser);
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleCopyUsername = () => {
+    if (user?.username) {
+      navigator.clipboard.writeText(user.username);
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+
+  let tariffLabel = 'Нет';
+  if (user?.tariff === 'company' || user?.tariff?.name === 'Компания') tariffLabel = 'Компания';
+  else if (user?.tariff === 'freelancer' || user?.tariff?.name === 'Фрилансер') tariffLabel = 'Фрилансер';
+
   const handleFacebookConnect = () => {
     if (user) {
       updateUser({ facebookConnected: !user.facebookConnected });
@@ -44,11 +60,23 @@ export const ProfilePage = () => {
             sx={{ width: 80, height: 80 }}
           />
           <Box>
-            <Typography variant="h4" gutterBottom>
-              {user?.username || 'User'}
-            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{ cursor: user?.username ? 'pointer' : 'default', userSelect: 'none' }}
+                onClick={handleCopyUsername}
+              >
+                {user?.username ? `@${user.username}` : 'User'}
+              </Typography>
+              {user?.username && (
+                <IconButton size="small" onClick={handleCopyUsername} aria-label="Скопировать username">
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              )}
+            </Box>
             <Typography variant="subtitle1" color="text.secondary">
-              {user?.tariff === 'company' ? 'Company Plan' : 'Freelancer Plan'}
+              {tariffLabel}
             </Typography>
           </Box>
         </Box>
@@ -141,6 +169,14 @@ export const ProfilePage = () => {
       >
         Sign Out
       </Button>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1500}
+        onClose={handleSnackbarClose}
+        message="Скопировано"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </motion.div>
   );
 }; 
