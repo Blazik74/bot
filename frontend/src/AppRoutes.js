@@ -6,7 +6,7 @@ import { useUser } from './contexts/UserContext';
 import AICenter from './pages/AICenter';
 import Targetolog from './pages/Targetolog';
 import Tariffs from './pages/Tariffs';
-import Profile from './pages/Profile';
+import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 import FacebookConnect from './pages/FacebookConnect';
 import FacebookCallback from './pages/FacebookCallback';
 import AccessDeniedPage from './pages/AccessDeniedPage'; // Импортируем новую страницу
@@ -53,7 +53,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<AICenter />} />
       <Route path="/targetolog" element={<Targetolog />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile" element={<ProfilePage />} />
       <Route path="/tariffs" element={<Tariffs />} />
       <Route path="/facebook-connect" element={<FacebookConnect />} />
       <Route path="/facebook-callback" element={<FacebookCallback />} />
