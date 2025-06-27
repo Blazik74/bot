@@ -70,8 +70,7 @@ class FacebookAdsService:
                 "email": user_info.get("email"),
                 "picture": user_picture_url,
                 "tariff_id": 1,
-                "is_active": True,
-                "source": "facebook"
+                "is_active": True
             }
             updated_user = await self.user_service.create_user(new_user_data)
 
