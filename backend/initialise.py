@@ -4,7 +4,7 @@ import logging
 
 # Импортируем необходимые компоненты из ваших модулей
 from .bot import setup_bot, TELEGRAM_BOT_TOKEN
-from .db import init_db
+from .db import init_db, create_default_tariffs, AsyncSessionLocal
 
 # Настраиваем логирование
 logging.basicConfig(
@@ -22,6 +22,8 @@ async def main():
     # 1. Инициализация базы данных (создание таблиц и тарифов)
     try:
         await init_db()
+        async with AsyncSessionLocal() as session:
+            await create_default_tariffs(session)
         logger.info("Database initialization completed successfully.")
     except Exception as e:
         logger.error(f"Error during database initialization: {e}", exc_info=True)
