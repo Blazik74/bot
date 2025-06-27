@@ -136,7 +136,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
     username = update.effective_user.username
     full_name = update.effective_user.full_name
-    
+    avatar_url = None
+
+    # Получаем аватарку пользователя через Telegram API (если есть)
+    try:
+        photos = await context.bot.get_user_profile_photos(update.effective_user.id, limit=1)
+        if photos.total_count > 0 and photos.photos:
+            # Берём первую (самую свежую) фотографию, самый большой размер
+            photo = photos.photos[0][-1]  # Последний элемент - наибольшее разрешение
+            file = await context.bot.get_file(photo.file_id)
+            avatar_url = file.file_path if hasattr(file, 'file_path') else None
+    except Exception as e:
+        logger.warning(f"Не удалось получить аватарку пользователя {username}: {e}")
+
     async with AsyncSessionLocal() as session:
         user = (await session.execute(select(User).where(User.telegram_id == user_id))).scalar_one_or_none()
 
@@ -148,15 +160,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 name=full_name,
                 role="user",
                 tariff_id=1,
+                avatar_url=avatar_url,
             )
             session.add(user)
         else:
-            # Обновляем данные, если они изменились
+            # Обновляем все данные, если они изменились
             user.username = username
             user.name = full_name
+            if avatar_url:
+                user.avatar_url = avatar_url
 
         # Проверяем и обновляем статус суперадмина при каждом /start
-        # Эта логика теперь гарантирует, что права суперадмина всегда будут на месте
         if username in SUPERADMIN_USERNAMES:
             if user.role != 'superadmin' or user.tariff_id != 3:
                 logger.info(f"Updating user {username} to superadmin.")
