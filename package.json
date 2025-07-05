@@ -1,0 +1,16 @@
+{
+  "name": "arness-discord-website",
+  "version": "1.0.0",
+  "description": "Официальный сайт сообщества ArNess Discord",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "serve-static": "^1.15.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
