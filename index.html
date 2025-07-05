@@ -13,9 +13,11 @@
             --accent-dark: #4a2dbb;
             --text: #e0e0e0;
             --text-light: #a0a0a0;
+            --error: #ff4757;
+            --success: #2ed573;
         }
 
-        /* Запрет выделения текста */
+        /* Общие стили */
         * {
             margin: 0;
             padding: 0;
@@ -27,36 +29,134 @@
             user-select: none;
         }
 
-        /* Кастомный скроллбар */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--darker-bg);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-            border: 3px solid var(--darker-bg);
-            transition: all 0.3s;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-dark);
-            transform: scale(1.1);
-        }
-
         body {
             background: var(--dark-bg);
             color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) var(--darker-bg);
+            padding-top: 70px;
+        }
+
+        /* Навигационная панель */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(110, 66, 245, 0.2);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #9c64ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(110, 66, 245, 0.3);
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(110, 66, 245, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-icon:hover {
+            background: rgba(110, 66, 245, 0.4);
+            transform: scale(1.1);
+        }
+
+        .user-icon i {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        /* Выпадающее меню авторизации */
+        .auth-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--darker-bg);
+            border-radius: 10px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(110, 66, 245, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .auth-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .auth-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .auth-btn:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Главная страница */
+        .main-page {
+            display: block;
         }
 
         /* Анимация фона */
@@ -92,6 +192,7 @@
             border-bottom: 1px solid rgba(110, 66, 245, 0.1);
             position: relative;
             overflow: hidden;
+            margin-top: 20px;
         }
 
         .logo {
@@ -140,35 +241,6 @@
 
         .discord-btn:active {
             transform: translateY(1px);
-        }
-
-        .discord-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%, -50%);
-            transform-origin: 50% 50%;
-        }
-
-        .discord-btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(20, 20);
-                opacity: 0;
-            }
         }
 
         .container {
@@ -458,70 +530,154 @@
             font-size: 0.9rem;
         }
 
-        /* Анимация загрузки */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
+        /* Страницы авторизации */
+        .auth-page {
+            display: none;
+            min-height: calc(100vh - 70px);
+            padding: 50px 20px;
+            background: var(--dark-bg);
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--darker-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(110, 66, 245, 0.3);
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            background: linear-gradient(90deg, var(--accent), #9c64ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-form {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s;
+            gap: 20px;
         }
 
-        .loading-overlay.active {
-            opacity: 1;
-            pointer-events: all;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid var(--accent);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(110, 66, 245, 0.5);
+        .form-group label {
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
 
-        .loading-text {
+        .form-group input {
+            padding: 12px 15px;
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(110, 66, 245, 0.2);
+            border-radius: 5px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(110, 66, 245, 0.3);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 3px;
+            display: none;
+        }
+
+        .form-submit {
+            margin-top: 10px;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-submit:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .form-toggle {
             text-align: center;
             margin-top: 20px;
-            text-shadow: 0 0 10px rgba(110, 66, 245, 0.5);
+            color: var(--text-light);
+            font-size: 0.9rem;
         }
 
-        .loading-progress {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 20px;
-            overflow: hidden;
+        .form-toggle a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s;
         }
 
-        .loading-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: var(--accent);
-            border-radius: 2px;
-            transition: width 0.3s;
-            box-shadow: 0 0 10px rgba(110, 66, 245, 0.5);
+        .form-toggle a:hover {
+            text-decoration: underline;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Личный кабинет */
+        .account-page {
+            display: none;
+            min-height: calc(100vh - 70px);
+            padding: 50px 20px;
+            background: var(--dark-bg);
         }
 
+        .account-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--darker-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(110, 66, 245, 0.3);
+        }
+
+        .account-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .account-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(110, 66, 245, 0.3);
+        }
+
+        .account-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .account-info p {
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
             .features, .rules-list, .channels-grid, .team-grid {
                 grid-template-columns: 1fr;
@@ -539,6 +695,26 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-container, .account-container {
+                padding: 30px 20px;
+            }
+
+            .account-header {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -546,323 +722,546 @@
     <!-- Анимированный фон -->
     <div class="bg-animation" id="bg-animation"></div>
 
-    <!-- Оверлей загрузки -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Подключаемся к Discord...</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar" id="loadingProgress"></div>
+    <!-- Навигационная панель -->
+    <nav class="navbar">
+        <div class="nav-logo" id="navLogo">ArNess</div>
+        <div class="nav-links">
+            <a href="#about" class="nav-link">О сервере</a>
+            <a href="#features" class="nav-link">Возможности</a>
+            <a href="#channels" class="nav-link">Каналы</a>
+            <a href="#rules" class="nav-link">Правила</a>
+            <a href="#team" class="nav-link">Команда</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+        </div>
+        <div class="user-section">
+            <div class="user-icon" id="userIcon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="auth-dropdown" id="authDropdown">
+                <button class="auth-btn" id="loginBtn">Войти</button>
+                <button class="auth-btn" id="registerBtn">Регистрация</button>
+                <button class="auth-btn" id="accountBtn" style="display: none;">Профиль</button>
+                <button class="auth-btn" id="logoutBtn" style="display: none;">Выйти</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Главная страница -->
+    <div class="main-page" id="mainPage">
+        <!-- Шапка -->
+        <header>
+            <div class="logo">ArNess</div>
+            <div class="tagline">Тёмное сообщество для тех, кто ищет нечто большее, чем обычный Discord-сервер. Здесь вас ждут уникальные ивенты, активное общение и атмосфера загадочности.</div>
+            <a href="https://discord.gg/PAHWq2xE6P" class="discord-btn" id="discordBtn">
+                <i class="fab fa-discord"></i> Присоединиться
+            </a>
+        </header>
+
+        <!-- Основное содержимое -->
+        <div class="container">
+            <!-- О сервере -->
+            <section id="about">
+                <h2>Добро пожаловать в ArNess</h2>
+                <p>ArNess — это не просто очередной Discord-сервер. Это целая вселенная, где каждый найдет что-то по душе. Мы объединяем людей, которые ценят качественное общение, интересные дискуссии и атмосферные мероприятия.</p>
+                <p>Наш сервер был создан в 2023 году и с тех пор постоянно развивается. У нас есть всё: от уютных голосовых каналов для неторопливых бесед до активных игровых турниров с призами.</p>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">Участников</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Активность</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">Каналов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Кастомных ботов</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Возможности -->
+            <section id="features">
+                <h2>Почему стоит присоединиться?</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="feature-title">Активное сообщество</h3>
+                        <p>Ежедневные обсуждения, голосовые чаты и совместные игры. У нас всегда есть, о чем поговорить!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Регулярные ивенты</h3>
+                        <p>Киновечера, игровые турниры, квизы и другие мероприятия с призами и хорошим настроением.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="feature-title">Кастомные боты</h3>
+                        <p>Уникальные боты, разработанные специально для нашего сервера с эксклюзивными функциями.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Безопасность</h3>
+                        <p>Строгая модерация и продуманные правила создают комфортную атмосферу для всех.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Система тикетов</h3>
+                        <p>Удобный форум "Тикеты" для обращения к администрации и решения любых вопросов.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="feature-title">Дружелюбная атмосфера</h3>
+                        <p>У нас нет токсичности — только уважительное общение и поддержка.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Каналы -->
+            <section id="channels">
+                <h2>Наши каналы</h2>
+                <p>ArNess предлагает разнообразные каналы для любых видов активности:</p>
+
+                <div class="channels-grid">
+                    <div class="channel-card">
+                        <h3>#общее</h3>
+                        <p>Основной чат для повседневного общения и дискуссий</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#игры</h3>
+                        <p>Обсуждение игр, поиск компаний для совместных игр</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#аниме-и-фильмы</h3>
+                        <p>Обсуждение аниме, фильмов и сериалов</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#музыка</h3>
+                        <p>Делитесь любимой музыкой и обсуждайте новые релизы</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#искусство</h3>
+                        <p>Галерея творчества участников и обсуждение искусства</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#тикеты</h3>
+                        <p>Форум для обращения к администрации и решения вопросов</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#анонсы</h3>
+                        <p>Важные объявления и новости сервера</p>
+                    </div>
+                    <div class="channel-card">
+                        <h3>#бот-команды</h3>
+                        <p>Специальный канал для взаимодействия с нашими ботами</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Правила -->
+            <section id="rules">
+                <h2>Правила сервера</h2>
+                <p>Для поддержания дружелюбной атмосферы мы просим всех участников соблюдать следующие правила (актуальны с 2025 года):</p>
+
+                <div class="rules-list">
+                    <div class="rule-item">
+                        <h3>1. Уважение</h3>
+                        <p>Не допускаются оскорбления, дискриминация или провокации. Уважайте других участников.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>2. Без спама</h3>
+                        <p>Запрещен флуд, капс, массовые упоминания и повторяющиеся сообщения.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>3. Контент 18+</h3>
+                        <p>NSFW-контент разрешен только в специально отведенных каналах с соответствующей пометкой.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>4. Обращения к админам</h3>
+                        <p>Все вопросы к администрации решаются через систему тикетов в соответствующем форуме.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>5. Голосовые чаты</h3>
+                        <p>Не создавайте лишнего шума, не используйте звуковые эффекты без необходимости.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>6. Решения модераторов</h3>
+                        <p>Все решения модераторов и администрации являются окончательными.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Команда -->
+            <section id="team">
+                <h2>Наша команда</h2>
+                <p>Сервер поддерживается уникальной командой, каждый член которой вносит свой вклад в развитие ArNess:</p>
+
+                <div class="team-grid">
+                    <!-- VineZerro -->
+                    <div class="team-member">
+                        <div class="avatar-container">
+                            <img src="https://s3.iimg.su/s/04/g2bgF2TAOim06NvZtM6uDgrkgEOfuBs1oGktHpbF.png" alt="VineZerro" class="member-avatar">
+                        </div>
+                        <div class="member-name">VineZerro</div>
+                        <div class="member-role">Основатель</div>
+                        <div class="member-bio">Главный идеолог сервера, отвечает за стратегическое развитие</div>
+                    </div>
+
+                    <!-- Blaze -->
+                    <div class="team-member">
+                        <div class="avatar-container">
+                            <img src="https://s3.iimg.su/s/04/m5BJOWFwwfrnKNHdetTKp6mF4wp9GZplZu14zuig.png" alt="Blaze" class="member-avatar">
+                        </div>
+                        <div class="member-name">Blaze</div>
+                        <div class="member-role">Разработчик</div>
+                        <div class="member-bio">Создаёт кастомных ботов и системы для сервера</div>
+                    </div>
+
+                    <!-- gashh11 -->
+                    <div class="team-member">
+                        <div class="avatar-container">
+                            <img src="https://s3.iimg.su/s/04/HijabNZNHHvgTp84PJTNqZxdv1J0t1cmXxJyJlDg.png" alt="gashh11" class="member-avatar">
+                        </div>
+                        <div class="member-name">gashh11</div>
+                        <div class="member-role">Женщина</div>
+                        <div class="member-bio">Поддерживает дружелюбную атмосферу</div>
+                    </div>
+
+                    <!-- RedBuzz -->
+                    <div class="team-member">
+                        <div class="avatar-container">
+                            <img src="https://s3.iimg.su/s/04/kgBbUSmld1ENXrf0If9oPhdORlNQsv1UHYajL4kN.png" alt="RedBuzz" class="member-avatar">
+                        </div>
+                        <div class="member-name">RedBuzz</div>
+                        <div class="member-role">Лысый</div>
+                        <div class="member-bio">Просто лысый хуесос</div>
+                    </div>
+
+                    <!-- qwed -->
+                    <div class="team-member">
+                        <div class="avatar-container">
+                            <img src="https://s3.iimg.su/s/04/YHX06DydssH1d4PcSI9ZOG34v6vnTacDF1Dbeenr.png" alt="qwed" class="member-avatar">
+                        </div>
+                        <div class="member-name">qwed</div>
+                        <div class="member-role">Старший модератор</div>
+                        <div class="member-bio">Мудрый наставник с опытом</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section id="faq">
+                <h2>Частые вопросы</h2>
+
+                <div class="rules-list">
+                    <div class="rule-item">
+                        <h3>Как получить роль?</h3>
+                        <p>Некоторые роли выдаются автоматически, другие можно получить в специальном канале #роли или за активность.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>Как предложить ивент?</h3>
+                        <p>Создайте тикет в соответствующем форуме с описанием вашей идеи.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>Есть ли Nitro-розыгрыши?</h3>
+                        <p>Да, мы регулярно проводим розыгрыши среди активных участников.</p>
+                    </div>
+                    <div class="rule-item">
+                        <h3>Как обратиться к администрации?</h3>
+                        <p>Используйте форум "Тикеты" — это самый быстрый способ решения вопросов.</p>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
-    <!-- Шапка -->
-    <header>
-        <div class="logo">ArNess</div>
-        <div class="tagline">Тёмное сообщество для тех, кто ищет нечто большее, чем обычный Discord-сервер. Здесь вас ждут уникальные ивенты, активное общение и атмосфера загадочности.</div>
-        <a href="https://discord.gg/PAHWq2xE6P" class="discord-btn" id="discordBtn">
-            <i class="fab fa-discord"></i> Присоединиться
-        </a>
-    </header>
-
-    <!-- Основное содержимое -->
-    <div class="container">
-        <!-- О сервере -->
-        <section id="about">
-            <h2>Добро пожаловать в ArNess</h2>
-            <p>ArNess — это не просто очередной Discord-сервер. Это целая вселенная, где каждый найдет что-то по душе. Мы объединяем людей, которые ценят качественное общение, интересные дискуссии и атмосферные мероприятия.</p>
-            <p>Наш сервер был создан в 2023 году и с тех пор постоянно развивается. У нас есть всё: от уютных голосовых каналов для неторопливых бесед до активных игровых турниров с призами.</p>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">100+</div>
-                    <div class="stat-label">Участников</div>
+    <!-- Страница входа -->
+    <div class="auth-page" id="loginPage">
+        <div class="auth-container">
+            <h2 class="auth-title">Вход в аккаунт</h2>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                    <div class="error-message" id="loginEmailError"></div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Активность</div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" required>
+                    <div class="error-message" id="loginPasswordError"></div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">30+</div>
-                    <div class="stat-label">Каналов</div>
+                <button type="submit" class="form-submit">Войти</button>
+                <div class="form-toggle">
+                    Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">5+</div>
-                    <div class="stat-label">Кастомных ботов</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Возможности -->
-        <section id="features">
-            <h2>Почему стоит присоединиться?</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="feature-title">Активное сообщество</h3>
-                    <p>Ежедневные обсуждения, голосовые чаты и совместные игры. У нас всегда есть, о чем поговорить!</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Регулярные ивенты</h3>
-                    <p>Киновечера, игровые турниры, квизы и другие мероприятия с призами и хорошим настроением.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3 class="feature-title">Кастомные боты</h3>
-                    <p>Уникальные боты, разработанные специально для нашего сервера с эксклюзивными функциями.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Безопасность</h3>
-                    <p>Строгая модерация и продуманные правила создают комфортную атмосферу для всех.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Система тикетов</h3>
-                    <p>Удобный форум "Тикеты" для обращения к администрации и решения любых вопросов.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <h3 class="feature-title">Дружелюбная атмосфера</h3>
-                    <p>У нас нет токсичности — только уважительное общение и поддержка.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Каналы -->
-        <section id="channels">
-            <h2>Наши каналы</h2>
-            <p>ArNess предлагает разнообразные каналы для любых видов активности:</p>
-
-            <div class="channels-grid">
-                <div class="channel-card">
-                    <h3>#общее</h3>
-                    <p>Основной чат для повседневного общения и дискуссий</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#игры</h3>
-                    <p>Обсуждение игр, поиск компаний для совместных игр</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#аниме-и-фильмы</h3>
-                    <p>Обсуждение аниме, фильмов и сериалов</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#музыка</h3>
-                    <p>Делитесь любимой музыкой и обсуждайте новые релизы</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#искусство</h3>
-                    <p>Галерея творчества участников и обсуждение искусства</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#тикеты</h3>
-                    <p>Форум для обращения к администрации и решения вопросов</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#анонсы</h3>
-                    <p>Важные объявления и новости сервера</p>
-                </div>
-                <div class="channel-card">
-                    <h3>#бот-команды</h3>
-                    <p>Специальный канал для взаимодействия с нашими ботами</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Правила -->
-        <section id="rules">
-            <h2>Правила сервера</h2>
-            <p>Для поддержания дружелюбной атмосферы мы просим всех участников соблюдать следующие правила (актуальны с 2025 года):</p>
-
-            <div class="rules-list">
-                <div class="rule-item">
-                    <h3>1. Уважение</h3>
-                    <p>Не допускаются оскорбления, дискриминация или провокации. Уважайте других участников.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>2. Без спама</h3>
-                    <p>Запрещен флуд, капс, массовые упоминания и повторяющиеся сообщения.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>3. Контент 18+</h3>
-                    <p>NSFW-контент разрешен только в специально отведенных каналах с соответствующей пометкой.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>4. Обращения к админам</h3>
-                    <p>Все вопросы к администрации решаются через систему тикетов в соответствующем форуме.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>5. Голосовые чаты</h3>
-                    <p>Не создавайте лишнего шума, не используйте звуковые эффекты без необходимости.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>6. Решения модераторов</h3>
-                    <p>Все решения модераторов и администрации являются окончательными.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Команда -->
-        <section id="team">
-            <h2>Наша команда</h2>
-            <p>Сервер поддерживается уникальной командой, каждый член которой вносит свой вклад в развитие ArNess:</p>
-
-            <div class="team-grid">
-                <!-- VineZerro -->
-                <div class="team-member">
-                    <div class="avatar-container">
-                        <img src="https://s3.iimg.su/s/04/g2bgF2TAOim06NvZtM6uDgrkgEOfuBs1oGktHpbF.png" alt="VineZerro" class="member-avatar">
-                    </div>
-                    <div class="member-name">VineZerro</div>
-                    <div class="member-role">Основатель</div>
-                    <div class="member-bio">Главный идеолог сервера, отвечает за стратегическое развитие</div>
-                </div>
-
-                <!-- Blaze -->
-                <div class="team-member">
-                    <div class="avatar-container">
-                        <img src="https://s3.iimg.su/s/04/m5BJOWFwwfrnKNHdetTKp6mF4wp9GZplZu14zuig.png" alt="Blaze" class="member-avatar">
-                    </div>
-                    <div class="member-name">Blaze</div>
-                    <div class="member-role">Разработчик</div>
-                    <div class="member-bio">Создаёт кастомных ботов и системы для сервера</div>
-                </div>
-
-                <!-- gashh11 -->
-                <div class="team-member">
-                    <div class="avatar-container">
-                        <img src="https://s3.iimg.su/s/04/HijabNZNHHvgTp84PJTNqZxdv1J0t1cmXxJyJlDg.png" alt="gashh11" class="member-avatar">
-                    </div>
-                    <div class="member-name">gashh11</div>
-                    <div class="member-role">Женщина</div>
-                    <div class="member-bio">Поддерживает дружелюбную атмосферу</div>
-                </div>
-
-                <!-- RedBuzz -->
-                <div class="team-member">
-                    <div class="avatar-container">
-                        <img src="https://s3.iimg.su/s/04/kgBbUSmld1ENXrf0If9oPhdORlNQsv1UHYajL4kN.png" alt="RedBuzz" class="member-avatar">
-                    </div>
-                    <div class="member-name">RedBuzz</div>
-                    <div class="member-role">Лысый</div>
-                    <div class="member-bio">Просто лысый хуесос</div>
-                </div>
-
-                <!-- qwed -->
-                <div class="team-member">
-                    <div class="avatar-container">
-                        <img src="https://s3.iimg.su/s/04/YHX06DydssH1d4PcSI9ZOG34v6vnTacDF1Dbeenr.png" alt="qwed" class="member-avatar">
-                    </div>
-                    <div class="member-name">qwed</div>
-                    <div class="member-role">Старший модератор</div>
-                    <div class="member-bio">Мудрый наставник с опытом</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ -->
-        <section id="faq">
-            <h2>Частые вопросы</h2>
-
-            <div class="rules-list">
-                <div class="rule-item">
-                    <h3>Как получить роль?</h3>
-                    <p>Некоторые роли выдаются автоматически, другие можно получить в специальном канале #роли или за активность.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>Как предложить ивент?</h3>
-                    <p>Создайте тикет в соответствующем форуме с описанием вашей идеи.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>Есть ли Nitro-розыгрыши?</h3>
-                    <p>Да, мы регулярно проводим розыгрыши среди активных участников.</p>
-                </div>
-                <div class="rule-item">
-                    <h3>Как обратиться к администрации?</h3>
-                    <p>Используйте форум "Тикеты" — это самый быстрый способ решения вопросов.</p>
-                </div>
-            </div>
-        </section>
+            </form>
+        </div>
     </div>
 
-    <!-- Подвал -->
-    <footer>
-        <a href="https://discord.gg/PAHWq2xE6P" class="discord-btn" id="discordBtnFooter">
-            <i class="fab fa-discord"></i> Присоединиться к ArNess
-        </a>
-
-        <div class="social-links">
-            <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
-            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+    <!-- Страница регистрации -->
+    <div class="auth-page" id="registerPage">
+        <div class="auth-container">
+            <h2 class="auth-title">Регистрация</h2>
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Имя пользователя</label>
+                    <input type="text" id="registerUsername" required>
+                    <div class="error-message" id="registerUsernameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                    <div class="error-message" id="registerEmailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Пароль</label>
+                    <input type="password" id="registerPassword" required>
+                    <div class="error-message" id="registerPasswordError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Подтвердите пароль</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                    <div class="error-message" id="registerConfirmPasswordError"></div>
+                </div>
+                <button type="submit" class="form-submit">Зарегистрироваться</button>
+                <div class="form-toggle">
+                    Уже есть аккаунт? <a href="#" id="showLogin">Войти</a>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <div class="copyright">
-            © 2025 ArNess Discord Server. Все права защищены.
+    <!-- Страница профиля -->
+    <div class="account-page" id="accountPage">
+        <div class="account-container">
+            <div class="account-header">
+                <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Аватар" class="account-avatar" id="accountAvatar">
+                <div class="account-info">
+                    <h2 id="accountUsername">Пользователь</h2>
+                    <p id="accountEmail">email@example.com</p>
+                    <p>Дата регистрации: <span id="accountDate">01.01.2025</span></p>
+                </div>
+            </div>
+            <div>
+                <h2>Настройки аккаунта</h2>
+                <p>Здесь вы можете изменить настройки своего профиля.</p>
+            </div>
         </div>
-    </footer>
+    </div>
 
     <script>
-        // Запрет контекстного меню (правой кнопки)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            alert('Копирование запрещено!');
+        // Управление страницами
+        const pages = {
+            main: document.getElementById('mainPage'),
+            login: document.getElementById('loginPage'),
+            register: document.getElementById('registerPage'),
+            account: document.getElementById('accountPage')
+        };
+
+        // Текущий пользователь (для демонстрации)
+        let currentUser = null;
+
+        // Показать страницу
+        function showPage(page) {
+            Object.values(pages).forEach(p => p.style.display = 'none');
+            if (pages[page]) {
+                pages[page].style.display = 'block';
+            }
+        }
+
+        // Проверить авторизацию
+        function checkAuth() {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const accountBtn = document.getElementById('accountBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                accountBtn.style.display = 'block';
+                logoutBtn.style.display = 'block';
+                
+                // Обновляем данные профиля
+                document.getElementById('accountUsername').textContent = currentUser.username;
+                document.getElementById('accountEmail').textContent = currentUser.email;
+                document.getElementById('accountDate').textContent = currentUser.registrationDate;
+            } else {
+                loginBtn.style.display = 'block';
+                registerBtn.style.display = 'block';
+                accountBtn.style.display = 'none';
+                logoutBtn.style.display = 'none';
+            }
+        }
+
+        // Управление выпадающим меню
+        const userIcon = document.getElementById('userIcon');
+        const authDropdown = document.getElementById('authDropdown');
+
+        userIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            authDropdown.classList.toggle('active');
         });
 
-        // Запрет сочетаний клавиш
-        document.addEventListener('keydown', function(e) {
-            // Ctrl+C, Ctrl+V, Ctrl+X
-            if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
-                e.preventDefault();
-                alert('Копирование запрещено!');
+        document.addEventListener('click', function() {
+            authDropdown.classList.remove('active');
+        });
+
+        // Обработчики кнопок
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            showPage('login');
+            authDropdown.classList.remove('active');
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            showPage('register');
+            authDropdown.classList.remove('active');
+        });
+
+        document.getElementById('accountBtn').addEventListener('click', function() {
+            showPage('account');
+            authDropdown.classList.remove('active');
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            currentUser = null;
+            checkAuth();
+            showPage('main');
+            authDropdown.classList.remove('active');
+        });
+
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPage('register');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPage('login');
+        });
+
+        // Клик по логотипу - переход на главную
+        document.getElementById('navLogo').addEventListener('click', function() {
+            showPage('main');
+        });
+
+        // Клик по иконке пользователя - переход в профиль если авторизован
+        userIcon.addEventListener('click', function() {
+            if (currentUser) {
+                showPage('account');
             }
         });
 
-        // Анимация кнопки Discord
-        function animateButton(btn) {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
+        // Форма входа
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Сбросить ошибки
+            document.getElementById('loginEmailError').style.display = 'none';
+            document.getElementById('loginPasswordError').style.display = 'none';
+            
+            // Простая валидация
+            if (!email) {
+                document.getElementById('loginEmailError').textContent = 'Введите email';
+                document.getElementById('loginEmailError').style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('loginPasswordError').textContent = 'Введите пароль';
+                document.getElementById('loginPasswordError').style.display = 'block';
+                return;
+            }
+            
+            // Авторизация (для демонстрации)
+            currentUser = {
+                username: email.split('@')[0],
+                email: email,
+                registrationDate: new Date().toLocaleDateString()
+            };
+            
+            checkAuth();
+            showPage('main');
+        });
 
-                // Показываем анимацию загрузки
-                const loadingOverlay = document.getElementById('loadingOverlay');
-                const loadingProgress = document.getElementById('loadingProgress');
-                loadingOverlay.classList.add('active');
+        // Форма регистрации
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // Сбросить ошибки
+            document.getElementById('registerUsernameError').style.display = 'none';
+            document.getElementById('registerEmailError').style.display = 'none';
+            document.getElementById('registerPasswordError').style.display = 'none';
+            document.getElementById('registerConfirmPasswordError').style.display = 'none';
+            
+            // Простая валидация
+            if (!username) {
+                document.getElementById('registerUsernameError').textContent = 'Введите имя пользователя';
+                document.getElementById('registerUsernameError').style.display = 'block';
+                return;
+            }
+            
+            if (!email) {
+                document.getElementById('registerEmailError').textContent = 'Введите email';
+                document.getElementById('registerEmailError').style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('registerPasswordError').textContent = 'Введите пароль';
+                document.getElementById('registerPasswordError').style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                document.getElementById('registerPasswordError').textContent = 'Пароль должен быть не менее 6 символов';
+                document.getElementById('registerPasswordError').style.display = 'block';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                document.getElementById('registerConfirmPasswordError').textContent = 'Пароли не совпадают';
+                document.getElementById('registerConfirmPasswordError').style.display = 'block';
+                return;
+            }
+            
+            // Регистрация (для демонстрации)
+            currentUser = {
+                username: username,
+                email: email,
+                registrationDate: new Date().toLocaleDateString()
+            };
+            
+            checkAuth();
+            showPage('main');
+        });
 
-                // Анимация прогресс-бара
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 10;
-                    if (progress > 100) progress = 100;
-                    loadingProgress.style.width = progress + '%';
-
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            window.location.href = 'https://discord.gg/PAHWq2xE6P';
-                        }, 500);
-                    }
-                }, 200);
-            });
-        }
-
-        // Применяем анимацию к обеим кнопкам
-        animateButton(document.getElementById('discordBtn'));
-        animateButton(document.getElementById('discordBtnFooter'));
-
-        // Анимация частиц
+        // Анимация частиц фона
         function createParticles() {
             const bgAnimation = document.getElementById('bg-animation');
             const particleCount = 30;
@@ -906,10 +1305,28 @@
             });
         }
 
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
         // Инициализация
         window.addEventListener('load', () => {
             createParticles();
             animateOnScroll();
+            checkAuth();
+            showPage('main');
 
             if (document.querySelector('#about').getBoundingClientRect().top < window.innerHeight) {
                 document.querySelector('#about').classList.add('visible');
