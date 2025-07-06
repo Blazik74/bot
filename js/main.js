@@ -476,4 +476,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Экспорт для использования в других модулях
-window.App = App; 
+window.App = App;
+
+// --- DONATE PAGE: CloudPayments stub ---
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.pay-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const amount = btn.getAttribute('data-amount');
+            const coins = btn.getAttribute('data-coins');
+            // Здесь будет реальная интеграция CloudPayments
+            alert(`Оплата через CloudPayments (заглушка)\nСумма: ${amount}₽\nМонет: ${coins}`);
+            // Для реальной интеграции:
+            // 1. Подключить CloudPayments JS SDK
+            // 2. Вызвать window.cloudpayments({ ... }) с нужными параметрами
+            // 3. Обработать успешную оплату (POST на сервер для начисления монет)
+        });
+    });
+}); 
