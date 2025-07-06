@@ -314,6 +314,14 @@ class App {
                     this.settingsManager.renderSettingsPage();
                 }, 100);
             }
+            // Меняем URL
+            let url = '/';
+            if (pageName === 'account') url = '/profile';
+            if (pageName === 'settings') url = '/profile/settings';
+            if (pageName === 'donate') url = '/profile/donate';
+            if (window.location.pathname !== url) {
+                window.history.pushState({page: pageName}, '', url);
+            }
         }
     }
 
@@ -340,8 +348,13 @@ class App {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
         });
-        // Показываем главную страницу
-        this.showPage('main');
+        // SPA-роутинг: открытие нужной страницы по URL
+        this.setupSpaRouting();
+        const path = window.location.pathname;
+        if (path === '/profile') this.showPage('account');
+        else if (path === '/profile/settings') this.showPage('settings');
+        else if (path === '/profile/donate') this.showPage('donate');
+        else this.showPage('main');
         // Проверяем Twitch callback
         this.checkTwitchCallback();
         // Проверяем авторизацию
@@ -436,6 +449,17 @@ class App {
         const donatePage = document.getElementById('donatePage');
         if (donatePage) donatePage.style.display = 'block';
         this.currentPage = 'donate';
+    }
+
+    // SPA-роутинг: обработка перехода по истории браузера
+    setupSpaRouting() {
+        window.addEventListener('popstate', (e) => {
+            const path = window.location.pathname;
+            if (path === '/profile') this.showPage('account');
+            else if (path === '/profile/settings') this.showPage('settings');
+            else if (path === '/profile/donate') this.showPage('donate');
+            else this.showPage('main');
+        });
     }
 }
 
