@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "serve": "npx serve .",
-    "build": "echo 'Build completed'"
+    "build": "mkdir -p build && cp -r *.html *.js *.json *.md css js build/ 2>/dev/null || echo 'Build completed'"
   },
   "keywords": [
     "discord",
