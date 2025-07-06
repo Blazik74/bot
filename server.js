@@ -8,7 +8,7 @@ const app = express();
 
 // Конфигурация
 const CLIENT_ID = '1391384219661500558';
-const CLIENT_SECRET = 'oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO';
+const CLIENT_SECRET = 'jN3YUbVedyFfveM_FQXi2mXd1C_6Jewj';
 const REDIRECT_URI = 'https://arness-community.onrender.com';
 const PORT = process.env.PORT || 3000;
 
