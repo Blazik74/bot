@@ -1099,80 +1099,60 @@ input:checked + .toggle-slider:before {
     align-items: stretch;
 }
 .team-card {
-    background: rgba(25, 25, 25, 0.85);
-    border-radius: 18px;
-    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
-    padding: 60px 1.2rem 1.2rem 1.2rem;
-    min-width: 220px;
-    max-width: 260px;
-    flex: 0 0 220px;
-    text-align: center;
-    position: relative;
-    transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
-    border: 2px solid transparent;
-    margin: 0;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    background: #18171c;
+    border-radius: 28px;
+    box-shadow: 0 4px 32px 0 #7b2ff233;
+    padding: 32px 24px 24px 24px;
+    margin: 0 12px;
+    min-width: 240px;
+    max-width: 320px;
+    min-height: 420px;
+    transition: box-shadow 0.2s, transform 0.2s;
 }
 .team-card:hover {
-    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
-    border: 2px solid #7c4dff;
-    z-index: 2;
-    transform: translateY(-8px) scale(1.045);
+    box-shadow: 0 0 32px 0 #7b2ff2cc, 0 4px 32px 0 #7b2ff233;
+    transform: translateY(-8px) scale(1.04);
 }
-.avatar-container {
+.team-avatar {
+    margin-top: 0;
+    margin-bottom: 18px;
     width: 120px;
     height: 120px;
     border-radius: 50%;
+    box-shadow: 0 0 16px #7b2ff2;
     overflow: hidden;
-    border: 3px solid #6e42f5;
-    position: absolute;
-    left: 50%;
-    top: -60px;
-    transform: translateX(-50%);
-    z-index: 3;
-    box-shadow: 0 0 20px rgba(110, 66, 245, 0.3);
-    transition: all 0.3s;
-    background: #181818;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.team-card:hover .avatar-container {
-    border: 3px solid #a084ff;
-    box-shadow: 0 0 36px 0 #a084ff, 0 0 0 6px #7c4dff33;
-    transform: translateX(-50%) scale(1.08) rotate(-2deg);
-}
-.member-avatar {
+.team-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    transition: transform 0.3s;
+    display: block;
 }
-.avatar-container:hover .member-avatar {
-    transform: scale(1.08);
+.team-info {
+    text-align: center;
 }
-.member-name {
+.team-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 0.2rem;
-    font-size: 1.25rem;
     color: #fff;
-    margin-top: 70px;
 }
-.member-role {
-    color: #6e42f5;
-    font-size: 1.05rem;
-    margin-bottom: 0.3rem;
-    font-weight: 600;
+.team-info .role {
+    color: #7b2ff2;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
 }
-.member-bio {
-    color: #a0a0a0;
-    font-size: 0.98rem;
-    margin-top: 0.5rem;
+.team-info .desc {
+    color: #d1d1d1;
+    font-size: 1.1rem;
+    margin: 0;
 }
 
 /* Копирайт-блок */
