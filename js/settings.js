@@ -1,584 +1,450 @@
-// Модуль настроек
-class SettingsManager {
-    constructor() {
-        this.settings = {
-            theme: 'dark',
-            headerCustomization: {
-                showLogo: true,
-                showNavLinks: true,
-                backgroundColor: 'default',
-                blurEffect: true
-            },
-            animations: {
-                enabled: true,
-                particleCount: 30,
-                transitionSpeed: 'normal'
-            },
-            notifications: {
-                enabled: true,
-                sound: false,
-                desktop: false
-            },
-            accessibility: {
-                highContrast: false,
-                reducedMotion: false,
-                fontSize: 'medium'
-            }
-        };
-        
-        this.themes = {
-            dark: {
-                name: 'Тёмная',
-                description: 'Классическая тёмная тема',
-                icon: 'fas fa-moon'
-            },
-            light: {
-                name: 'Светлая',
-                description: 'Светлая тема для дневного времени',
-                icon: 'fas fa-sun'
-            },
-            purple: {
-                name: 'Фиолетовая',
-                description: 'Мистическая фиолетовая тема',
-                icon: 'fas fa-magic'
-            },
-            cyber: {
-                name: 'Киберпанк',
-                description: 'Футуристическая зелёная тема',
-                icon: 'fas fa-robot'
-            },
-            sunset: {
-                name: 'Закат',
-                description: 'Тёплая оранжевая тема',
-                icon: 'fas fa-sunset'
-            }
-        };
-        
-        this.init();
+/* Дополнительные стили для настроек */
+
+.settings-section {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.setting-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-speed) var(--bounce-timing);
+    position: relative;
+    overflow: hidden;
+}
+
+.setting-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(110, 66, 245, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.setting-card:hover::before {
+    left: 100%;
+}
+
+.setting-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(110, 66, 245, 0.2);
+    border-color: rgba(110, 66, 245, 0.3);
+}
+
+.setting-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: var(--primary-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.setting-title i {
+    color: var(--accent);
+    transition: transform var(--transition-speed) var(--bounce-timing);
+}
+
+.setting-card:hover .setting-title i {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color var(--transition-speed);
+}
+
+.setting-item:hover {
+    background: rgba(110, 66, 245, 0.1);
+}
+
+.setting-item label {
+    font-weight: 500;
+    color: var(--primary-text);
+    flex: 1;
+}
+
+.setting-item span {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+}
+
+/* Переключатели */
+.toggle-switch {
+    width: 38px;
+    height: 22px;
+    background: none;
+    border: none;
+    outline: none;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+    transition: background 0.3s, box-shadow 0.3s;
+    border-radius: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background: white;
+    transition: transform 0.3s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.15);
+}
+
+input:checked + .toggle-slider {
+    background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+    box-shadow: 0 2px 12px rgba(124,58,237,0.18);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(16px);
+    box-shadow: 0 2px 12px rgba(124,58,237,0.25);
+}
+
+.toggle-switch:hover .toggle-slider {
+    box-shadow: 0 4px 16px rgba(124,58,237,0.22);
+}
+
+/* Селектор тем */
+.theme-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.theme-option {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--bounce-timing);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.theme-option:hover::before {
+    transform: translateX(100%);
+}
+
+.theme-option:hover {
+    transform: scale(1.1) rotate(5deg);
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(110, 66, 245, 0.3);
+}
+
+.theme-option.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(110, 66, 245, 0.5);
+    transform: scale(1.05);
+}
+
+.theme-option.active::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Темы */
+.theme-option.dark {
+    background: linear-gradient(135deg, #0a0a0a, #050505);
+}
+
+.theme-option.light {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+.theme-option.purple {
+    background: linear-gradient(135deg, #1a0b2e, #0f0617);
+}
+
+.theme-option.cyber {
+    background: linear-gradient(135deg, #0a0f18, #050a0f);
+}
+
+.theme-option.sunset {
+    background: linear-gradient(135deg, #1a0f1f, #0f0a14);
+}
+
+/* Слайдеры */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border-color);
+    outline: none;
+    margin: 10px 0;
+    transition: all var(--transition-speed);
+}
+
+input[type="range"]:hover {
+    background: rgba(110, 66, 245, 0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: all var(--transition-speed) var(--bounce-timing);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(110, 66, 245, 0.4);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: all var(--transition-speed) var(--bounce-timing);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(110, 66, 245, 0.4);
+}
+
+/* Селекты */
+select {
+    padding: 8px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--primary-bg);
+    color: var(--primary-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    outline: none;
+}
+
+select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(110, 66, 245, 0.1);
+}
+
+select:hover {
+    border-color: rgba(110, 66, 245, 0.5);
+}
+
+/* Кнопки действий */
+.settings-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--bounce-timing);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(110, 66, 245, 0.4);
+}
+
+.btn-secondary {
+    background: var(--card-bg);
+    color: var(--primary-text);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--border-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Анимации для настроек */
+@keyframes settingSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
     }
-
-    init() {
-        this.loadSettings();
-        this.applySettings();
-        this.setupEventListeners();
-        this.renderSettingsPage();
-    }
-
-    // Загрузка настроек из localStorage и сервера
-    async loadSettings() {
-        const savedSettings = localStorage.getItem('arness_settings');
-        if (savedSettings) {
-            try {
-                this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
-            } catch (error) {
-                console.error('Ошибка загрузки настроек:', error);
-            }
-        }
-        
-        // Загружаем настройки с сервера если пользователь авторизован
-        await this.loadServerSettings();
-    }
-
-    // Загрузка настроек с сервера
-    async loadServerSettings() {
-        try {
-            const response = await fetch('/api/settings');
-            if (response.ok) {
-                const data = await response.json();
-                if (data.settings && Object.keys(data.settings).length > 0) {
-                    this.settings = { ...this.settings, ...data.settings };
-                }
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки настроек с сервера:', error);
-        }
-    }
-
-    // Сохранение настроек в localStorage и на сервер
-    async saveSettings() {
-        localStorage.setItem('arness_settings', JSON.stringify(this.settings));
-        
-        // Сохраняем настройки на сервер если пользователь авторизован
-        try {
-            await fetch('/api/settings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ settings: this.settings })
-            });
-        } catch (error) {
-            console.error('Ошибка сохранения настроек на сервер:', error);
-        }
-    }
-
-    // Применение настроек
-    applySettings() {
-        // Применение темы
-        document.documentElement.setAttribute('data-theme', this.settings.theme);
-        
-        // Применение анимаций
-        this.applyAnimationSettings();
-        
-        // Применение кастомизации шапки
-        this.applyHeaderCustomization();
-        
-        // Применение настроек доступности
-        this.applyAccessibilitySettings();
-    }
-
-    // Применение настроек анимаций
-    applyAnimationSettings() {
-        const body = document.body;
-        
-        if (!this.settings.animations.enabled) {
-            body.style.setProperty('--transition-speed', '0s');
-            body.style.setProperty('--bounce-timing', 'linear');
-        } else {
-            const speed = this.settings.animations.transitionSpeed;
-            const speedValue = speed === 'fast' ? '0.2s' : speed === 'slow' ? '0.5s' : '0.3s';
-            body.style.setProperty('--transition-speed', speedValue);
-            body.style.setProperty('--bounce-timing', 'cubic-bezier(0.68, -0.55, 0.265, 1.55)');
-        }
-        
-        // Управление частицами
-        this.updateParticleCount();
-    }
-
-    // Универсальная функция анимации скрытия/показа
-    animateToggle(element, show) {
-        if (!element) return;
-        if (show) {
-            element.classList.remove('fade-out', 'hidden');
-            element.classList.add('fade-in');
-        } else {
-            element.classList.remove('fade-in');
-            element.classList.add('fade-out');
-            // После завершения анимации скрываем полностью
-            element.addEventListener('transitionend', function handler() {
-                element.classList.add('hidden');
-                element.removeEventListener('transitionend', handler);
-            });
-        }
-    }
-
-    // Применение кастомизации шапки
-    applyHeaderCustomization() {
-        const navbar = document.querySelector('.navbar');
-        if (!navbar) return;
-
-        const customization = this.settings.headerCustomization;
-        
-        // Показ/скрытие логотипа
-        const logo = navbar.querySelector('.nav-logo');
-        if (logo) {
-            this.animateToggle(logo, customization.showLogo);
-        }
-        
-        // Показ/скрытие навигационных ссылок
-        const navLinks = navbar.querySelector('.nav-links');
-        if (navLinks) {
-            this.animateToggle(navLinks, customization.showNavLinks);
-        }
-        
-        // Цвет фона
-        if (customization.backgroundColor !== 'default') {
-            navbar.style.backgroundColor = customization.backgroundColor;
-        } else {
-            navbar.style.backgroundColor = '';
-        }
-        
-        // Эффект размытия
-        if (customization.blurEffect) {
-            navbar.style.backdropFilter = 'blur(10px)';
-        } else {
-            navbar.style.backdropFilter = 'none';
-        }
-    }
-
-    // Применение настроек доступности
-    applyAccessibilitySettings() {
-        const body = document.body;
-        const accessibility = this.settings.accessibility;
-        
-        // Высокий контраст
-        if (accessibility.highContrast) {
-            body.classList.add('high-contrast');
-        } else {
-            body.classList.remove('high-contrast');
-        }
-        
-        // Уменьшенное движение
-        if (accessibility.reducedMotion) {
-            body.classList.add('reduced-motion');
-        } else {
-            body.classList.remove('reduced-motion');
-        }
-        
-        // Размер шрифта
-        const fontSizeMap = {
-            small: '0.9rem',
-            medium: '1rem',
-            large: '1.2rem',
-            xlarge: '1.4rem'
-        };
-        
-        body.style.fontSize = fontSizeMap[accessibility.fontSize] || '1rem';
-    }
-
-    // Обновление количества частиц
-    updateParticleCount() {
-        const bgAnimation = document.getElementById('bg-animation');
-        if (!bgAnimation) return;
-
-        // Удаляем существующие частицы
-        const existingParticles = bgAnimation.querySelectorAll('.particle');
-        existingParticles.forEach(particle => particle.remove());
-
-        // Создаем новые частицы если анимации включены
-        if (this.settings.animations.enabled) {
-            this.createParticles(this.settings.animations.particleCount);
-        }
-    }
-
-    // Создание частиц
-    createParticles(count) {
-        const bgAnimation = document.getElementById('bg-animation');
-        if (!bgAnimation) return;
-
-        for (let i = 0; i < count; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-
-            const size = Math.random() * 15 + 5;
-            const posX = Math.random() * 100;
-            const delay = Math.random() * 20;
-            const duration = Math.random() * 15 + 15;
-            const opacity = Math.random() * 0.5 + 0.2;
-
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${posX}%`;
-            particle.style.animationDelay = `${delay}s`;
-            particle.style.animationDuration = `${duration}s`;
-            particle.style.opacity = opacity;
-
-            const hue = Math.floor(Math.random() * 20) + 250;
-            particle.style.background = `hsl(${hue}, 80%, 65%)`;
-
-            bgAnimation.appendChild(particle);
-        }
-    }
-
-    // Настройка обработчиков событий
-    setupEventListeners() {
-        // Обработчики будут добавлены при рендере страницы настроек
-    }
-
-    // Рендер страницы настроек
-    renderSettingsPage() {
-        const settingsContainer = document.querySelector('.settings-section');
-        if (!settingsContainer) return;
-
-        settingsContainer.innerHTML = `
-            <h2>Настройки</h2>
-            
-            <!-- Темы -->
-            <div class="setting-card">
-                <h3 class="setting-title">
-                    <i class="fas fa-palette"></i>
-                    Тема оформления
-                </h3>
-                <p>Выберите подходящую тему для сайта</p>
-                <div class="theme-selector">
-                    ${Object.entries(this.themes).map(([key, theme]) => `
-                        <div class="theme-option ${key} ${this.settings.theme === key ? 'active' : ''}" 
-                             data-theme="${key}" 
-                             title="${theme.description}">
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- Кастомизация шапки -->
-            <div class="setting-card">
-                <h3 class="setting-title">
-                    <i class="fas fa-header"></i>
-                    Кастомизация шапки
-                </h3>
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showLogo" ${this.settings.headerCustomization.showLogo ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Показывать логотип</span>
-                    </div>
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showNavLinks" ${this.settings.headerCustomization.showNavLinks ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Показывать навигацию</span>
-                    </div>
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="blurEffect" ${this.settings.headerCustomization.blurEffect ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Эффект размытия</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Анимации -->
-            <div class="setting-card">
-                <h3 class="setting-title">
-                    <i class="fas fa-magic"></i>
-                    Анимации
-                </h3>
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="animationsEnabled" ${this.settings.animations.enabled ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Включить анимации</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>Количество частиц:</label>
-                        <input type="range" id="particleCount" min="10" max="50" value="${this.settings.animations.particleCount}">
-                        <span id="particleCountValue">${this.settings.animations.particleCount}</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>Скорость переходов:</label>
-                        <select id="transitionSpeed">
-                            <option value="fast" ${this.settings.animations.transitionSpeed === 'fast' ? 'selected' : ''}>Быстро</option>
-                            <option value="normal" ${this.settings.animations.transitionSpeed === 'normal' ? 'selected' : ''}>Нормально</option>
-                            <option value="slow" ${this.settings.animations.transitionSpeed === 'slow' ? 'selected' : ''}>Медленно</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Уведомления -->
-            <div class="setting-card">
-                <h3 class="setting-title">
-                    <i class="fas fa-bell"></i>
-                    Уведомления
-                </h3>
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="notificationsEnabled" ${this.settings.notifications.enabled ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Включить уведомления</span>
-                    </div>
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="notificationSound" ${this.settings.notifications.sound ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Звуковые уведомления</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Доступность -->
-            <div class="setting-card">
-                <h3 class="setting-title">
-                    <i class="fas fa-universal-access"></i>
-                    Доступность
-                </h3>
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="highContrast" ${this.settings.accessibility.highContrast ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Высокий контраст</span>
-                    </div>
-                    <div class="setting-item">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="reducedMotion" ${this.settings.accessibility.reducedMotion ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>Уменьшенное движение</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>Размер шрифта:</label>
-                        <select id="fontSize">
-                            <option value="small" ${this.settings.accessibility.fontSize === 'small' ? 'selected' : ''}>Маленький</option>
-                            <option value="medium" ${this.settings.accessibility.fontSize === 'medium' ? 'selected' : ''}>Средний</option>
-                            <option value="large" ${this.settings.accessibility.fontSize === 'large' ? 'selected' : ''}>Большой</option>
-                            <option value="xlarge" ${this.settings.accessibility.fontSize === 'xlarge' ? 'selected' : ''}>Очень большой</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кнопки управления -->
-            <div class="settings-actions">
-                <button class="btn btn-primary" id="saveSettings">Сохранить настройки</button>
-                <button class="btn btn-secondary" id="resetSettings">Сбросить к умолчаниям</button>
-            </div>
-        `;
-
-        this.setupSettingsEventListeners();
-    }
-
-    // Настройка обработчиков событий для настроек
-    setupSettingsEventListeners() {
-        // Выбор темы
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const theme = option.dataset.theme;
-                this.changeTheme(theme);
-            });
-        });
-
-        // Переключатели
-        const toggles = [
-            'showLogo', 'showNavLinks', 'blurEffect', 'animationsEnabled',
-            'notificationsEnabled', 'notificationSound', 'highContrast', 'reducedMotion'
-        ];
-
-        toggles.forEach(toggleId => {
-            const toggle = document.getElementById(toggleId);
-            if (toggle) {
-                toggle.addEventListener('change', () => {
-                    this.updateSetting(toggleId, toggle.checked);
-                });
-            }
-        });
-
-        // Слайдер количества частиц
-        const particleSlider = document.getElementById('particleCount');
-        const particleValue = document.getElementById('particleCountValue');
-        if (particleSlider && particleValue) {
-            particleSlider.addEventListener('input', () => {
-                const value = particleSlider.value;
-                particleValue.textContent = value;
-                this.updateSetting('particleCount', parseInt(value));
-            });
-        }
-
-        // Селекты
-        const selects = ['transitionSpeed', 'fontSize'];
-        selects.forEach(selectId => {
-            const select = document.getElementById(selectId);
-            if (select) {
-                select.addEventListener('change', () => {
-                    this.updateSetting(selectId, select.value);
-                });
-            }
-        });
-
-        // Кнопки
-        const saveBtn = document.getElementById('saveSettings');
-        const resetBtn = document.getElementById('resetSettings');
-
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                this.saveSettings();
-                this.showNotification('Настройки сохранены!', 'success');
-            });
-        }
-
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                this.resetToDefaults();
-            });
-        }
-    }
-
-    // Изменение темы
-    changeTheme(theme) {
-        this.settings.theme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        
-        // Обновляем активную тему в селекторе
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.classList.remove('active');
-        });
-        document.querySelector(`[data-theme="${theme}"]`)?.classList.add('active');
-        
-        this.saveSettings();
-        this.showNotification(`Тема изменена на "${this.themes[theme].name}"`, 'success');
-    }
-
-    // Обновление настройки
-    updateSetting(key, value) {
-        // Определяем путь к настройке
-        if (key === 'showLogo' || key === 'showNavLinks' || key === 'blurEffect') {
-            this.settings.headerCustomization[key] = value;
-        } else if (key === 'animationsEnabled' || key === 'particleCount' || key === 'transitionSpeed') {
-            this.settings.animations[key] = value;
-        } else if (key === 'notificationsEnabled' || key === 'notificationSound') {
-            this.settings.notifications[key] = value;
-        } else if (key === 'highContrast' || key === 'reducedMotion' || key === 'fontSize') {
-            this.settings.accessibility[key] = value;
-        }
-
-        // Применяем изменения
-        this.applySettings();
-    }
-
-    // Сброс к умолчаниям
-    resetToDefaults() {
-        if (confirm('Вы уверены, что хотите сбросить все настройки к умолчаниям?')) {
-            this.settings = {
-                theme: 'dark',
-                headerCustomization: {
-                    showLogo: true,
-                    showNavLinks: true,
-                    backgroundColor: 'default',
-                    blurEffect: true
-                },
-                animations: {
-                    enabled: true,
-                    particleCount: 30,
-                    transitionSpeed: 'normal'
-                },
-                notifications: {
-                    enabled: true,
-                    sound: false,
-                    desktop: false
-                },
-                accessibility: {
-                    highContrast: false,
-                    reducedMotion: false,
-                    fontSize: 'medium'
-                }
-            };
-            
-            this.saveSettings();
-            this.applySettings();
-            this.renderSettingsPage();
-            this.showNotification('Настройки сброшены к умолчаниям', 'info');
-        }
-    }
-
-    // Показать уведомление
-    showNotification(message, type = 'info') {
-        if (window.AuthManager) {
-            window.AuthManager.showNotification(message, type);
-        } else {
-            console.log(`${type.toUpperCase()}: ${message}`);
-        }
-    }
-
-    // Получить текущие настройки
-    getSettings() {
-        return this.settings;
-    }
-
-    // Получить доступные темы
-    getThemes() {
-        return this.themes;
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
-// Экспорт для использования в других модулях
-window.SettingsManager = SettingsManager; 
+.setting-card {
+    animation: settingSlideIn 0.5s ease-out;
+}
+
+.setting-card:nth-child(1) { animation-delay: 0.1s; }
+.setting-card:nth-child(2) { animation-delay: 0.2s; }
+.setting-card:nth-child(3) { animation-delay: 0.3s; }
+.setting-card:nth-child(4) { animation-delay: 0.4s; }
+.setting-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .theme-selector {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .toggle-switch {
+        align-self: flex-end;
+    }
+}
+
+/* Высокий контраст */
+.high-contrast {
+    --primary-text: #ffffff;
+    --secondary-text: #cccccc;
+    --border-color: #ffffff;
+    --card-bg: #000000;
+}
+
+/* Уменьшенное движение */
+.reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+/* Размеры шрифтов */
+body[style*="font-size: 0.9rem"] {
+    --base-font-size: 0.9rem;
+}
+
+body[style*="font-size: 1.2rem"] {
+    --base-font-size: 1.2rem;
+}
+
+body[style*="font-size: 1.4rem"] {
+    --base-font-size: 1.4rem;
+}
+
+/* Анимации появления/исчезновения */
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.3s;
+    pointer-events: auto;
+}
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+.hidden {
+    display: none !important;
+} 
