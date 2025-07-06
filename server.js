@@ -366,7 +366,7 @@ app.get('/auth/discord/callback', async (req, res) => {
             username: userData.username,
             email: userData.email,
             avatar: userData.avatar_url,
-            registrationDate: userData.created_at.toLocaleDateString(),
+            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
             discordId: userData.discord_id
         };
         
@@ -423,7 +423,7 @@ app.post('/api/auth/discord', async (req, res) => {
             username: userData.username,
             email: userData.email,
             avatar: userData.avatar_url,
-            registrationDate: userData.created_at.toLocaleDateString(),
+            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
             discordId: userData.discord_id
         };
         
@@ -461,7 +461,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
             username: user.username,
             email: user.email,
             avatar: user.avatar_url,
-            registrationDate: user.created_at.toLocaleDateString(),
+            registrationDate: user.created_at ? user.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
             settings: user.settings || {}
         });
 
