@@ -7,13 +7,13 @@ class App {
         this.init();
     }
 
-    init() {
+    async init() {
         this.setupPages();
         this.setupNavigation();
         this.setupAnimations();
-        this.initializeManagers();
+        await this.initializeManagers();
         this.setupEventListeners();
-        this.start();
+        await this.start();
     }
 
     // Настройка страниц
@@ -137,7 +137,7 @@ class App {
     }
 
     // Инициализация менеджеров
-    initializeManagers() {
+    async initializeManagers() {
         // Инициализация менеджера авторизации
         this.authManager = new AuthManager();
         
@@ -288,17 +288,19 @@ class App {
     }
 
     // Запуск приложения
-    start() {
+    async start() {
         // Показываем главную страницу
         this.showPage('main');
         
         // Проверяем авторизацию
         if (this.authManager) {
+            await this.authManager.loadUserFromStorage();
             this.authManager.checkAuth();
         }
         
         // Применяем настройки
         if (this.settingsManager) {
+            await this.settingsManager.loadSettings();
             this.settingsManager.applySettings();
         }
 

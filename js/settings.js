@@ -64,8 +64,8 @@ class SettingsManager {
         this.renderSettingsPage();
     }
 
-    // Загрузка настроек из localStorage
-    loadSettings() {
+    // Загрузка настроек из localStorage и сервера
+    async loadSettings() {
         const savedSettings = localStorage.getItem('arness_settings');
         if (savedSettings) {
             try {
@@ -74,11 +74,42 @@ class SettingsManager {
                 console.error('Ошибка загрузки настроек:', error);
             }
         }
+        
+        // Загружаем настройки с сервера если пользователь авторизован
+        await this.loadServerSettings();
     }
 
-    // Сохранение настроек в localStorage
-    saveSettings() {
+    // Загрузка настроек с сервера
+    async loadServerSettings() {
+        try {
+            const response = await fetch('/api/settings');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.settings && Object.keys(data.settings).length > 0) {
+                    this.settings = { ...this.settings, ...data.settings };
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки настроек с сервера:', error);
+        }
+    }
+
+    // Сохранение настроек в localStorage и на сервер
+    async saveSettings() {
         localStorage.setItem('arness_settings', JSON.stringify(this.settings));
+        
+        // Сохраняем настройки на сервер если пользователь авторизован
+        try {
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ settings: this.settings })
+            });
+        } catch (error) {
+            console.error('Ошибка сохранения настроек на сервер:', error);
+        }
     }
 
     // Применение настроек

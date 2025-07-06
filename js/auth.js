@@ -12,17 +12,41 @@ class AuthManager {
         this.checkAuth();
     }
 
-    // Загрузка пользователя из localStorage
-    loadUserFromStorage() {
+    // Загрузка пользователя из localStorage и проверка сессии
+    async loadUserFromStorage() {
         const savedUser = localStorage.getItem('arness_user');
         if (savedUser) {
             try {
                 this.currentUser = JSON.parse(savedUser);
                 this.isAuthenticated = true;
+                
+                // Проверяем сессию на сервере
+                await this.checkServerSession();
             } catch (error) {
                 console.error('Ошибка загрузки пользователя:', error);
                 localStorage.removeItem('arness_user');
             }
+        }
+    }
+
+    // Проверка сессии на сервере
+    async checkServerSession() {
+        try {
+            const response = await fetch('/api/auth/check');
+            const data = await response.json();
+            
+            if (data.authenticated) {
+                this.currentUser = data.user;
+                this.isAuthenticated = true;
+                this.saveUserToStorage(data.user);
+            } else {
+                // Сессия истекла
+                this.currentUser = null;
+                this.isAuthenticated = false;
+                this.removeUserFromStorage();
+            }
+        } catch (error) {
+            console.error('Ошибка проверки сессии:', error);
         }
     }
 
@@ -226,44 +250,50 @@ class AuthManager {
         });
     }
 
-    // Вход пользователя (заглушка для API)
+    // Вход пользователя через API
     async loginUser(email, password) {
-        // Имитация запроса к API
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Здесь будет реальный запрос к API
-                if (email && password) {
-                    resolve({
-                        id: Date.now(),
-                        username: email.split('@')[0],
-                        email: email,
-                        registrationDate: new Date().toLocaleDateString(),
-                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-                        discordId: null
-                    });
-                } else {
-                    reject(new Error('Неверный email или пароль'));
-                }
-            }, 1000);
-        });
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Ошибка входа');
+            }
+
+            return data.user;
+        } catch (error) {
+            throw new Error(error.message || 'Ошибка подключения к серверу');
+        }
     }
 
-    // Регистрация пользователя (заглушка для API)
+    // Регистрация пользователя через API
     async registerUser(username, email, password) {
-        // Имитация запроса к API
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Здесь будет реальный запрос к API
-                resolve({
-                    id: Date.now(),
-                    username: username,
-                    email: email,
-                    registrationDate: new Date().toLocaleDateString(),
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-                    discordId: null
-                });
-            }, 1000);
-        });
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Ошибка регистрации');
+            }
+
+            return data.user;
+        } catch (error) {
+            throw new Error(error.message || 'Ошибка подключения к серверу');
+        }
     }
 
     // Discord авторизация
@@ -297,25 +327,42 @@ class AuthManager {
         }
     }
 
-    // Обмен кода Discord на токен (заглушка)
+    // Обмен кода Discord на токен через API
     async exchangeDiscordCode(code) {
-        // Здесь будет реальный запрос к вашему API
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    id: Date.now(),
-                    username: 'DiscordUser',
-                    email: 'discord@example.com',
-                    registrationDate: new Date().toLocaleDateString(),
-                    avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
-                    discordId: '123456789'
-                });
-            }, 1000);
-        });
+        try {
+            const response = await fetch('/api/auth/discord', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code })
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка авторизации через Discord');
+            }
+
+            const user = await response.json();
+            return user;
+        } catch (error) {
+            throw new Error('Не удалось авторизоваться через Discord');
+        }
     }
 
     // Выход
-    logout() {
+    async logout() {
+        try {
+            // Отправляем запрос на сервер для выхода
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } catch (error) {
+            console.error('Ошибка выхода:', error);
+        }
+        
         this.currentUser = null;
         this.isAuthenticated = false;
         this.removeUserFromStorage();
