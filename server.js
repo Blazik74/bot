@@ -585,129 +585,94 @@ app.get('/auth/twitch/callback', async (req, res) => {
     }
 });
 
-// --- DONATE API: ЮMoney integration ---
+// --- DONATE API: ЮMoney integration через axios ---
 app.post('/api/donate/create-payment', async (req, res) => {
     try {
         const { orderId, amount, coins, userId, description } = req.body;
-        
-        // Проверяем обязательные поля
         if (!orderId || !amount || !coins || !userId) {
             return res.json({ success: false, error: 'Недостаточно данных' });
         }
-        
-        // Проверяем, что пользователь существует
-        const user = await pool.query(
-            'SELECT * FROM users WHERE id = $1',
-            [userId]
-        );
+        const user = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        
-        // Создаем платеж через ЮMoney API
+        // Формируем запрос к ЮKassa
+        const shopId = process.env.YUMONEY_SHOP_ID;
+        const secretKey = process.env.YUMONEY_SECRET_KEY;
+        const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
         const paymentData = {
-            amount: {
-                value: amount.toString(),
-                currency: 'RUB'
-            },
-            confirmation: {
-                type: 'embedded'
-            },
+            amount: { value: amount.toString(), currency: 'RUB' },
+            confirmation: { type: 'embedded' },
             capture: true,
             description: description,
-            metadata: {
-                orderId: orderId,
-                userId: userId,
-                coins: coins
+            metadata: { orderId, userId, coins }
+        };
+        const idempotenceKey = orderId;
+        const response = await axios.post('https://api.yookassa.ru/v3/payments', paymentData, {
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/json',
+                'Idempotence-Key': idempotenceKey
             }
-        };
-        
-        // Здесь должен быть реальный запрос к ЮMoney API
-        // Для демо используем заглушку
-        const mockPayment = {
-            id: 'payment_' + Date.now(),
-            confirmation_token: 'confirmation_token_' + Math.random().toString(36).substr(2, 9),
-            status: 'pending'
-        };
-        
-        // Сохраняем информацию о платеже
-        await pool.query(`
-            INSERT INTO payments (user_id, order_id, amount, coins, payment_id, status, created_at) 
-            VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
-        `, [userId, orderId, amount, coins, mockPayment.id, 'pending']);
-        
-        console.log(`Платеж создан: ${mockPayment.id}, заказ ${orderId}, ${amount}₽`);
-        
-        res.json({ 
-            success: true, 
-            paymentId: mockPayment.id,
-            confirmationToken: mockPayment.confirmation_token
         });
-        
+        const payment = response.data;
+        // Сохраняем платеж в БД
+        await pool.query(`
+            INSERT INTO payments (user_id, order_id, amount, coins, payment_id, status, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+        `, [userId, orderId, amount, coins, payment.id, payment.status]);
+        res.json({
+            success: true,
+            paymentId: payment.id,
+            confirmationToken: payment.confirmation.confirmation_token
+        });
     } catch (error) {
-        console.error('Ошибка создания платежа:', error);
-        res.json({ success: false, error: 'Внутренняя ошибка сервера' });
+        console.error('Ошибка создания платежа:', error.response?.data || error);
+        res.json({ success: false, error: error.response?.data?.description || 'Внутренняя ошибка сервера' });
     }
 });
 
 app.post('/api/donate/success', async (req, res) => {
     try {
         const { orderId, amount, coins, userId, paymentId } = req.body;
-        
-        // Проверяем обязательные поля
-        if (!orderId || !amount || !coins || !userId) {
+        if (!orderId || !amount || !coins || !userId || !paymentId) {
             return res.json({ success: false, error: 'Недостаточно данных' });
         }
-        
-        // Проверяем, что пользователь существует
-        const user = await pool.query(
-            'SELECT * FROM users WHERE id = $1',
-            [userId]
-        );
+        const user = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        
-        // Проверяем, что заказ еще не обработан (защита от дублирования)
-        const existingOrder = await pool.query(
-            'SELECT * FROM donations WHERE order_id = $1',
-            [orderId]
-        );
-        if (existingOrder.rows.length > 0) {
-            return res.json({ success: false, error: 'Заказ уже обработан' });
-        }
-        
-        // Начисляем монеты пользователю
-        const newCoins = (user.rows[0].coins || 0) + coins;
-        await pool.query(
-            'UPDATE users SET coins = $1 WHERE id = $2',
-            [newCoins, userId]
-        );
-        
-        // Обновляем статус платежа
-        await pool.query(
-            'UPDATE payments SET status = $1 WHERE order_id = $2',
-            ['succeeded', orderId]
-        );
-        
-        // Сохраняем информацию о донате
-        await pool.query(
-            `INSERT INTO donations (user_id, order_id, amount, coins, payment_id, created_at) 
-             VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
-            [userId, orderId, amount, coins, paymentId]
-        );
-        
-        console.log(`Донат успешен: пользователь ${userId}, заказ ${orderId}, ${coins} монет`);
-        
-        res.json({ 
-            success: true, 
-            message: 'Монеты начислены',
-            newBalance: newCoins
+        // Проверяем статус платежа в ЮKassa
+        const shopId = process.env.YUMONEY_SHOP_ID;
+        const secretKey = process.env.YUMONEY_SECRET_KEY;
+        const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
+        const paymentResp = await axios.get(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
+            headers: {
+                'Authorization': `Basic ${auth}`
+            }
         });
-        
+        const payment = paymentResp.data;
+        if (payment.status === 'succeeded') {
+            // Проверяем, что донат ещё не был начислен
+            const existing = await pool.query('SELECT * FROM donations WHERE order_id = $1', [orderId]);
+            if (existing.rows.length > 0) {
+                return res.json({ success: false, error: 'Заказ уже обработан' });
+            }
+            // Начисляем монеты
+            const newCoins = (user.rows[0].coins || 0) + coins;
+            await pool.query('UPDATE users SET coins = $1 WHERE id = $2', [newCoins, userId]);
+            await pool.query(`
+                INSERT INTO donations (user_id, order_id, amount, coins, payment_id, created_at)
+                VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+            `, [userId, orderId, amount, coins, paymentId]);
+            await pool.query('UPDATE payments SET status = $1 WHERE payment_id = $2', ['succeeded', paymentId]);
+            res.json({ success: true, newBalance: newCoins });
+        } else {
+            res.json({ success: false, error: 'Платеж не подтвержден' });
+        }
     } catch (error) {
-        console.error('Ошибка обработки доната:', error);
-        res.json({ success: false, error: 'Внутренняя ошибка сервера' });
+        console.error('Ошибка обработки доната:', error.response?.data || error);
+        res.json({ success: false, error: error.response?.data?.description || 'Внутренняя ошибка сервера' });
     }
 });
 
