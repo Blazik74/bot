@@ -53,16 +53,40 @@ async function initDatabase() {
             )
         `);
 
-        // Создание индексов
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_users_discord_id ON users(discord_id);
-            CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+        // Проверяем, существует ли колонка discord_id
+        const columnCheck = await client.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'users' AND column_name = 'discord_id'
         `);
+
+        // Если колонки нет, добавляем её
+        if (columnCheck.rows.length === 0) {
+            console.log('Добавляем колонку discord_id...');
+            await client.query(`
+                ALTER TABLE users 
+                ADD COLUMN discord_id VARCHAR(255) UNIQUE
+            `);
+        }
+
+        // Создание индексов (только если они не существуют)
+        try {
+            await client.query(`CREATE INDEX IF NOT EXISTS idx_users_discord_id ON users(discord_id)`);
+        } catch (indexError) {
+            console.log('Индекс idx_users_discord_id уже существует или не может быть создан');
+        }
+
+        try {
+            await client.query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
+        } catch (indexError) {
+            console.log('Индекс idx_users_email уже существует или не может быть создан');
+        }
 
         console.log('База данных инициализирована');
         client.release();
     } catch (error) {
         console.error('Ошибка инициализации БД:', error);
+        // Не завершаем процесс, позволяем серверу запуститься
     }
 }
 
@@ -200,6 +224,57 @@ app.get('/api/auth/check', (req, res) => {
     }
 });
 
+// Вспомогательная функция для обработки Discord пользователей
+async function handleDiscordUser(discordUser) {
+    let user;
+    try {
+        // Сначала пытаемся найти пользователя по discord_id
+        user = await pool.query(
+            'SELECT * FROM users WHERE discord_id = $1',
+            [discordUser.id]
+        );
+
+        if (user.rows.length === 0) {
+            // Создание нового пользователя с discord_id
+            const newUser = await pool.query(
+                `INSERT INTO users (discord_id, username, email, avatar_url) 
+                 VALUES ($1, $2, $3, $4) RETURNING *`,
+                [
+                    discordUser.id,
+                    discordUser.username,
+                    discordUser.email,
+                    discordUser.avatar ? 
+                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
+                        'https://cdn.discordapp.com/embed/avatars/0.png'
+                ]
+            );
+            user = newUser;
+        }
+    } catch (dbError) {
+        console.error('Ошибка работы с БД при Discord авторизации:', dbError);
+        // Если колонка discord_id не существует, создаем пользователя без неё
+        try {
+            const newUser = await pool.query(
+                `INSERT INTO users (username, email, avatar_url) 
+                 VALUES ($1, $2, $3) RETURNING *`,
+                [
+                    discordUser.username,
+                    discordUser.email,
+                    discordUser.avatar ? 
+                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
+                        'https://cdn.discordapp.com/embed/avatars/0.png'
+                ]
+            );
+            user = newUser;
+        } catch (insertError) {
+            console.error('Ошибка создания пользователя:', insertError);
+            throw new Error('Не удалось создать пользователя');
+        }
+    }
+    
+    return user.rows[0];
+}
+
 // API для сохранения настроек
 app.post('/api/settings', async (req, res) => {
     try {
@@ -278,29 +353,7 @@ app.get('/auth/discord/callback', async (req, res) => {
         const discordUser = userResponse.data;
         
         // Поиск или создание пользователя
-        let user = await pool.query(
-            'SELECT * FROM users WHERE discord_id = $1',
-            [discordUser.id]
-        );
-
-        if (user.rows.length === 0) {
-            // Создание нового пользователя
-            const newUser = await pool.query(
-                `INSERT INTO users (discord_id, username, email, avatar_url) 
-                 VALUES ($1, $2, $3, $4) RETURNING *`,
-                [
-                    discordUser.id,
-                    discordUser.username,
-                    discordUser.email,
-                    discordUser.avatar ? 
-                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png'
-                ]
-            );
-            user = newUser;
-        }
-
-        const userData = user.rows[0];
+        const userData = await handleDiscordUser(discordUser);
         
         // Создание сессии
         req.session.userId = userData.id;
@@ -357,29 +410,7 @@ app.post('/api/auth/discord', async (req, res) => {
         const discordUser = userResponse.data;
         
         // Поиск или создание пользователя
-        let user = await pool.query(
-            'SELECT * FROM users WHERE discord_id = $1',
-            [discordUser.id]
-        );
-
-        if (user.rows.length === 0) {
-            // Создание нового пользователя
-            const newUser = await pool.query(
-                `INSERT INTO users (discord_id, username, email, avatar_url) 
-                 VALUES ($1, $2, $3, $4) RETURNING *`,
-                [
-                    discordUser.id,
-                    discordUser.username,
-                    discordUser.email,
-                    discordUser.avatar ? 
-                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png'
-                ]
-            );
-            user = newUser;
-        }
-
-        const userData = user.rows[0];
+        const userData = await handleDiscordUser(discordUser);
         
         // Создание сессии
         req.session.userId = userData.id;
@@ -439,7 +470,11 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 // Инициализация и запуск сервера
 async function startServer() {
     try {
-        await initDatabase();
+        // Инициализируем БД, но не прерываем запуск сервера при ошибках
+        await initDatabase().catch(error => {
+            console.error('Предупреждение: Ошибка инициализации БД:', error.message);
+            console.log('Сервер продолжит работу, но некоторые функции могут быть недоступны');
+        });
         
         app.listen(PORT, () => {
             console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
@@ -447,7 +482,7 @@ async function startServer() {
             console.log(`🔗 Discord OAuth2 URL: https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20email`);
         });
     } catch (error) {
-        console.error('Ошибка запуска сервера:', error);
+        console.error('Критическая ошибка запуска сервера:', error);
         process.exit(1);
     }
 }
