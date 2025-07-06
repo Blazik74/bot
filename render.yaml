@@ -10,4 +10,12 @@ services:
         value: production
       - key: PORT
         value: 10000
-    healthCheckPath: / 
+    healthCheckPath: /
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - package.json
+        - server.js
+        - index.html
+        - css/**
+        - js/** 
