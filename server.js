@@ -252,14 +252,15 @@ app.get('/auth/discord/callback', async (req, res) => {
     }
     
     try {
+        const params = new URLSearchParams();
+        params.append('client_id', CLIENT_ID);
+        params.append('client_secret', CLIENT_SECRET);
+        params.append('grant_type', 'authorization_code');
+        params.append('code', code);
+        params.append('redirect_uri', REDIRECT_URI);
+        
         // Обмен кода на токен
-        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', {
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: REDIRECT_URI
-        }, {
+        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -330,14 +331,15 @@ app.post('/api/auth/discord', async (req, res) => {
     }
     
     try {
+        const params = new URLSearchParams();
+        params.append('client_id', CLIENT_ID);
+        params.append('client_secret', CLIENT_SECRET);
+        params.append('grant_type', 'authorization_code');
+        params.append('code', code);
+        params.append('redirect_uri', REDIRECT_URI);
+        
         // Обмен кода на токен
-        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', {
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: REDIRECT_URI
-        }, {
+        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
