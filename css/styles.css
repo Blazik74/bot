@@ -21,6 +21,11 @@
     /* Анимации */
     --transition-speed: 0.3s;
     --bounce-timing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Кастомные переменные для скроллбара */
+    --scrollbar-bg: #18181c;
+    --scrollbar-thumb: #7c4dff;
+    --scrollbar-thumb-hover: #a084ff;
 }
 
 /* Темы */
@@ -32,6 +37,9 @@
     --border-color: rgba(110, 66, 245, 0.2);
     --shadow-color: rgba(0, 0, 0, 0.3);
     --card-bg: rgba(20, 20, 20, 0.7);
+    --scrollbar-bg: #18181c;
+    --scrollbar-thumb: #7c4dff;
+    --scrollbar-thumb-hover: #a084ff;
 }
 
 [data-theme="light"] {
@@ -42,6 +50,9 @@
     --border-color: rgba(110, 66, 245, 0.3);
     --shadow-color: rgba(0, 0, 0, 0.1);
     --card-bg: rgba(255, 255, 255, 0.9);
+    --scrollbar-bg: #f3f3f7;
+    --scrollbar-thumb: #7c4dff;
+    --scrollbar-thumb-hover: #a084ff;
 }
 
 [data-theme="purple"] {
@@ -926,7 +937,7 @@ input:checked + .toggle-slider:before {
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .features, .rules-list, .channels-grid, .team-grid {
+    .features, .rules-grid, .channels-grid, .team-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1167,7 +1178,7 @@ input:checked + .toggle-slider:before {
 /* Футер */
 .site-footer {
     width: 100%;
-    background: linear-gradient(90deg, #181818 60%, #23213a 100%);
+    background: #18181c;
     border-top: 1.5px solid #2d2d3a;
     padding: 22px 0 16px 0;
     text-align: center;
@@ -1205,6 +1216,13 @@ input:checked + .toggle-slider:before {
     font-size: 1.2em;
     margin: 0 4px;
 }
+.footer-copyright {
+    color: #bdbdbd;
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 8px #00000033;
+}
 
 @media (max-width: 900px) {
     .stats-row {
@@ -1237,6 +1255,247 @@ input:checked + .toggle-slider:before {
     .copyright-block {
         font-size: 1rem;
         margin: 22px 0 0 0;
+    }
+    .site-footer {
+        font-size: 0.98rem;
+        padding: 12px 0 8px 0;
+    }
+    .footer-content {
+        gap: 10px;
+    }
+}
+
+/* --- КАНАЛЫ --- */
+.channels-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    margin: 2.5rem 0 2.5rem 0;
+}
+.channel-block {
+    background: #18181c;
+    border-radius: 16px;
+    min-width: 260px;
+    max-width: 320px;
+    min-height: 120px;
+    padding: 1.7rem 1.5rem 1.2rem 1.5rem;
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.channel-block.normal:hover {
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.13);
+    transform: translateY(-2px) scale(1.01);
+}
+.channel-block.animated {
+    position: relative;
+    z-index: 1;
+}
+.channel-block.animated:hover {
+    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
+    border: 2px solid #7c4dff;
+    transform: translateY(-8px) scale(1.045);
+}
+.channel-title {
+    font-weight: 700;
+    color: #7c4dff;
+    font-size: 1.18rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+.channel-desc {
+    color: #bdbdbd;
+    font-size: 1.01rem;
+    margin-top: 0.2rem;
+}
+
+/* --- ПРАВИЛА --- */
+.rules-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    margin: 2.5rem 0 2.5rem 0;
+}
+.rule-block {
+    background: #18181c;
+    border-radius: 16px;
+    min-width: 260px;
+    max-width: 320px;
+    min-height: 120px;
+    padding: 1.7rem 1.5rem 1.2rem 1.5rem;
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.rule-block.normal:hover {
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.13);
+    transform: translateY(-2px) scale(1.01);
+}
+.rule-block.animated {
+    position: relative;
+    z-index: 1;
+}
+.rule-block.animated:hover {
+    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
+    border: 2px solid #7c4dff;
+    transform: translateY(-8px) scale(1.045);
+}
+.rule-title {
+    font-weight: 700;
+    color: #7c4dff;
+    font-size: 1.18rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+.rule-desc {
+    color: #bdbdbd;
+    font-size: 1.01rem;
+    margin-top: 0.2rem;
+}
+
+/* --- FAQ --- */
+.faq-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    margin: 2.5rem 0 2.5rem 0;
+}
+.faq-block {
+    background: #18181c;
+    border-radius: 16px;
+    min-width: 260px;
+    max-width: 320px;
+    min-height: 120px;
+    padding: 1.7rem 1.5rem 1.2rem 1.5rem;
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    transition: box-shadow 0.3s, transform 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.faq-block:hover {
+    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
+    transform: translateY(-8px) scale(1.045);
+}
+.faq-title {
+    font-weight: 700;
+    color: #7c4dff;
+    font-size: 1.18rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+.faq-desc {
+    color: #bdbdbd;
+    font-size: 1.01rem;
+    margin-top: 0.2rem;
+}
+
+/* --- КАСТОМНЫЙ СКРОЛЛБАР --- */
+::-webkit-scrollbar {
+    width: 12px;
+    background: var(--scrollbar-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 8px;
+    border: 2px solid var(--scrollbar-bg);
+    transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* --- ФУТЕР --- */
+.site-footer {
+    width: 100%;
+    background: #18181c;
+    border-top: 1.5px solid #2d2d3a;
+    padding: 22px 0 16px 0;
+    text-align: center;
+    position: relative;
+    margin-top: 0;
+    font-size: 1.08rem;
+    color: #bdbdbd;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    font-size: 1.08rem;
+}
+.footer-link {
+    color: #7289da;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s, text-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.13em;
+}
+.footer-link:hover {
+    color: #fff;
+    text-shadow: 0 0 8px #7289da;
+}
+.footer-sep {
+    color: #333;
+    font-size: 1.2em;
+    margin: 0 4px;
+}
+.footer-copyright {
+    color: #bdbdbd;
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 8px #00000033;
+}
+
+@media (max-width: 900px) {
+    .channels-grid, .rules-grid, .faq-row {
+        gap: 18px;
+    }
+    .channel-block, .rule-block, .faq-block {
+        min-width: 140px;
+        max-width: 98vw;
+        padding: 1.5rem 1.2rem 1rem 1.2rem;
+    }
+}
+@media (max-width: 600px) {
+    .channels-grid, .rules-grid, .faq-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    .channel-block, .rule-block, .faq-block {
+        min-width: 90vw;
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem 0.7rem 0.5rem;
     }
     .site-footer {
         font-size: 0.98rem;
