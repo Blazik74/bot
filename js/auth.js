@@ -300,7 +300,11 @@ class AuthManager {
     handleDiscordLogin() {
         // Discord OAuth2 URL
         const clientId = '1391384219661500558'; // Discord Client ID
-        const redirectUri = encodeURIComponent(window.location.origin + '/auth/discord/callback');
+        const redirectUri = encodeURIComponent(
+            window.location.hostname === 'localhost' 
+                ? window.location.origin + '/auth/discord/callback'
+                : 'https://arness-community.onrender.com/auth/discord/callback'
+        );
         const scope = 'identify email';
         
         const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
@@ -403,11 +407,23 @@ class AuthManager {
         const emailElement = document.getElementById('accountEmail');
         const dateElement = document.getElementById('accountDate');
         const avatarElement = document.getElementById('accountAvatar');
+        const discordElement = document.getElementById('accountDiscord');
+        const discordUsernameElement = document.getElementById('accountDiscordUsername');
 
         if (usernameElement) usernameElement.textContent = this.currentUser.username;
         if (emailElement) emailElement.textContent = this.currentUser.email;
         if (dateElement) dateElement.textContent = this.currentUser.registrationDate;
         if (avatarElement) avatarElement.src = this.currentUser.avatar;
+
+        // Отображение Discord информации
+        if (discordElement && discordUsernameElement) {
+            if (this.currentUser.discordId) {
+                discordElement.style.display = 'flex';
+                discordUsernameElement.textContent = this.currentUser.username;
+            } else {
+                discordElement.style.display = 'none';
+            }
+        }
     }
 
     // Показать уведомление

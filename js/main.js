@@ -172,6 +172,9 @@ class App {
         // Обработчики форм
         this.setupFormHandlers();
         
+        // Обработчики Discord авторизации на страницах
+        this.setupDiscordAuthButtons();
+        
         // Обработчики переключения страниц
         this.setupPageSwitchers();
     }
@@ -231,6 +234,28 @@ class App {
             showLogin.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.showPage('login');
+            });
+        }
+    }
+
+    // Настройка Discord авторизации на страницах
+    setupDiscordAuthButtons() {
+        const discordLoginBtn = document.getElementById('discordLoginBtnPage');
+        const discordRegisterBtn = document.getElementById('discordRegisterBtnPage');
+
+        if (discordLoginBtn) {
+            discordLoginBtn.addEventListener('click', () => {
+                if (this.authManager) {
+                    this.authManager.handleDiscordLogin();
+                }
+            });
+        }
+
+        if (discordRegisterBtn) {
+            discordRegisterBtn.addEventListener('click', () => {
+                if (this.authManager) {
+                    this.authManager.handleDiscordLogin();
+                }
             });
         }
     }
