@@ -237,10 +237,11 @@ async function handleDiscordUser(discordUser) {
         if (user.rows.length === 0) {
             // Создание нового пользователя с discord_id
             const newUser = await pool.query(
-                `INSERT INTO users (discord_id, username, email, avatar_url) 
-                 VALUES ($1, $2, $3, $4) RETURNING *`,
+                `INSERT INTO users (discord_id, username, name, email, avatar_url) 
+                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
                 [
                     discordUser.id,
+                    discordUser.username,
                     discordUser.username,
                     discordUser.email,
                     discordUser.avatar ? 
@@ -255,9 +256,10 @@ async function handleDiscordUser(discordUser) {
         // Если колонка discord_id не существует, создаем пользователя без неё
         try {
             const newUser = await pool.query(
-                `INSERT INTO users (username, email, avatar_url) 
-                 VALUES ($1, $2, $3) RETURNING *`,
+                `INSERT INTO users (username, name, email, avatar_url) 
+                 VALUES ($1, $2, $3, $4) RETURNING *`,
                 [
+                    discordUser.username,
                     discordUser.username,
                     discordUser.email,
                     discordUser.avatar ? 
