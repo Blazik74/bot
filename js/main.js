@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Экспорт для использования в других модулях
 window.App = App;
 
-// --- DONATE PAGE: CloudPayments integration ---
+// --- DONATE PAGE: ЮMoney integration ---
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pay-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
@@ -488,65 +488,78 @@ document.addEventListener('DOMContentLoaded', function() {
             // Создаем уникальный ID заказа
             const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             
-            // Инициализируем CloudPayments виджет
-            var widget = new cp.CloudPayments();
-            widget.charge({
-                publicId: 'pk_1234567890abcdef', // Замените на ваш Public ID
-                description: `Покупка ${coins} монет`,
-                amount: amount,
-                currency: 'RUB',
-                accountId: currentUser ? currentUser.email || currentUser.discord_id : 'guest',
-                invoiceId: orderId,
-                skin: 'classic',
-                data: {
+            // Сначала создаем платеж на сервере
+            fetch('/api/donate/create-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    amount: amount,
                     coins: coins,
                     userId: currentUser ? currentUser.id : null,
-                    orderId: orderId
-                }
-            },
-            {
-                onSuccess: function(options) {
-                    console.log('Оплата успешна:', options);
-                    // Отправляем запрос на сервер для начисления монет
-                    fetch('/api/donate/success', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            orderId: orderId,
-                            amount: amount,
-                            coins: coins,
-                            userId: currentUser ? currentUser.id : null,
-                            transactionId: options.transactionId
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(`Оплата прошла успешно!\nНачислено ${coins} монет.`);
-                            // Обновляем баланс пользователя
-                            if (currentUser) {
-                                currentUser.coins = (currentUser.coins || 0) + coins;
-                                updateUserInterface();
-                            }
-                        } else {
-                            alert('Ошибка начисления монет: ' + data.error);
+                    description: `Покупка ${coins} монет`
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.paymentUrl) {
+                    // Открываем ЮMoney виджет
+                    const checkout = new window.YooKassa.Checkout({
+                        confirmation_token: data.confirmationToken,
+                        return_url: window.location.origin + '/profile/donate',
+                        error_callback: function(error) {
+                            console.error('Ошибка оплаты:', error);
+                            alert('Ошибка при создании платежа. Попробуйте еще раз.');
                         }
-                    })
-                    .catch(error => {
-                        console.error('Ошибка запроса:', error);
-                        alert('Ошибка обработки платежа. Обратитесь в поддержку.');
                     });
-                },
-                onFail: function(reason, options) {
-                    console.log('Оплата не прошла:', reason, options);
-                    if (reason === 'cancelled') {
-                        alert('Оплата отменена.');
-                    } else {
-                        alert('Ошибка оплаты: ' + reason);
-                    }
+                    
+                    checkout.render('payment-form');
+                    
+                    // Обработка успешной оплаты
+                    checkout.on('success', function(event) {
+                        console.log('Оплата успешна:', event);
+                        // Отправляем запрос на сервер для начисления монет
+                        fetch('/api/donate/success', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                orderId: orderId,
+                                amount: amount,
+                                coins: coins,
+                                userId: currentUser ? currentUser.id : null,
+                                paymentId: event.payment_id
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert(`Оплата прошла успешно!\nНачислено ${coins} монет.`);
+                                // Обновляем баланс пользователя
+                                if (currentUser) {
+                                    currentUser.coins = (currentUser.coins || 0) + coins;
+                                    updateUserInterface();
+                                }
+                            } else {
+                                alert('Ошибка начисления монет: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Ошибка запроса:', error);
+                            alert('Ошибка обработки платежа. Обратитесь в поддержку.');
+                        });
+                    });
+                    
+                } else {
+                    alert('Ошибка создания платежа: ' + (data.error || 'Неизвестная ошибка'));
                 }
+            })
+            .catch(error => {
+                console.error('Ошибка запроса:', error);
+                alert('Ошибка соединения с сервером. Попробуйте еще раз.');
             });
         });
     });
