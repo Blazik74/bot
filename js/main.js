@@ -262,7 +262,20 @@ class App {
 
     // Настройка переключателей страниц
     setupPageSwitchers() {
-        // Здесь можно добавить дополнительные переключатели страниц
+        // Переход на страницу доната по клику на баланс
+        const balance = document.getElementById('accountBalance');
+        if (balance) {
+            balance.addEventListener('click', () => {
+                this.showDonatePage();
+            });
+        }
+        // Кнопка назад на странице доната
+        const backBtn = document.getElementById('backToProfileBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.showPage('account');
+            });
+        }
     }
 
     // Показать страницу
@@ -392,6 +405,18 @@ class App {
     // Получить менеджер настроек
     getSettingsManager() {
         return this.settingsManager;
+    }
+
+    // Показать страницу доната
+    showDonatePage() {
+        // Скрыть все страницы
+        Object.values(this.pages).forEach(page => {
+            if (page) page.style.display = 'none';
+        });
+        // Показать страницу доната
+        const donatePage = document.getElementById('donatePage');
+        if (donatePage) donatePage.style.display = 'block';
+        this.currentPage = 'donate';
     }
 }
 
