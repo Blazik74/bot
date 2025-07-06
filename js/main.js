@@ -287,27 +287,28 @@ class App {
 
     // Показать страницу
     showPage(pageName) {
-        // Скрываем все страницы
-        Object.values(this.pages).forEach(page => {
-            if (page) {
-                page.style.display = 'none';
-            }
+        // Список всех возможных страниц
+        const allPages = [
+            'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage'
+        ];
+        allPages.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
         });
-
         // Показываем нужную страницу
-        if (this.pages[pageName]) {
-            this.pages[pageName].style.display = 'block';
+        let pageEl = null;
+        if (this.pages && this.pages[pageName]) {
+            pageEl = this.pages[pageName];
+        } else {
+            pageEl = document.getElementById(pageName + 'Page');
+        }
+        if (pageEl) {
+            pageEl.style.display = 'block';
             this.currentPage = pageName;
-            
-            // Добавляем анимацию перехода
-            this.pages[pageName].classList.add('page-transition');
-            
-            // Убираем класс анимации через некоторое время
+            pageEl.classList.add('page-transition');
             setTimeout(() => {
-                this.pages[pageName].classList.remove('page-transition');
+                pageEl.classList.remove('page-transition');
             }, 500);
-
-            // Если это страница аккаунта, обновляем настройки
             if (pageName === 'account' && this.settingsManager) {
                 setTimeout(() => {
                     this.settingsManager.renderSettingsPage();
@@ -334,20 +335,23 @@ class App {
 
     // Запуск приложения
     async start() {
+        // Сброс всех страниц
+        ['mainPage','loginPage','registerPage','accountPage','donatePage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
         // Показываем главную страницу
         this.showPage('main');
         // Проверяем Twitch callback
         this.checkTwitchCallback();
         // Проверяем авторизацию
-        if (this.authManager) {
-            await this.authManager.loadUserFromStorage();
-            this.authManager.checkAuth();
-        }
+        if (!this.authManager) this.authManager = new AuthManager();
+        await this.authManager.loadUserFromStorage();
+        this.authManager.checkAuth();
         // Применяем настройки
-        if (this.settingsManager) {
-            await this.settingsManager.loadSettings();
-            this.settingsManager.applySettings();
-        }
+        if (!this.settingsManager) this.settingsManager = new SettingsManager();
+        await this.settingsManager.loadSettings();
+        this.settingsManager.applySettings();
         // Проверяем Discord callback
         this.checkDiscordCallback();
     }
