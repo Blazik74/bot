@@ -385,25 +385,16 @@ class App {
         if (code && this.authManager) {
             // Очищаем URL
             window.history.replaceState({}, document.title, window.location.pathname);
-            
             // Обрабатываем код Discord
             this.authManager.handleDiscordCallback(code);
-        } else if (discordSuccess && userData && this.authManager) {
-            // Обрабатываем успешную авторизацию через Discord
+        } else if (discordSuccess && this.authManager) {
+            // После успешного входа через Discord
             window.history.replaceState({}, document.title, window.location.pathname);
-            
-            try {
-                const user = JSON.parse(decodeURIComponent(userData));
-                this.authManager.currentUser = user;
-                this.authManager.isAuthenticated = true;
-                this.authManager.saveUserToStorage(user);
-                this.authManager.checkAuth();
-                this.showPage('main');
-                this.showNotification('Успешный вход через Discord!', 'success');
-            } catch (error) {
-                console.error('Error parsing user data:', error);
-                this.showNotification('Ошибка обработки данных пользователя', 'error');
-            }
+            // Обновляем профиль (перезагружаем данные)
+            this.authManager.checkServerSession();
+            this.authManager.checkAuth();
+            this.showPage('account');
+            this.showNotification('Успешный вход через Discord!', 'success');
         } else if (error) {
             // Обрабатываем ошибку Discord
             window.history.replaceState({}, document.title, window.location.pathname);
