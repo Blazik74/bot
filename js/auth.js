@@ -404,19 +404,35 @@ class AuthManager {
         const avatarElement = document.getElementById('accountAvatar');
         const discordElement = document.getElementById('accountDiscord');
         const discordUsernameElement = document.getElementById('accountDiscordUsername');
+        const twitchElement = document.getElementById('accountTwitch');
+        const twitchUsernameElement = document.getElementById('accountTwitchUsername');
+        const twitchBtn = document.getElementById('twitchLoginBtn');
 
         if (usernameElement) usernameElement.textContent = this.currentUser.username;
         if (emailElement) emailElement.textContent = this.currentUser.email;
         if (dateElement) dateElement.textContent = this.currentUser.registrationDate;
         if (avatarElement) avatarElement.src = this.currentUser.avatar;
 
-        // Отображение Discord информации
+        // Discord
         if (discordElement && discordUsernameElement) {
             if (this.currentUser.discordId) {
                 discordElement.style.display = 'flex';
                 discordUsernameElement.textContent = this.currentUser.username;
             } else {
                 discordElement.style.display = 'none';
+            }
+        }
+
+        // Twitch
+        if (twitchElement && twitchUsernameElement && twitchBtn) {
+            if (this.currentUser.twitchUsername) {
+                twitchElement.style.display = 'flex';
+                twitchUsernameElement.textContent = this.currentUser.twitchUsername;
+                twitchBtn.style.display = 'none';
+            } else {
+                twitchElement.style.display = 'flex';
+                twitchUsernameElement.textContent = 'Не подключен';
+                twitchBtn.style.display = 'inline-block';
             }
         }
     }
