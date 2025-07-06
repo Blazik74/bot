@@ -269,7 +269,7 @@ class AuthManager {
     // Discord авторизация
     handleDiscordLogin() {
         // Discord OAuth2 URL
-        const clientId = 'YOUR_DISCORD_CLIENT_ID'; // Замените на ваш Client ID
+        const clientId = '1391384219661500558'; // Discord Client ID
         const redirectUri = encodeURIComponent(window.location.origin + '/auth/discord/callback');
         const scope = 'identify email';
         
