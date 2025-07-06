@@ -104,12 +104,11 @@
 }
 
 body {
-    background: var(--primary-bg);
-    color: var(--primary-text);
+    background: #0a0a0a;
+    color: #e0e0e0;
     overflow-x: hidden;
     line-height: 1.6;
     padding-top: 70px;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
 /* Навигационная панель */
@@ -1267,106 +1266,55 @@ input:checked + .toggle-slider:before {
 
 /* --- КАНАЛЫ --- */
 .channels-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px;
-    justify-content: center;
-    margin: 2.5rem 0 2.5rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
-.channel-block {
-    background: #18181c;
-    border-radius: 16px;
-    min-width: 260px;
-    max-width: 320px;
-    min-height: 120px;
-    padding: 1.7rem 1.5rem 1.2rem 1.5rem;
-    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
-    border: 2px solid transparent;
-    cursor: pointer;
-    font-size: 1.08rem;
-    margin-bottom: 0;
+.channel-card {
+    background: rgba(25, 25, 25, 0.7);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-top: 2px solid #6e42f5;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
-.channel-block.normal:hover {
-    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.13);
-    transform: translateY(-2px) scale(1.01);
+.channel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(110, 66, 245, 0.2);
 }
-.channel-block.animated {
-    position: relative;
-    z-index: 1;
-}
-.channel-block.animated:hover {
-    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
-    border: 2px solid #7c4dff;
-    transform: translateY(-8px) scale(1.045);
-}
-.channel-title {
-    font-weight: 700;
-    color: #7c4dff;
-    font-size: 1.18rem;
+.channel-card h3 {
+    color: #6e42f5;
     margin-bottom: 0.5rem;
-    display: block;
+    font-size: 1.2rem;
 }
-.channel-desc {
-    color: #bdbdbd;
-    font-size: 1.01rem;
-    margin-top: 0.2rem;
+.channel-card p {
+    font-size: 0.95rem;
 }
 
 /* --- ПРАВИЛА --- */
 .rules-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px;
-    justify-content: center;
-    margin: 2.5rem 0 2.5rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
-.rule-block {
-    background: #18181c;
-    border-radius: 16px;
-    min-width: 260px;
-    max-width: 320px;
-    min-height: 120px;
-    padding: 1.7rem 1.5rem 1.2rem 1.5rem;
-    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
-    border: 2px solid transparent;
-    cursor: pointer;
-    font-size: 1.08rem;
-    margin-bottom: 0;
+.rule-item {
+    background: rgba(30, 30, 30, 0.7);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 3px solid #6e42f5;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
-.rule-block.normal:hover {
-    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.13);
-    transform: translateY(-2px) scale(1.01);
+.rule-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(110, 66, 245, 0.2);
 }
-.rule-block.animated {
-    position: relative;
-    z-index: 1;
-}
-.rule-block.animated:hover {
-    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
-    border: 2px solid #7c4dff;
-    transform: translateY(-8px) scale(1.045);
-}
-.rule-title {
-    font-weight: 700;
-    color: #7c4dff;
-    font-size: 1.18rem;
+.rule-item h3 {
+    color: #6e42f5;
     margin-bottom: 0.5rem;
-    display: block;
-}
-.rule-desc {
-    color: #bdbdbd;
-    font-size: 1.01rem;
-    margin-top: 0.2rem;
+    font-size: 1.2rem;
 }
 
 /* --- FAQ --- */
@@ -1480,7 +1428,7 @@ input:checked + .toggle-slider:before {
     .channels-grid, .rules-grid, .faq-row {
         gap: 18px;
     }
-    .channel-block, .rule-block, .faq-block {
+    .channel-card, .rule-item {
         min-width: 140px;
         max-width: 98vw;
         padding: 1.5rem 1.2rem 1rem 1.2rem;
@@ -1492,7 +1440,7 @@ input:checked + .toggle-slider:before {
         align-items: center;
         gap: 12px;
     }
-    .channel-block, .rule-block, .faq-block {
+    .channel-card, .rule-item {
         min-width: 90vw;
         max-width: 98vw;
         padding: 1.2rem 0.5rem 0.7rem 0.5rem;
