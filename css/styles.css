@@ -349,35 +349,44 @@ header {
 .discord-btn {
     display: inline-block;
     padding: 12px 30px;
-    background: transparent;
-    color: #6e42f5;
+    background: var(--accent);
+    color: white;
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
-    transition: all 0.3s;
+    transition: all var(--transition-speed) var(--bounce-timing);
     margin-top: 1rem;
     font-size: 1.1rem;
-    border: 2px solid #6e42f5;
+    border: 2px solid var(--accent-dark);
     position: relative;
     overflow: hidden;
-    box-shadow: none;
+    box-shadow: 0 4px 15px rgba(110, 66, 245, 0.4);
 }
 
-.discord-btn i {
-    margin-right: 0.5em;
-    font-size: 1.1em;
-    transition: color 0.3s;
+.discord-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.discord-btn:hover::before {
+    left: 100%;
 }
 
 .discord-btn:hover {
-    background: #6e42f5;
-    color: #fff;
-    border: 2px solid #6e42f5;
-    box-shadow: none;
+    background: transparent;
+    color: var(--accent);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(110, 66, 245, 0.5);
 }
 
-.discord-btn:hover i {
-    color: #fff;
+.discord-btn:active {
+    transform: translateY(1px) scale(0.98);
 }
 
 .container {
@@ -1089,33 +1098,30 @@ input:checked + .toggle-slider:before {
     justify-content: center;
     align-items: stretch;
 }
-.team-member {
-    min-width: 200px;
-    max-width: 240px;
-    flex: 0 0 200px;
-    text-align: center;
-    transition: all 0.3s;
-    padding: 0 0.5rem 0.7rem 0.5rem;
-    margin: 0;
-    position: relative;
-    margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 .team-card {
-    background: rgba(30, 30, 30, 0.7);
-    border-radius: 16px;
-    box-shadow: 0 3px 18px rgba(110,66,245,0.10);
-    padding: 2.5rem 1.2rem 1.2rem 1.2rem;
-    margin-top: 60px;
-    min-height: 120px;
-    width: 100%;
-    z-index: 1;
+    background: rgba(25, 25, 25, 0.85);
+    border-radius: 18px;
+    box-shadow: 0 5px 24px 0 rgba(110,66,245,0.08);
+    padding: 60px 1.2rem 1.2rem 1.2rem;
+    min-width: 220px;
+    max-width: 260px;
+    flex: 0 0 220px;
+    text-align: center;
     position: relative;
+    transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
+    border: 2px solid transparent;
+    margin: 0;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
+}
+.team-card:hover {
+    box-shadow: 0 0 32px 0 #7c4dff, 0 8px 32px 0 rgba(110,66,245,0.18);
+    border: 2px solid #7c4dff;
+    z-index: 2;
+    transform: translateY(-8px) scale(1.045);
 }
 .avatar-container {
     width: 120px;
@@ -1125,20 +1131,20 @@ input:checked + .toggle-slider:before {
     border: 3px solid #6e42f5;
     position: absolute;
     left: 50%;
-    top: -40px;
+    top: -60px;
     transform: translateX(-50%);
-    z-index: 2;
+    z-index: 3;
     box-shadow: 0 0 20px rgba(110, 66, 245, 0.3);
     transition: all 0.3s;
     background: #181818;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0;
 }
-.team-member:hover .avatar-container {
-    transform: translateX(-50%) rotate(5deg) scale(1.1);
-    box-shadow: 0 0 30px rgba(110, 66, 245, 0.5);
+.team-card:hover .avatar-container {
+    border: 3px solid #a084ff;
+    box-shadow: 0 0 36px 0 #a084ff, 0 0 0 6px #7c4dff33;
+    transform: translateX(-50%) scale(1.08) rotate(-2deg);
 }
 .member-avatar {
     width: 100%;
@@ -1148,13 +1154,14 @@ input:checked + .toggle-slider:before {
     transition: transform 0.3s;
 }
 .avatar-container:hover .member-avatar {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 .member-name {
     font-weight: 700;
     margin-bottom: 0.2rem;
     font-size: 1.25rem;
     color: #fff;
+    margin-top: 70px;
 }
 .member-role {
     color: #6e42f5;
@@ -1241,21 +1248,19 @@ input:checked + .toggle-slider:before {
     .team-grid {
         gap: 1.1rem;
     }
-    .team-member {
-        min-width: 120px;
-        max-width: 150px;
-        flex: 0 0 120px;
-        padding: 0 0.2rem 0.5rem 0.2rem;
-        margin-top: 28px;
+    .team-card {
+        min-width: 140px;
+        max-width: 170px;
+        flex: 0 0 140px;
+        padding: 38px 0.5rem 0.7rem 0.5rem;
     }
     .avatar-container {
         width: 70px;
         height: 70px;
-        top: -28px;
+        top: -35px;
     }
-    .team-card {
-        padding: 1.5rem 0.7rem 0.7rem 0.7rem;
-        margin-top: 36px;
+    .member-name {
+        margin-top: 40px;
     }
 }
 @media (max-width: 600px) {
@@ -1283,21 +1288,19 @@ input:checked + .toggle-slider:before {
     .team-grid {
         gap: 0.3rem;
     }
-    .team-member {
+    .team-card {
         min-width: 90px;
         max-width: 110px;
         flex: 0 0 90px;
-        padding: 0 0.1rem 0.3rem 0.1rem;
-        margin-top: 16px;
+        padding: 18px 0.1rem 0.3rem 0.1rem;
     }
     .avatar-container {
         width: 40px;
         height: 40px;
-        top: -16px;
+        top: -20px;
     }
-    .team-card {
-        padding: 0.7rem 0.2rem 0.4rem 0.2rem;
-        margin-top: 18px;
+    .member-name {
+        margin-top: 20px;
     }
 }
 
