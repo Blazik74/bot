@@ -145,6 +145,23 @@ class SettingsManager {
         this.updateParticleCount();
     }
 
+    // Универсальная функция анимации скрытия/показа
+    animateToggle(element, show) {
+        if (!element) return;
+        if (show) {
+            element.classList.remove('fade-out', 'hidden');
+            element.classList.add('fade-in');
+        } else {
+            element.classList.remove('fade-in');
+            element.classList.add('fade-out');
+            // После завершения анимации скрываем полностью
+            element.addEventListener('transitionend', function handler() {
+                element.classList.add('hidden');
+                element.removeEventListener('transitionend', handler);
+            });
+        }
+    }
+
     // Применение кастомизации шапки
     applyHeaderCustomization() {
         const navbar = document.querySelector('.navbar');
@@ -155,13 +172,13 @@ class SettingsManager {
         // Показ/скрытие логотипа
         const logo = navbar.querySelector('.nav-logo');
         if (logo) {
-            logo.style.display = customization.showLogo ? 'block' : 'none';
+            this.animateToggle(logo, customization.showLogo);
         }
         
         // Показ/скрытие навигационных ссылок
         const navLinks = navbar.querySelector('.nav-links');
         if (navLinks) {
-            navLinks.style.display = customization.showNavLinks ? 'flex' : 'none';
+            this.animateToggle(navLinks, customization.showNavLinks);
         }
         
         // Цвет фона
