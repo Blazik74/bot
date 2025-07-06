@@ -96,6 +96,23 @@ async function initDatabase() {
             await client.query(`ALTER TABLE users ADD COLUMN settings JSONB DEFAULT '{}'`);
         }
 
+        // Проверяем, есть ли колонка twitch_id
+        const twitchIdCol = await client.query(`
+            SELECT column_name FROM information_schema.columns
+            WHERE table_name = 'users' AND column_name = 'twitch_id'
+        `);
+        if (twitchIdCol.rows.length === 0) {
+            await client.query(`ALTER TABLE users ADD COLUMN twitch_id VARCHAR(255)`);
+        }
+        // Проверяем, есть ли колонка twitch_username
+        const twitchUsernameCol = await client.query(`
+            SELECT column_name FROM information_schema.columns
+            WHERE table_name = 'users' AND column_name = 'twitch_username'
+        `);
+        if (twitchUsernameCol.rows.length === 0) {
+            await client.query(`ALTER TABLE users ADD COLUMN twitch_username VARCHAR(255)`);
+        }
+
         console.log('База данных инициализирована');
         client.release();
     } catch (error) {
