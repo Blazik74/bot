@@ -276,6 +276,13 @@ class App {
                 this.showPage('account');
             });
         }
+        // Кнопка Twitch OAuth
+        const twitchBtn = document.getElementById('twitchLoginBtn');
+        if (twitchBtn) {
+            twitchBtn.addEventListener('click', () => {
+                window.location.href = '/auth/twitch';
+            });
+        }
     }
 
     // Показать страницу
@@ -329,21 +336,38 @@ class App {
     async start() {
         // Показываем главную страницу
         this.showPage('main');
-        
+        // Проверяем Twitch callback
+        this.checkTwitchCallback();
         // Проверяем авторизацию
         if (this.authManager) {
             await this.authManager.loadUserFromStorage();
             this.authManager.checkAuth();
         }
-        
         // Применяем настройки
         if (this.settingsManager) {
             await this.settingsManager.loadSettings();
             this.settingsManager.applySettings();
         }
-
         // Проверяем Discord callback
         this.checkDiscordCallback();
+    }
+
+    checkTwitchCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const twitchSuccess = urlParams.get('twitch_success');
+        if (twitchSuccess && this.authManager) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Обновляем профиль (перезагружаем данные)
+            this.authManager.checkServerSession();
+            this.authManager.checkAuth();
+            this.showPage('account');
+            this.showNotification('Twitch аккаунт успешно привязан!', 'success');
+        }
+        const twitchError = urlParams.get('error');
+        if (twitchError && twitchError.includes('twitch')) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            this.showNotification('Ошибка авторизации через Twitch', 'error');
+        }
     }
 
     // Проверка Discord callback
