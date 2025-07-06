@@ -252,6 +252,18 @@
                     <div class="error-message" id="loginPasswordError"></div>
                 </div>
                 <button type="submit" class="form-submit">Войти</button>
+                
+                <!-- Discord авторизация -->
+                <div class="discord-auth-section">
+                    <div class="divider">
+                        <span>Также можете войти через:</span>
+                    </div>
+                    <button type="button" class="discord-auth-btn" id="discordLoginBtnPage">
+                        <i class="fab fa-discord"></i>
+                        <span>Discord</span>
+                    </button>
+                </div>
+                
                 <div class="form-toggle">
                     Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
                 </div>
@@ -285,6 +297,18 @@
                     <div class="error-message" id="registerConfirmPasswordError"></div>
                 </div>
                 <button type="submit" class="form-submit">Зарегистрироваться</button>
+                
+                <!-- Discord авторизация -->
+                <div class="discord-auth-section">
+                    <div class="divider">
+                        <span>Также можете войти через:</span>
+                    </div>
+                    <button type="button" class="discord-auth-btn" id="discordRegisterBtnPage">
+                        <i class="fab fa-discord"></i>
+                        <span>Discord</span>
+                    </button>
+                </div>
+                
                 <div class="form-toggle">
                     Уже есть аккаунт? <a href="#" id="showLogin">Войти</a>
                 </div>
@@ -300,6 +324,10 @@
                 <div class="account-info">
                     <h2 id="accountUsername">Пользователь</h2>
                     <p id="accountEmail">email@example.com</p>
+                    <p id="accountDiscord" style="display: none;">
+                        <i class="fab fa-discord"></i>
+                        Discord: <span id="accountDiscordUsername">Не подключен</span>
+                    </p>
                     <p>Дата регистрации: <span id="accountDate">01.01.2025</span></p>
                 </div>
             </div>

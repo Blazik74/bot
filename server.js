@@ -9,7 +9,9 @@ const app = express();
 // Конфигурация
 const CLIENT_ID = '1391384219661500558';
 const CLIENT_SECRET = 'oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO';
-const REDIRECT_URI = 'http://localhost:3000/auth/discord/callback';
+const REDIRECT_URI = process.env.NODE_ENV === 'production' 
+    ? 'https://arness-community.onrender.com/auth/discord/callback'
+    : 'http://localhost:3000/auth/discord/callback';
 const PORT = process.env.PORT || 3000;
 
 // Подключение к PostgreSQL
