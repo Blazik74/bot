@@ -1,593 +1,553 @@
-const express = require('express');
-const axios = require('axios');
-const path = require('path');
-const session = require('express-session');
-const bcrypt = require('bcrypt');
-const { Pool } = require('pg');
-const app = express();
-
-// Конфигурация
-const CLIENT_ID = '1391384219661500558';
-const CLIENT_SECRET = 'jN3YUbVedyFfveM_FQXi2mXd1C_6Jewj';
-const REDIRECT_URI = 'https://arness-community.onrender.com';
-const PORT = process.env.PORT || 3000;
-
-// --- Twitch OAuth ---
-const TWITCH_CLIENT_ID = '7pewyshzfymoj5at2odselalrjj1gm';
-const TWITCH_CLIENT_SECRET = '8c4uuj3b4eq2v9dm6pnnowd68hgekf';
-const TWITCH_REDIRECT_URI = 'https://arness-community.onrender.com/auth/twitch/callback';
-
-// Подключение к PostgreSQL
-const pool = new Pool({
-    connectionString: 'postgresql://pixel_ai_backend_user:oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO@dpg-d1ehca6uk2gs73anldu0-a/pixel_ai_backend',
-    ssl: {
-        rejectUnauthorized: false
+// Основной модуль приложения
+class App {
+    constructor() {
+        this.currentPage = 'main';
+        this.authManager = null;
+        this.settingsManager = null;
+        this.init();
     }
-});
 
-// Middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
-app.use(session({
-    secret: 'arness-secret-key-2024',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        secure: false, // установите true для HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 часа
+    async init() {
+        this.setupPages();
+        this.setupNavigation();
+        this.setupAnimations();
+        await this.initializeManagers();
+        this.setupEventListeners();
+        await this.start();
     }
-}));
 
-// Инициализация базы данных
-async function initDatabase() {
-    try {
-        const client = await pool.connect();
+    // Настройка страниц
+    setupPages() {
+        this.pages = {
+            main: document.getElementById('mainPage'),
+            login: document.getElementById('loginPage'),
+            register: document.getElementById('registerPage'),
+            account: document.getElementById('accountPage')
+        };
+    }
+
+    // Настройка навигации
+    setupNavigation() {
+        // Навигационные ссылки
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Логотип - переход на главную
+        const navLogo = document.getElementById('navLogo');
+        if (navLogo) {
+            navLogo.addEventListener('click', () => {
+                this.showPage('main');
+            });
+        }
+
+        // Иконка пользователя
+        const userIcon = document.getElementById('userIcon');
+        if (userIcon) {
+            userIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (this.authManager && this.authManager.isUserAuthenticated()) {
+                    this.showPage('account');
+                } else {
+                    this.toggleAuthDropdown();
+                }
+            });
+        }
+
+        // Выпадающее меню авторизации
+        document.addEventListener('click', () => {
+            this.hideAuthDropdown();
+        });
+    }
+
+    // Настройка анимаций
+    setupAnimations() {
+        // Анимация появления секций при скролле
+        this.setupScrollAnimations();
         
-        // Создание таблицы пользователей
-        await client.query(`
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                discord_id VARCHAR(255) UNIQUE,
-                username VARCHAR(255) NOT NULL,
-                email VARCHAR(255) UNIQUE,
-                password_hash VARCHAR(255),
-                avatar_url TEXT,
-                settings JSONB DEFAULT '{}',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
+        // Анимация частиц фона
+        this.createParticles();
+    }
 
-        // Проверяем, существует ли колонка discord_id
-        const columnCheck = await client.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'users' AND column_name = 'discord_id'
-        `);
+    // Настройка анимаций скролла
+    setupScrollAnimations() {
+        const sections = document.querySelectorAll('section');
+        const windowHeight = window.innerHeight;
+        const revealPoint = 150;
 
-        // Если колонки нет, добавляем её
-        if (columnCheck.rows.length === 0) {
-            console.log('Добавляем колонку discord_id...');
-            await client.query(`
-                ALTER TABLE users 
-                ADD COLUMN discord_id VARCHAR(255) UNIQUE
-            `);
+        const animateOnScroll = () => {
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+
+                if (sectionTop < windowHeight - revealPoint) {
+                    section.classList.add('visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    }
+
+    // Создание частиц фона
+    createParticles() {
+        const bgAnimation = document.getElementById('bg-animation');
+        if (!bgAnimation) return;
+
+        // Очищаем существующие частицы
+        bgAnimation.innerHTML = '';
+
+        // Получаем настройки анимаций
+        const particleCount = this.settingsManager ? 
+            this.settingsManager.getSettings().animations.particleCount : 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            const size = Math.random() * 15 + 5;
+            const posX = Math.random() * 100;
+            const delay = Math.random() * 20;
+            const duration = Math.random() * 15 + 15;
+            const opacity = Math.random() * 0.5 + 0.2;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.opacity = opacity;
+
+            const hue = Math.floor(Math.random() * 20) + 250;
+            particle.style.background = `hsl(${hue}, 80%, 65%)`;
+
+            bgAnimation.appendChild(particle);
+        }
+    }
+
+    // Инициализация менеджеров
+    async initializeManagers() {
+        // Инициализация менеджера авторизации
+        this.authManager = new AuthManager();
+        
+        // Инициализация менеджера настроек
+        this.settingsManager = new SettingsManager();
+        
+        // Добавляем страницу настроек в аккаунт
+        this.setupAccountPage();
+    }
+
+    // Настройка страницы аккаунта
+    setupAccountPage() {
+        const accountContainer = document.querySelector('.account-container');
+        if (!accountContainer) return;
+
+        // Добавляем секцию настроек
+        const settingsSection = document.createElement('div');
+        settingsSection.className = 'settings-section';
+        accountContainer.appendChild(settingsSection);
+
+        // Рендерим настройки
+        if (this.settingsManager) {
+            this.settingsManager.renderSettingsPage();
+        }
+    }
+
+    // Настройка обработчиков событий
+    setupEventListeners() {
+        // Обработчики кнопок авторизации
+        this.setupAuthButtons();
+        
+        // Обработчики форм
+        this.setupFormHandlers();
+        
+        // Обработчики Discord авторизации на страницах
+        this.setupDiscordAuthButtons();
+        
+        // Обработчики переключения страниц
+        this.setupPageSwitchers();
+    }
+
+    // Настройка кнопок авторизации
+    setupAuthButtons() {
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const accountBtn = document.getElementById('accountBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        if (loginBtn) {
+            loginBtn.addEventListener('click', () => {
+                this.showPage('login');
+                this.hideAuthDropdown();
+            });
         }
 
-        // Создание индексов (только если они не существуют)
-        try {
-            await client.query(`CREATE INDEX IF NOT EXISTS idx_users_discord_id ON users(discord_id)`);
-        } catch (indexError) {
-            console.log('Индекс idx_users_discord_id уже существует или не может быть создан');
+        if (registerBtn) {
+            registerBtn.addEventListener('click', () => {
+                this.showPage('register');
+                this.hideAuthDropdown();
+            });
         }
 
-        try {
-            await client.query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
-        } catch (indexError) {
-            console.log('Индекс idx_users_email уже существует или не может быть создан');
+        if (accountBtn) {
+            accountBtn.addEventListener('click', () => {
+                this.showPage('account');
+                this.hideAuthDropdown();
+            });
         }
 
-        // Проверяем, есть ли колонка settings
-        const settingsCol = await client.query(`
-            SELECT column_name FROM information_schema.columns
-            WHERE table_name = 'users' AND column_name = 'settings'
-        `);
-        if (settingsCol.rows.length === 0) {
-            await client.query(`ALTER TABLE users ADD COLUMN settings JSONB DEFAULT '{}'`);
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (this.authManager) {
+                    this.authManager.logout();
+                }
+                this.hideAuthDropdown();
+            });
+        }
+    }
+
+    // Настройка обработчиков форм
+    setupFormHandlers() {
+        // Переключение между формами входа и регистрации
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+
+        if (showRegister) {
+            showRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showPage('register');
+            });
         }
 
-        // Проверяем, есть ли колонка twitch_id
-        const twitchIdCol = await client.query(`
-            SELECT column_name FROM information_schema.columns
-            WHERE table_name = 'users' AND column_name = 'twitch_id'
-        `);
-        if (twitchIdCol.rows.length === 0) {
-            await client.query(`ALTER TABLE users ADD COLUMN twitch_id VARCHAR(255)`);
+        if (showLogin) {
+            showLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showPage('login');
+            });
         }
-        // Проверяем, есть ли колонка twitch_username
-        const twitchUsernameCol = await client.query(`
-            SELECT column_name FROM information_schema.columns
-            WHERE table_name = 'users' AND column_name = 'twitch_username'
-        `);
-        if (twitchUsernameCol.rows.length === 0) {
-            await client.query(`ALTER TABLE users ADD COLUMN twitch_username VARCHAR(255)`);
+    }
+
+    // Настройка Discord авторизации на страницах
+    setupDiscordAuthButtons() {
+        const discordLoginBtn = document.getElementById('discordLoginBtnPage');
+        const discordRegisterBtn = document.getElementById('discordRegisterBtnPage');
+
+        if (discordLoginBtn) {
+            discordLoginBtn.addEventListener('click', () => {
+                if (this.authManager) {
+                    this.authManager.handleDiscordLogin();
+                }
+            });
         }
 
-        console.log('База данных инициализирована');
-        client.release();
-    } catch (error) {
-        console.error('Ошибка инициализации БД:', error);
-        // Не завершаем процесс, позволяем серверу запуститься
+        if (discordRegisterBtn) {
+            discordRegisterBtn.addEventListener('click', () => {
+                if (this.authManager) {
+                    this.authManager.handleDiscordLogin();
+                }
+            });
+        }
+    }
+
+    // Настройка переключателей страниц
+    setupPageSwitchers() {
+        // Переход на страницу доната по клику на баланс
+        const balance = document.getElementById('accountBalance');
+        if (balance) {
+            balance.addEventListener('click', () => {
+                this.showDonatePage();
+            });
+        }
+        // Кнопка назад на странице доната
+        const backBtn = document.getElementById('backToProfileBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.showPage('account');
+            });
+        }
+        // Кнопка Twitch OAuth
+        const twitchBtn = document.getElementById('twitchLoginBtn');
+        if (twitchBtn) {
+            twitchBtn.addEventListener('click', () => {
+                window.location.href = '/auth/twitch';
+            });
+        }
+    }
+
+    // Показать страницу
+    showPage(pageName) {
+        // Список всех возможных страниц
+        const allPages = [
+            'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage'
+        ];
+        allPages.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        // Показываем нужную страницу
+        let pageEl = null;
+        if (this.pages && this.pages[pageName]) {
+            pageEl = this.pages[pageName];
+        } else {
+            pageEl = document.getElementById(pageName + 'Page');
+        }
+        if (pageEl) {
+            pageEl.style.display = 'block';
+            this.currentPage = pageName;
+            pageEl.classList.add('page-transition');
+            setTimeout(() => {
+                pageEl.classList.remove('page-transition');
+            }, 500);
+            if (pageName === 'account' && this.settingsManager) {
+                setTimeout(() => {
+                    this.settingsManager.renderSettingsPage();
+                }, 100);
+            }
+            // Меняем URL
+            let url = '/';
+            if (pageName === 'account') url = '/profile';
+            if (pageName === 'settings') url = '/profile/settings';
+            if (pageName === 'donate') url = '/profile/donate';
+            if (window.location.pathname !== url) {
+                window.history.pushState({page: pageName}, '', url);
+            }
+        }
+    }
+
+    // Переключение выпадающего меню авторизации
+    toggleAuthDropdown() {
+        const authDropdown = document.getElementById('authDropdown');
+        if (authDropdown) {
+            authDropdown.classList.toggle('active');
+        }
+    }
+
+    // Скрытие выпадающего меню авторизации
+    hideAuthDropdown() {
+        const authDropdown = document.getElementById('authDropdown');
+        if (authDropdown) {
+            authDropdown.classList.remove('active');
+        }
+    }
+
+    // Запуск приложения
+    async start() {
+        // Сброс всех страниц
+        ['mainPage','loginPage','registerPage','accountPage','donatePage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        // SPA-роутинг: открытие нужной страницы по URL
+        this.setupSpaRouting();
+        const path = window.location.pathname;
+        if (path === '/profile') this.showPage('account');
+        else if (path === '/profile/settings') this.showPage('settings');
+        else if (path === '/profile/donate') this.showPage('donate');
+        else this.showPage('main');
+        // Проверяем Twitch callback
+        this.checkTwitchCallback();
+        // Проверяем авторизацию
+        if (!this.authManager) this.authManager = new AuthManager();
+        await this.authManager.loadUserFromStorage();
+        this.authManager.checkAuth();
+        // Применяем настройки
+        if (!this.settingsManager) this.settingsManager = new SettingsManager();
+        await this.settingsManager.loadSettings();
+        this.settingsManager.applySettings();
+        // Проверяем Discord callback
+        this.checkDiscordCallback();
+    }
+
+    checkTwitchCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const twitchSuccess = urlParams.get('twitch_success');
+        if (twitchSuccess && this.authManager) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Обновляем профиль (перезагружаем данные)
+            this.authManager.checkServerSession();
+            this.authManager.checkAuth();
+            this.showPage('account');
+            this.showNotification('Twitch аккаунт успешно привязан!', 'success');
+        }
+        const twitchError = urlParams.get('error');
+        if (twitchError && twitchError.includes('twitch')) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            this.showNotification('Ошибка авторизации через Twitch', 'error');
+        }
+    }
+
+    // Проверка Discord callback
+    checkDiscordCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const discordSuccess = urlParams.get('discord_success');
+        const userData = urlParams.get('user');
+
+        if (code && this.authManager) {
+            // Очищаем URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Обрабатываем код Discord
+            this.authManager.handleDiscordCallback(code);
+        } else if (discordSuccess && this.authManager) {
+            // После успешного входа через Discord
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Обновляем профиль (перезагружаем данные)
+            this.authManager.checkServerSession();
+            this.authManager.checkAuth();
+            this.showPage('account');
+            this.showNotification('Успешный вход через Discord!', 'success');
+        } else if (error) {
+            // Обрабатываем ошибку Discord
+            window.history.replaceState({}, document.title, window.location.pathname);
+            this.showNotification('Ошибка авторизации через Discord', 'error');
+        }
+    }
+
+    // Показать уведомление
+    showNotification(message, type = 'info') {
+        if (this.authManager) {
+            this.authManager.showNotification(message, type);
+        } else {
+            console.log(`${type.toUpperCase()}: ${message}`);
+        }
+    }
+
+    // Получить текущую страницу
+    getCurrentPage() {
+        return this.currentPage;
+    }
+
+    // Получить менеджер авторизации
+    getAuthManager() {
+        return this.authManager;
+    }
+
+    // Получить менеджер настроек
+    getSettingsManager() {
+        return this.settingsManager;
+    }
+
+    // Показать страницу доната
+    showDonatePage() {
+        // Скрыть все страницы
+        Object.values(this.pages).forEach(page => {
+            if (page) page.style.display = 'none';
+        });
+        // Показать страницу доната
+        const donatePage = document.getElementById('donatePage');
+        if (donatePage) donatePage.style.display = 'block';
+        this.currentPage = 'donate';
+    }
+
+    // SPA-роутинг: обработка перехода по истории браузера
+    setupSpaRouting() {
+        window.addEventListener('popstate', (e) => {
+            const path = window.location.pathname;
+            if (path === '/profile') this.showPage('account');
+            else if (path === '/profile/settings') this.showPage('settings');
+            else if (path === '/profile/donate') this.showPage('donate');
+            else this.showPage('main');
+        });
     }
 }
 
-// Главная страница
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// API для регистрации
-app.post('/api/auth/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-
-        // Валидация
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: 'Все поля обязательны' });
-        }
-
-        if (password.length < 6) {
-            return res.status(400).json({ error: 'Пароль должен быть не менее 6 символов' });
-        }
-
-        // Проверка существования пользователя
-        const existingUser = await pool.query(
-            'SELECT id FROM users WHERE email = $1',
-            [email]
-        );
-
-        if (existingUser.rows.length > 0) {
-            return res.status(400).json({ error: 'Пользователь с таким email уже существует' });
-        }
-
-        // Хеширование пароля
-        const passwordHash = await bcrypt.hash(password, 10);
-
-        // Создание пользователя
-        const newUser = await pool.query(
-            `INSERT INTO users (username, email, password_hash, avatar_url) 
-             VALUES ($1, $2, $3, $4) RETURNING id, username, email, avatar_url, created_at`,
-            [username, email, passwordHash, `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`]
-        );
-
-        const user = newUser.rows[0];
-        
-        // Создание сессии
-        req.session.userId = user.id;
-        req.session.user = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar_url,
-            registrationDate: user.created_at.toLocaleDateString()
-        };
-
-        res.json({
-            success: true,
-            user: req.session.user
-        });
-
-    } catch (error) {
-        console.error('Ошибка регистрации:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+// Глобальная функция для показа страниц (для совместимости)
+function showPage(pageName) {
+    if (window.app) {
+        window.app.showPage(pageName);
     }
-});
-
-// API для входа
-app.post('/api/auth/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        // Валидация
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email и пароль обязательны' });
-        }
-
-        // Поиск пользователя
-        const userResult = await pool.query(
-            'SELECT * FROM users WHERE email = $1',
-            [email]
-        );
-
-        if (userResult.rows.length === 0) {
-            return res.status(400).json({ error: 'Неверный email или пароль' });
-        }
-
-        const user = userResult.rows[0];
-
-        // Проверка пароля
-        const isValidPassword = await bcrypt.compare(password, user.password_hash);
-        if (!isValidPassword) {
-            return res.status(400).json({ error: 'Неверный email или пароль' });
-        }
-
-        // Создание сессии
-        req.session.userId = user.id;
-        req.session.user = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar_url,
-            registrationDate: user.created_at.toLocaleDateString(),
-            discordId: user.discord_id
-        };
-
-        res.json({
-            success: true,
-            user: req.session.user
-        });
-
-    } catch (error) {
-        console.error('Ошибка входа:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
-
-// API для выхода
-app.post('/api/auth/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Ошибка выхода' });
-        }
-        res.json({ success: true });
-    });
-});
-
-// API для проверки авторизации
-app.get('/api/auth/check', (req, res) => {
-    if (req.session.user) {
-        res.json({ 
-            authenticated: true, 
-            user: req.session.user 
-        });
-    } else {
-        res.json({ authenticated: false });
-    }
-});
-
-// Вспомогательная функция для обработки Discord пользователей
-async function handleDiscordUser(discordUser) {
-    let user;
-    try {
-        // Сначала пытаемся найти пользователя по discord_id
-        user = await pool.query(
-            'SELECT * FROM users WHERE discord_id = $1',
-            [discordUser.id]
-        );
-
-        if (user.rows.length === 0) {
-            // Создание нового пользователя с discord_id
-            const newUser = await pool.query(
-                `INSERT INTO users (discord_id, username, name, email, avatar_url, role) 
-                 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-                [
-                    discordUser.id,
-                    discordUser.username,
-                    discordUser.username,
-                    discordUser.email,
-                    discordUser.avatar ? 
-                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png',
-                    'user'
-                ]
-            );
-            user = newUser;
-        }
-    } catch (dbError) {
-        console.error('Ошибка работы с БД при Discord авторизации:', dbError);
-        // Если колонка discord_id не существует, создаем пользователя без неё
-        try {
-            const newUser = await pool.query(
-                `INSERT INTO users (username, name, email, avatar_url, role) 
-                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [
-                    discordUser.username,
-                    discordUser.username,
-                    discordUser.email,
-                    discordUser.avatar ? 
-                        `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png',
-                    'user'
-                ]
-            );
-            user = newUser;
-        } catch (insertError) {
-            console.error('Ошибка создания пользователя:', insertError);
-            throw new Error('Не удалось создать пользователя');
-        }
-    }
-    
-    return user.rows[0];
 }
 
-// API для сохранения настроек
-app.post('/api/settings', async (req, res) => {
-    try {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Не авторизован' });
-        }
-
-        const { settings } = req.body;
-
-        await pool.query(
-            'UPDATE users SET settings = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-            [JSON.stringify(settings), req.session.userId]
-        );
-
-        res.json({ success: true });
-
-    } catch (error) {
-        console.error('Ошибка сохранения настроек:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
+// Инициализация приложения при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new App();
 });
 
-// API для получения настроек
-app.get('/api/settings', async (req, res) => {
-    try {
-        if (!req.session.userId) {
-            return res.status(401).json({ error: 'Не авторизован' });
-        }
+// Экспорт для использования в других модулях
+window.App = App;
 
-        const result = await pool.query(
-            'SELECT settings FROM users WHERE id = $1',
-            [req.session.userId]
-        );
-
-        const settings = result.rows[0]?.settings || {};
-        res.json({ settings });
-
-    } catch (error) {
-        console.error('Ошибка получения настроек:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
-
-// Discord OAuth2 callback
-app.get('/auth/discord/callback', async (req, res) => {
-    const { code } = req.query;
-    
-    if (!code) {
-        return res.redirect('/?error=no_code');
-    }
-    
-    try {
-        const params = new URLSearchParams();
-        params.append('client_id', CLIENT_ID);
-        params.append('client_secret', CLIENT_SECRET);
-        params.append('grant_type', 'authorization_code');
-        params.append('code', code);
-        params.append('redirect_uri', REDIRECT_URI);
-        
-        // Обмен кода на токен
-        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        });
-        
-        const { access_token } = tokenResponse.data;
-        
-        // Получение информации о пользователе
-        const userResponse = await axios.get('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        });
-        
-        const discordUser = userResponse.data;
-        
-        // Поиск или создание пользователя
-        const userData = await handleDiscordUser(discordUser);
-        
-        // Создание сессии
-        req.session.userId = userData.id;
-        req.session.user = {
-            id: userData.id,
-            username: userData.username,
-            email: userData.email,
-            avatar: userData.avatar_url,
-            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
-            discordId: userData.discord_id
-        };
-        
-        // Перенаправляем обратно на сайт
-        res.redirect('/?discord_success=true');
-        
-    } catch (error) {
-        console.error('Discord OAuth error:', error);
-        res.redirect('/?error=oauth_failed');
-    }
-});
-
-// API endpoint для обработки Discord авторизации
-app.post('/api/auth/discord', async (req, res) => {
-    const { code } = req.body;
-    
-    if (!code) {
-        return res.status(400).json({ error: 'No code provided' });
-    }
-    
-    try {
-        const params = new URLSearchParams();
-        params.append('client_id', CLIENT_ID);
-        params.append('client_secret', CLIENT_SECRET);
-        params.append('grant_type', 'authorization_code');
-        params.append('code', code);
-        params.append('redirect_uri', REDIRECT_URI);
-        
-        // Обмен кода на токен
-        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        });
-        
-        const { access_token } = tokenResponse.data;
-        
-        // Получение информации о пользователе
-        const userResponse = await axios.get('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        });
-        
-        const discordUser = userResponse.data;
-        
-        // Поиск или создание пользователя
-        const userData = await handleDiscordUser(discordUser);
-        
-        // Создание сессии
-        req.session.userId = userData.id;
-        req.session.user = {
-            id: userData.id,
-            username: userData.username,
-            email: userData.email,
-            avatar: userData.avatar_url,
-            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
-            discordId: userData.discord_id
-        };
-        
-        res.json(req.session.user);
-        
-    } catch (error) {
-        console.error('Discord OAuth error:', error);
-        res.status(500).json({ error: 'OAuth failed' });
-    }
-});
-
-// Middleware для проверки авторизации
-function requireAuth(req, res, next) {
-    if (!req.session.userId) {
-        return res.status(401).json({ error: 'Не авторизован' });
-    }
-    next();
-}
-
-// Защищенные маршруты
-app.get('/api/profile', requireAuth, async (req, res) => {
-    try {
-        const result = await pool.query(
-            'SELECT id, username, email, avatar_url, created_at, settings FROM users WHERE id = $1',
-            [req.session.userId]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Пользователь не найден' });
-        }
-
-        const user = result.rows[0];
-        res.json({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar_url,
-            registrationDate: user.created_at ? user.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
-            settings: user.settings || {}
-        });
-
-    } catch (error) {
-        console.error('Ошибка получения профиля:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
-    }
-});
-
-// Endpoint для старта Twitch OAuth
-app.get('/auth/twitch', (req, res) => {
-    const scope = 'user:read:email';
-    const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(TWITCH_REDIRECT_URI)}&response_type=code&scope=${scope}`;
-    res.redirect(twitchAuthUrl);
-});
-
-// Callback Twitch OAuth
-app.get('/auth/twitch/callback', async (req, res) => {
-    const { code } = req.query;
-    if (!code) return res.redirect('/accountPage?error=twitch_no_code');
-    try {
-        // Получаем access_token
-        const tokenResp = await axios.post('https://id.twitch.tv/oauth2/token', null, {
-            params: {
-                client_id: TWITCH_CLIENT_ID,
-                client_secret: TWITCH_CLIENT_SECRET,
-                code,
-                grant_type: 'authorization_code',
-                redirect_uri: TWITCH_REDIRECT_URI
+// --- DONATE PAGE: CloudPayments integration ---
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.pay-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const amount = parseInt(btn.getAttribute('data-amount'));
+            const coins = parseInt(btn.getAttribute('data-coins'));
+            
+            // Создаем уникальный ID заказа
+            const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Инициализируем CloudPayments виджет
+            var widget = new cp.CloudPayments();
+            widget.charge({
+                publicId: 'pk_1234567890abcdef', // Замените на ваш Public ID
+                description: `Покупка ${coins} монет`,
+                amount: amount,
+                currency: 'RUB',
+                accountId: currentUser ? currentUser.email || currentUser.discord_id : 'guest',
+                invoiceId: orderId,
+                skin: 'classic',
+                data: {
+                    coins: coins,
+                    userId: currentUser ? currentUser.id : null,
+                    orderId: orderId
+                }
             },
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            {
+                onSuccess: function(options) {
+                    console.log('Оплата успешна:', options);
+                    // Отправляем запрос на сервер для начисления монет
+                    fetch('/api/donate/success', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            orderId: orderId,
+                            amount: amount,
+                            coins: coins,
+                            userId: currentUser ? currentUser.id : null,
+                            transactionId: options.transactionId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`Оплата прошла успешно!\nНачислено ${coins} монет.`);
+                            // Обновляем баланс пользователя
+                            if (currentUser) {
+                                currentUser.coins = (currentUser.coins || 0) + coins;
+                                updateUserInterface();
+                            }
+                        } else {
+                            alert('Ошибка начисления монет: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка запроса:', error);
+                        alert('Ошибка обработки платежа. Обратитесь в поддержку.');
+                    });
+                },
+                onFail: function(reason, options) {
+                    console.log('Оплата не прошла:', reason, options);
+                    if (reason === 'cancelled') {
+                        alert('Оплата отменена.');
+                    } else {
+                        alert('Ошибка оплаты: ' + reason);
+                    }
+                }
+            });
         });
-        const { access_token } = tokenResp.data;
-        // Получаем данные пользователя
-        const userResp = await axios.get('https://api.twitch.tv/helix/users', {
-            headers: {
-                'Authorization': `Bearer ${access_token}`,
-                'Client-Id': TWITCH_CLIENT_ID
-            }
-        });
-        const twitchUser = userResp.data.data[0];
-        // Сохраняем Twitch данные в профиле пользователя (если авторизован)
-        if (req.session.userId) {
-            await pool.query(
-                'UPDATE users SET twitch_id = $1, twitch_username = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3',
-                [twitchUser.id, twitchUser.login, req.session.userId]
-            );
-        }
-        // Обновляем сессию
-        if (req.session.user) {
-            req.session.user.twitchId = twitchUser.id;
-            req.session.user.twitchUsername = twitchUser.login;
-        }
-        // Перенаправляем обратно в профиль
-        res.redirect('/?twitch_success=true');
-    } catch (error) {
-        console.error('Twitch OAuth error:', error);
-        res.redirect('/?error=twitch_oauth_failed');
-    }
-});
-
-// Инициализация и запуск сервера
-async function startServer() {
-    try {
-        // Инициализируем БД, но не прерываем запуск сервера при ошибках
-        await initDatabase().catch(error => {
-            console.error('Предупреждение: Ошибка инициализации БД:', error.message);
-            console.log('Сервер продолжит работу, но некоторые функции могут быть недоступны');
-        });
-        
-        app.listen(PORT, () => {
-            console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-            console.log(`📱 Discord Client ID: ${CLIENT_ID}`);
-            console.log(`🔗 Discord OAuth2 URL: https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20email`);
-        });
-    } catch (error) {
-        console.error('Критическая ошибка запуска сервера:', error);
-        process.exit(1);
-    }
-}
-
-// Обработка ошибок
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-process.on('uncaughtException', (error) => {
-    console.error('Uncaught Exception:', error);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully');
-    pool.end();
-    process.exit(0);
-});
-
-startServer(); 
+    });
+}); 
