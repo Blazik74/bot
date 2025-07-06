@@ -676,6 +676,10 @@ app.post('/api/donate/success', async (req, res) => {
     }
 });
 
+app.get('/agreement', (req, res) => {
+  res.sendFile(path.join(__dirname, 'agreement.html'));
+});
+
 // Инициализация и запуск сервера
 async function startServer() {
     try {
