@@ -237,8 +237,8 @@ async function handleDiscordUser(discordUser) {
         if (user.rows.length === 0) {
             // Создание нового пользователя с discord_id
             const newUser = await pool.query(
-                `INSERT INTO users (discord_id, username, name, email, avatar_url) 
-                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+                `INSERT INTO users (discord_id, username, name, email, avatar_url, role) 
+                 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                 [
                     discordUser.id,
                     discordUser.username,
@@ -246,7 +246,8 @@ async function handleDiscordUser(discordUser) {
                     discordUser.email,
                     discordUser.avatar ? 
                         `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png'
+                        'https://cdn.discordapp.com/embed/avatars/0.png',
+                    'user'
                 ]
             );
             user = newUser;
@@ -256,15 +257,16 @@ async function handleDiscordUser(discordUser) {
         // Если колонка discord_id не существует, создаем пользователя без неё
         try {
             const newUser = await pool.query(
-                `INSERT INTO users (username, name, email, avatar_url) 
-                 VALUES ($1, $2, $3, $4) RETURNING *`,
+                `INSERT INTO users (username, name, email, avatar_url, role) 
+                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
                 [
                     discordUser.username,
                     discordUser.username,
                     discordUser.email,
                     discordUser.avatar ? 
                         `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
-                        'https://cdn.discordapp.com/embed/avatars/0.png'
+                        'https://cdn.discordapp.com/embed/avatars/0.png',
+                    'user'
                 ]
             );
             user = newUser;
