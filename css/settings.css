@@ -89,17 +89,15 @@
 
 /* Переключатели */
 .toggle-switch {
-    position: relative;
-    display: inline-block;
     width: 38px;
     height: 22px;
+    background: none;
+    border: none;
+    outline: none;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
     flex-shrink: 0;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
 }
 
 .toggle-slider {
@@ -109,10 +107,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--border-color);
-    transition: var(--transition-speed);
-    border-radius: 34px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+    transition: background 0.3s, box-shadow 0.3s;
+    border-radius: 22px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
 }
 
 .toggle-slider:before {
@@ -122,23 +120,24 @@
     width: 18px;
     left: 2px;
     bottom: 2px;
-    background-color: white;
-    transition: var(--transition-speed) var(--bounce-timing);
+    background: white;
+    transition: transform 0.3s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.3s;
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(124,58,237,0.15);
 }
 
 input:checked + .toggle-slider {
-    background-color: var(--accent);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(110, 66, 245, 0.3);
+    background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+    box-shadow: 0 2px 12px rgba(124,58,237,0.18);
 }
 
 input:checked + .toggle-slider:before {
     transform: translateX(16px);
+    box-shadow: 0 2px 12px rgba(124,58,237,0.25);
 }
 
 .toggle-switch:hover .toggle-slider {
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 15px rgba(110, 66, 245, 0.4);
+    box-shadow: 0 4px 16px rgba(124,58,237,0.22);
 }
 
 /* Селектор тем */
@@ -303,61 +302,42 @@ select:hover {
     border-top: 1px solid var(--border-color);
 }
 
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
+/* Современный дизайн кнопок */
+.btn, .auth-btn, .discord-btn, .btn-primary, .btn-secondary {
+    display: inline-block;
+    padding: 12px 28px;
+    font-size: 1.08rem;
     font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    outline: none;
     cursor: pointer;
-    transition: all var(--transition-speed) var(--bounce-timing);
-    position: relative;
-    overflow: hidden;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    transition: background 0.18s, box-shadow 0.18s, color 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.08);
+    margin: 4px 0;
 }
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+.btn-primary, .auth-btn.discord-btn, .discord-btn {
+    background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(124,58,237,0.13);
 }
-
-.btn:hover::before {
-    left: 100%;
+.btn-primary:hover, .auth-btn.discord-btn:hover, .discord-btn:hover {
+    background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 18px rgba(124,58,237,0.18);
 }
-
-.btn-primary {
-    background: var(--accent);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: var(--accent-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(110, 66, 245, 0.4);
-}
-
 .btn-secondary {
-    background: var(--card-bg);
-    color: var(--primary-text);
-    border: 2px solid var(--border-color);
+    background: #232136;
+    color: #a78bfa;
+    border: 1.5px solid #a78bfa;
 }
-
 .btn-secondary:hover {
-    background: var(--border-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.btn:active {
-    transform: translateY(0) scale(0.98);
+    background: #a78bfa;
+    color: #232136;
+    border-color: #7c3aed;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 18px rgba(124,58,237,0.13);
 }
 
 /* Анимации для настроек */
