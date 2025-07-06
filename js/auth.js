@@ -300,14 +300,9 @@ class AuthManager {
     handleDiscordLogin() {
         // Discord OAuth2 URL
         const clientId = '1391384219661500558'; // Discord Client ID
-        const redirectUri = encodeURIComponent(
-            window.location.hostname === 'localhost' 
-                ? window.location.origin + '/auth/discord/callback'
-                : 'https://arness-community.onrender.com/auth/discord/callback'
-        );
+        const redirectUri = encodeURIComponent('https://arness-community.onrender.com');
         const scope = 'identify email';
-        
-        const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+        const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}`;
         
         window.location.href = discordAuthUrl;
     }
