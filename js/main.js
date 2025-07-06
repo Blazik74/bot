@@ -478,18 +478,76 @@ document.addEventListener('DOMContentLoaded', () => {
 // Экспорт для использования в других модулях
 window.App = App;
 
-// --- DONATE PAGE: CloudPayments stub ---
+// --- DONATE PAGE: CloudPayments integration ---
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pay-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            const amount = btn.getAttribute('data-amount');
-            const coins = btn.getAttribute('data-coins');
-            // Здесь будет реальная интеграция CloudPayments
-            alert(`Оплата через CloudPayments (заглушка)\nСумма: ${amount}₽\nМонет: ${coins}`);
-            // Для реальной интеграции:
-            // 1. Подключить CloudPayments JS SDK
-            // 2. Вызвать window.cloudpayments({ ... }) с нужными параметрами
-            // 3. Обработать успешную оплату (POST на сервер для начисления монет)
+            const amount = parseInt(btn.getAttribute('data-amount'));
+            const coins = parseInt(btn.getAttribute('data-coins'));
+            
+            // Создаем уникальный ID заказа
+            const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Инициализируем CloudPayments виджет
+            var widget = new cp.CloudPayments();
+            widget.charge({
+                publicId: 'pk_1234567890abcdef', // Замените на ваш Public ID
+                description: `Покупка ${coins} монет`,
+                amount: amount,
+                currency: 'RUB',
+                accountId: currentUser ? currentUser.email || currentUser.discord_id : 'guest',
+                invoiceId: orderId,
+                skin: 'classic',
+                data: {
+                    coins: coins,
+                    userId: currentUser ? currentUser.id : null,
+                    orderId: orderId
+                }
+            },
+            {
+                onSuccess: function(options) {
+                    console.log('Оплата успешна:', options);
+                    // Отправляем запрос на сервер для начисления монет
+                    fetch('/api/donate/success', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            orderId: orderId,
+                            amount: amount,
+                            coins: coins,
+                            userId: currentUser ? currentUser.id : null,
+                            transactionId: options.transactionId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`Оплата прошла успешно!\nНачислено ${coins} монет.`);
+                            // Обновляем баланс пользователя
+                            if (currentUser) {
+                                currentUser.coins = (currentUser.coins || 0) + coins;
+                                updateUserInterface();
+                            }
+                        } else {
+                            alert('Ошибка начисления монет: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка запроса:', error);
+                        alert('Ошибка обработки платежа. Обратитесь в поддержку.');
+                    });
+                },
+                onFail: function(reason, options) {
+                    console.log('Оплата не прошла:', reason, options);
+                    if (reason === 'cancelled') {
+                        alert('Оплата отменена.');
+                    } else {
+                        alert('Ошибка оплаты: ' + reason);
+                    }
+                }
+            });
         });
     });
 }); 
