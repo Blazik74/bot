@@ -87,6 +87,15 @@ async function initDatabase() {
             console.log('Индекс idx_users_email уже существует или не может быть создан');
         }
 
+        // Проверяем, есть ли колонка settings
+        const settingsCol = await client.query(`
+            SELECT column_name FROM information_schema.columns
+            WHERE table_name = 'users' AND column_name = 'settings'
+        `);
+        if (settingsCol.rows.length === 0) {
+            await client.query(`ALTER TABLE users ADD COLUMN settings JSONB DEFAULT '{}'`);
+        }
+
         console.log('База данных инициализирована');
         client.release();
     } catch (error) {
