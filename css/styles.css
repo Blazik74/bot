@@ -486,16 +486,16 @@ p {
 
 /* Страницы авторизации */
 .auth-page {
-    display: none;
-    min-height: calc(100vh - 70px);
-    padding: 50px 20px;
-    background: var(--primary-bg);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: calc(100vh - 70px - 80px); /* учёт футера */
+    padding: 50px 20px 30px 20px;
+    background: var(--primary-bg);
 }
 
 .auth-container {
+    margin: 0 auto;
     background: var(--secondary-bg);
     padding: 40px;
     border-radius: 15px;
@@ -1026,4 +1026,59 @@ input:checked + .toggle-slider:before {
 
 .notification.info {
     background: var(--accent);
+}
+
+/* Футер */
+.site-footer {
+    width: 100%;
+    background: var(--secondary-bg, #181818);
+    border-top: 1px solid var(--border-color, #222);
+    padding: 30px 0 20px 0;
+    text-align: center;
+    position: relative;
+    margin-top: 40px;
+    font-size: 1rem;
+    color: var(--secondary-text, #aaa);
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    font-size: 1.05rem;
+}
+.footer-link {
+    color: #7289da;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.footer-link:hover {
+    color: #fff;
+    text-shadow: 0 0 8px #7289da;
+}
+.footer-sep {
+    color: var(--border-color, #333);
+    font-size: 1.2em;
+    margin: 0 4px;
+}
+
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 25px 10px;
+        max-width: 98vw;
+    }
+    .site-footer {
+        font-size: 0.95rem;
+        padding: 18px 0 12px 0;
+    }
+    .footer-content {
+        gap: 10px;
+    }
 } 
