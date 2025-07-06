@@ -12,6 +12,11 @@ const CLIENT_SECRET = 'jN3YUbVedyFfveM_FQXi2mXd1C_6Jewj';
 const REDIRECT_URI = 'https://arness-community.onrender.com';
 const PORT = process.env.PORT || 3000;
 
+// --- Twitch OAuth ---
+const TWITCH_CLIENT_ID = '7pewyshzfymoj5at2odselalrjj1gm';
+const TWITCH_CLIENT_SECRET = '8c4uuj3b4eq2v9dm6pnnowd68hgekf';
+const TWITCH_REDIRECT_URI = 'https://arness-community.onrender.com/auth/twitch/callback';
+
 // Подключение к PostgreSQL
 const pool = new Pool({
     connectionString: 'postgresql://pixel_ai_backend_user:oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO@dpg-d1ehca6uk2gs73anldu0-a/pixel_ai_backend',
@@ -468,6 +473,58 @@ app.get('/api/profile', requireAuth, async (req, res) => {
     } catch (error) {
         console.error('Ошибка получения профиля:', error);
         res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Endpoint для старта Twitch OAuth
+app.get('/auth/twitch', (req, res) => {
+    const scope = 'user:read:email';
+    const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(TWITCH_REDIRECT_URI)}&response_type=code&scope=${scope}`;
+    res.redirect(twitchAuthUrl);
+});
+
+// Callback Twitch OAuth
+app.get('/auth/twitch/callback', async (req, res) => {
+    const { code } = req.query;
+    if (!code) return res.redirect('/accountPage?error=twitch_no_code');
+    try {
+        // Получаем access_token
+        const tokenResp = await axios.post('https://id.twitch.tv/oauth2/token', null, {
+            params: {
+                client_id: TWITCH_CLIENT_ID,
+                client_secret: TWITCH_CLIENT_SECRET,
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: TWITCH_REDIRECT_URI
+            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+        const { access_token } = tokenResp.data;
+        // Получаем данные пользователя
+        const userResp = await axios.get('https://api.twitch.tv/helix/users', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'Client-Id': TWITCH_CLIENT_ID
+            }
+        });
+        const twitchUser = userResp.data.data[0];
+        // Сохраняем Twitch данные в профиле пользователя (если авторизован)
+        if (req.session.userId) {
+            await pool.query(
+                'UPDATE users SET twitch_id = $1, twitch_username = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3',
+                [twitchUser.id, twitchUser.login, req.session.userId]
+            );
+        }
+        // Обновляем сессию
+        if (req.session.user) {
+            req.session.user.twitchId = twitchUser.id;
+            req.session.user.twitchUsername = twitchUser.login;
+        }
+        // Перенаправляем обратно в профиль
+        res.redirect('/?twitch_success=true');
+    } catch (error) {
+        console.error('Twitch OAuth error:', error);
+        res.redirect('/?error=twitch_oauth_failed');
     }
 });
 
