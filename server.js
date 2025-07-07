@@ -156,6 +156,27 @@ async function initDatabase() {
     }
 }
 
+// После инициализации базы данных создаём пользователя admin/0001, если его нет
+async function createDefaultAdmin() {
+    try {
+        const client = await pool.connect();
+        const check = await client.query('SELECT id FROM users WHERE email = $1', ['admin']);
+        if (check.rows.length === 0) {
+            const passwordHash = await bcrypt.hash('0001', 10);
+            await client.query(
+                `INSERT INTO users (username, email, password_hash, avatar_url) VALUES ($1, $2, $3, $4)`,
+                ['admin', 'admin', passwordHash, 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin']
+            );
+            console.log('✅ Пользователь admin/0001 создан');
+        } else {
+            console.log('Пользователь admin уже существует');
+        }
+        client.release();
+    } catch (err) {
+        console.error('Ошибка создания пользователя admin:', err);
+    }
+}
+
 // Главная страница
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -672,6 +693,9 @@ async function startServer() {
             console.error('Предупреждение: Ошибка инициализации БД:', error.message);
             console.log('Сервер продолжит работу, но некоторые функции могут быть недоступны');
         });
+        
+        // После инициализации базы данных создаём пользователя admin/0001, если его нет
+        createDefaultAdmin();
         
         app.listen(process.env.PORT || 3000, () => {
             console.log(`🚀 Сервер запущен на http://localhost:${process.env.PORT || 3000}`);
