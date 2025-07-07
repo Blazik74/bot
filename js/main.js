@@ -619,16 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // === FOOTER CONTACTS TOGGLE ===
-document.addEventListener('DOMContentLoaded', function() {
-  const contactsBtn = document.getElementById('footerContactsBtn');
-  const contactsBlock = document.getElementById('footerContactsBlock');
-  if (contactsBtn && contactsBlock) {
-    contactsBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      contactsBlock.classList.toggle('open');
-    });
-  }
-});
+// Удалено: дублирующий обработчик для footerContactsBtn (оставлен только один ниже)
 
 // === CUSTOM NOTIFICATIONS ===
 (function() {
