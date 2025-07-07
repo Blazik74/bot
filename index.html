@@ -395,15 +395,18 @@
     <!-- Страница доната -->
     <div class="donate-page" id="donatePage" style="display:none;">
       <div class="donate-container">
-        <h2 class="donate-title">Донат и поддержка</h2>
-        <p class="donate-desc">Покупка валюты и поддержка проекта.<br>Оплата через ЮMoney.</p>
+        <div class="donate-hero">
+          <span class="donate-hero-icon"><i class="fas fa-coins"></i></span>
+        </div>
+        <h2 class="donate-title">Поддержка проекта</h2>
+        <p class="donate-desc">Выберите сумму и получите монеты. Спасибо за вклад в развитие сообщества!</p>
         <div class="donate-slider-block">
-          <div class="donate-slider-label">Выберите количество монет:</div>
+          <div class="donate-slider-label">Сколько монет хотите приобрести?</div>
           <div class="donate-slider-row">
             <input type="range" min="100" max="5000" step="10" value="100" id="donateRange" class="donate-slider">
             <span class="donate-slider-value" id="donateRangeValue">100</span> монет
           </div>
-          <div class="donate-slider-price">Сумма: <span id="donateRangePrice">50</span> ₽</div>
+          <div class="donate-slider-price">К оплате: <span id="donateRangePrice">50</span> ₽</div>
         </div>
         <div class="donate-quick-packages">
           <button class="donate-quick-btn" data-coins="100" data-amount="50">100 монет</button>
@@ -411,9 +414,12 @@
           <button class="donate-quick-btn" data-coins="1000" data-amount="350">1000 монет</button>
           <button class="donate-quick-btn" data-coins="2500" data-amount="800">2500 монет</button>
         </div>
-        <button class="btn btn-primary pay-btn" id="donatePayBtn" style="margin-top:28px;">Задонатить</button>
-        <p class="donate-hint">После оплаты монеты будут зачислены на ваш аккаунт.<br>Если возникнут вопросы — пишите в поддержку Discord.</p>
-        <button class="btn btn-secondary" id="backToProfileBtn" style="margin-top:18px;">Назад в профиль</button>
+        <button class="btn btn-primary pay-btn" id="donatePayBtn" style="margin-top:28px;"><i class="fas fa-credit-card"></i> Оплатить</button>
+        <div class="donate-info-block">
+          <div class="donate-info-title"><i class="fas fa-info-circle"></i> Важно</div>
+          <div class="donate-info-text">После оплаты монеты будут зачислены на ваш аккаунт. Если возникнут вопросы — пишите в поддержку <a href="https://discord.gg/PAHWq2xE6P" target="_blank">Discord</a>.</div>
+        </div>
+        <button class="btn btn-secondary" id="backToProfileBtn" style="margin-top:18px;">Вернуться в профиль</button>
       </div>
     </div>
 
