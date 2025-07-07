@@ -192,10 +192,7 @@ class AuthManager {
         let isValid = true;
 
         if (!email) {
-            this.showError('loginEmailError', 'Введите email');
-            isValid = false;
-        } else if (!this.isValidEmail(email)) {
-            this.showError('loginEmailError', 'Введите корректный email');
+            this.showError('loginEmailError', 'Введите email или логин');
             isValid = false;
         }
 
@@ -214,56 +211,20 @@ class AuthManager {
         if (!username) {
             this.showError('registerUsernameError', 'Введите имя пользователя');
             isValid = false;
-        } else if (username.length < 3) {
-            this.showError('registerUsernameError', 'Имя пользователя должно быть не менее 3 символов');
-            isValid = false;
         }
-
         if (!email) {
-            this.showError('registerEmailError', 'Введите email');
-            isValid = false;
-        } else if (!this.isValidEmail(email)) {
-            this.showError('registerEmailError', 'Введите корректный email');
+            this.showError('registerEmailError', 'Введите email или логин');
             isValid = false;
         }
-
         if (!password) {
             this.showError('registerPasswordError', 'Введите пароль');
             isValid = false;
-        } else if (password.length < 6) {
-            this.showError('registerPasswordError', 'Пароль должен быть не менее 6 символов');
-            isValid = false;
         }
-
         if (password !== confirmPassword) {
             this.showError('registerConfirmPasswordError', 'Пароли не совпадают');
             isValid = false;
         }
-
         return isValid;
-    }
-
-    // Проверка корректности email
-    isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    // Показать ошибку
-    showError(elementId, message) {
-        const errorElement = document.getElementById(elementId);
-        if (errorElement) {
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
-    }
-
-    // Очистить ошибки
-    clearErrors(formType) {
-        const errorElements = document.querySelectorAll(`#${formType}Page .error-message`);
-        errorElements.forEach(element => {
-            element.style.display = 'none';
-        });
     }
 
     // Вход пользователя через API
