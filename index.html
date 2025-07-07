@@ -432,17 +432,90 @@
       <div class="footer-contacts-block" id="footerContactsBlock">
         <div class="footer-contacts-inner">
           <div class="footer-title">Контакты и реквизиты</div>
-          <div class="footer-details"><span>ИНН:</span> <b>742534946667</b></div>
-          <div class="footer-details"><span>ФИО:</span> Платонов Леонид Юрьевич</div>
-          <div class="footer-details"><span>Тел.:</span> <a href="tel:+79823195390" class="footer-link">+7 (982) 319-53-90</a></div>
-          <div class="footer-details"><span>Email:</span> <a href="mailto:blazikk01@gmail.com" class="footer-link">blazikk01@gmail.com</a></div>
-          <div class="footer-details"><span>Discord:</span> <a href="https://discord.gg/PAHWq2xE6P" class="footer-link" target="_blank">discord.gg/PAHWq2xE6P</a></div>
-          <div class="footer-details"><span>Telegram:</span> <a href="https://t.me/arness_community" class="footer-link" target="_blank">@arness_community</a></div>
+          <div class="footer-details"><span class="footer-icon"><i class="fas fa-id-card"></i></span>ИНН: <b>742534946667</b></div>
+          <div class="footer-details"><span class="footer-icon"><i class="fas fa-user"></i></span>ФИО: Платонов Леонид Юрьевич</div>
+          <div class="footer-details"><span class="footer-icon"><i class="fas fa-phone"></i></span>Тел.: <a href="tel:+79823195390" class="footer-link">+7 (982) 319-53-90</a></div>
+          <div class="footer-details"><span class="footer-icon"><i class="fas fa-envelope"></i></span>Email: <a href="mailto:blazikk01@gmail.com" class="footer-link">blazikk01@gmail.com</a></div>
         </div>
       </div>
       <button class="footer-discord-btn" onclick="window.open('https://discord.gg/PAHWq2xE6P','_blank')">
         <i class="fab fa-discord"></i> Discord
       </button>
     </footer>
+
+    <!-- Модальные блоки политики и соглашения -->
+    <div class="policy-modal" id="privacyModal" style="display:none;">
+      <div class="policy-modal-content" id="privacyContent">
+        <button class="policy-close" id="closePrivacy">×</button>
+        <h1 class="policy-title">Политика конфиденциальности</h1>
+        <div class="policy-section">
+          <p>Настоящая Политика конфиденциальности определяет порядок сбора, хранения, использования и защиты персональных данных пользователей сайта «Арнесс».</p>
+          <h2>1. Сбор информации</h2>
+          <ul>
+            <li>Мы собираем только те данные, которые необходимы для регистрации, предоставления сервисов и обратной связи.</li>
+            <li>Данные могут включать: имя, email, Discord/Twitch ID, а также техническую информацию (IP-адрес, cookies).</li>
+          </ul>
+          <h2>2. Использование информации</h2>
+          <ul>
+            <li>Данные используются исключительно для предоставления сервисов, поддержки пользователей и улучшения работы сайта.</li>
+            <li>Мы не передаем ваши данные третьим лицам, за исключением случаев, предусмотренных законом.</li>
+          </ul>
+          <h2>3. Хранение и защита данных</h2>
+          <ul>
+            <li>Данные хранятся на защищённых серверах и обрабатываются с использованием современных средств защиты.</li>
+            <li>Мы принимаем все разумные меры для предотвращения несанкционированного доступа к данным.</li>
+          </ul>
+          <h2>4. Права пользователя</h2>
+          <ul>
+            <li>Пользователь вправе запросить удаление или изменение своих персональных данных, написав на <a href="mailto:blazikk01@gmail.com">blazikk01@gmail.com</a>.</li>
+            <li>Пользователь может отказаться от рассылок и уведомлений в любой момент.</li>
+          </ul>
+          <h2>5. Изменения политики</h2>
+          <ul>
+            <li>Мы оставляем за собой право изменять настоящую политику без предварительного уведомления.</li>
+            <li>Актуальная версия всегда доступна на этой странице.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="policy-modal" id="agreementModal" style="display:none;">
+      <div class="policy-modal-content" id="agreementContent">
+        <button class="policy-close" id="closeAgreement">×</button>
+        <h1 class="policy-title">Пользовательское соглашение</h1>
+        <div class="policy-section">
+          <p>Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между владельцем сайта и Пользователем, возникающие при использовании сайта, сервисов и функционала платформы «Арнесс».</p>
+          <h2>1. Общие положения</h2>
+          <ul>
+            <li>Используя сайт, вы подтверждаете согласие с условиями настоящего Соглашения.</li>
+            <li>Владелец сайта вправе изменять условия Соглашения без предварительного уведомления.</li>
+          </ul>
+          <h2>2. Регистрация и аккаунт</h2>
+          <ul>
+            <li>Пользователь обязуется предоставлять достоверную информацию при регистрации.</li>
+            <li>Ответственность за сохранность данных аккаунта несёт сам Пользователь.</li>
+          </ul>
+          <h2>3. Донаты и внутренняя валюта</h2>
+          <ul>
+            <li>Донаты и покупки игровой валюты осуществляются добровольно и не подлежат возврату.</li>
+            <li>Вся внутренняя валюта является виртуальной и не может быть обменяна на реальные деньги.</li>
+          </ul>
+          <h2>4. Ограничения и ответственность</h2>
+          <ul>
+            <li>Запрещено использовать сайт для противоправных целей.</li>
+            <li>Владелец сайта не несёт ответственности за сбои, вызванные действиями третьих лиц или форс-мажорными обстоятельствами.</li>
+          </ul>
+          <h2>5. Персональные данные</h2>
+          <ul>
+            <li>Пользователь соглашается на обработку персональных данных в рамках работы сайта.</li>
+            <li>Данные не передаются третьим лицам, кроме случаев, предусмотренных законом.</li>
+          </ul>
+          <h2>6. Заключительные положения</h2>
+          <ul>
+            <li>Все вопросы и предложения направлять на <a href="mailto:blazikk01@gmail.com">blazikk01@gmail.com</a> или в <a href="https://discord.gg/PAHWq2xE6P" target="_blank">Discord</a>.</li>
+            <li>Актуальная версия соглашения всегда доступна на этой странице.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
