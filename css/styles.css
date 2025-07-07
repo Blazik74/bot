@@ -1549,20 +1549,12 @@ footer {
 .footer-contacts-block {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s, padding 0.3s, opacity 0.4s;
-    opacity: 0;
-    background: transparent;
-    z-index: 20;
-    position: relative;
+    transition: max-height 0.5s, padding 0.3s;
+    padding: 0 24px;
 }
 .footer-contacts-block.open {
     max-height: 400px;
     padding: 18px 24px;
-    opacity: 1;
-    background: var(--card-bg, #23232b);
-    box-shadow: 0 4px 32px rgba(124,58,237,0.13);
-    border-radius: 14px;
-    z-index: 50;
 }
 .footer-contacts-block .contacts-close-btn {
     position: absolute;
