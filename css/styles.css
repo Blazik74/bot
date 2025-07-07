@@ -1197,11 +1197,35 @@ input:checked + .toggle-slider:before {
 }
 .footer-content {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    align-items: flex-start;
+    gap: 48px;
+    max-width: 1100px;
+    margin: 28px auto 0 auto;
+    flex-wrap: wrap;
+}
+.footer-col {
+    flex: 1 1 220px;
+    min-width: 180px;
+    max-width: 320px;
+    margin: 0 8px;
+    text-align: left;
+    padding: 0 8px;
+}
+.footer-title {
+    font-weight: 700;
+    color: #a78bfa;
+    font-size: 1.13em;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+}
+.footer-details {
+    color: #bdbdbd;
+    font-size: 1.04em;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 6px;
     align-items: center;
-    gap: 18px;
-    font-size: 1.08rem;
 }
 .footer-link {
     color: #7289da;
@@ -1211,16 +1235,12 @@ input:checked + .toggle-slider:before {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 1.13em;
+    font-size: 1.08em;
+    margin-bottom: 6px;
 }
 .footer-link:hover {
     color: #fff;
     text-shadow: 0 0 8px #7289da;
-}
-.footer-sep {
-    color: #333;
-    font-size: 1.2em;
-    margin: 0 4px;
 }
 .footer-copyright {
     color: #bdbdbd;
@@ -1228,73 +1248,22 @@ input:checked + .toggle-slider:before {
     font-size: 1.08rem;
     letter-spacing: 0.01em;
     text-shadow: 0 1px 8px #00000033;
+    margin-bottom: 0.7em;
+    text-align: center;
 }
 
 @media (max-width: 900px) {
-    .stats-row {
-        flex-wrap: wrap;
-        gap: 18px;
-    }
-    .stat-block {
-        min-width: 140px;
-        padding: 1.5rem 1.2rem 1rem 1.2rem;
-    }
-    .team-grid {
-        gap: 1.1rem;
-    }
-    .team-card {
-        min-width: 140px;
-        max-width: 170px;
-        flex: 0 0 140px;
-        padding: 38px 0.5rem 0.7rem 0.5rem;
-    }
-    .avatar-container {
-        width: 70px;
-        height: 70px;
-        top: -35px;
-    }
-    .member-name {
-        margin-top: 40px;
-    }
-}
-@media (max-width: 600px) {
-    .stats-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-    .stat-block {
-        min-width: 90vw;
-        max-width: 98vw;
-        padding: 1.2rem 0.5rem 0.7rem 0.5rem;
-    }
-    .copyright-block {
-        font-size: 1rem;
-        margin: 22px 0 0 0;
-    }
-    .site-footer {
-        font-size: 0.98rem;
-        padding: 12px 0 8px 0;
-    }
     .footer-content {
-        gap: 10px;
+        gap: 18px;
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 18px;
     }
-    .team-grid {
-        gap: 0.3rem;
-    }
-    .team-card {
-        min-width: 90px;
-        max-width: 110px;
-        flex: 0 0 90px;
-        padding: 18px 0.1rem 0.3rem 0.1rem;
-    }
-    .avatar-container {
-        width: 40px;
-        height: 40px;
-        top: -20px;
-    }
-    .member-name {
-        margin-top: 20px;
+    .footer-col {
+        min-width: 0;
+        max-width: 100%;
+        margin: 0 0 18px 0;
+        text-align: left;
     }
 }
 
@@ -1428,147 +1397,101 @@ footer {
     background: var(--scrollbar-thumb-hover);
 }
 
-/* --- ФУТЕР --- */
-.site-footer {
-    width: 100%;
-    background: #18181c;
-    border-top: 1.5px solid #2d2d3a;
-    padding: 22px 0 16px 0;
-    text-align: center;
-    position: relative;
-    margin-top: 0;
-    font-size: 1.08rem;
-    color: #bdbdbd;
-    box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
-    z-index: 10;
-}
-.footer-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    font-size: 1.08rem;
-}
-.footer-link {
-    color: #7289da;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s, text-shadow 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 1.13em;
-}
-.footer-link:hover {
-    color: #fff;
-    text-shadow: 0 0 8px #7289da;
-}
-.footer-sep {
-    color: #333;
-    font-size: 1.2em;
-    margin: 0 4px;
-}
-.footer-copyright {
-    color: #bdbdbd;
-    font-weight: 600;
-    font-size: 1.08rem;
-    letter-spacing: 0.01em;
-    text-shadow: 0 1px 8px #00000033;
-}
-
-@media (max-width: 900px) {
-    .channels-grid, .rules-grid, .faq-row {
-        gap: 18px;
-    }
-    .channel-card, .rule-item {
-        min-width: 140px;
-        max-width: 98vw;
-        padding: 1.5rem 1.2rem 1rem 1.2rem;
-    }
-}
-@media (max-width: 600px) {
-    .channels-grid, .rules-grid, .faq-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-    .channel-card, .rule-item {
-        min-width: 90vw;
-        max-width: 98vw;
-        padding: 1.2rem 0.5rem 0.7rem 0.5rem;
-    }
-    .site-footer {
-        font-size: 0.98rem;
-        padding: 12px 0 8px 0;
-    }
-    .footer-content {
-        gap: 10px;
-    }
-}
-
 /* --- DONATE PAGE --- */
 .donate-page {
     animation: fadeIn 0.5s;
 }
 .donate-container {
+    max-width: 480px;
+    margin: 40px auto;
+    padding: 36px 24px 32px 24px;
     background: #18181b;
     border-radius: 18px;
     box-shadow: 0 8px 32px rgba(124,58,237,0.10);
-    padding: 32px 24px;
-    max-width: 480px;
-    margin: 40px auto;
     text-align: center;
 }
-.donate-prices {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    margin-bottom: 32px;
+.donate-title {
+    color: #a78bfa;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
 }
-.donate-item {
-    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
-    color: #fff;
-    padding: 22px 0 18px 0;
-    border-radius: 14px;
-    font-size: 1.18rem;
+.donate-desc {
+    color: #bbb;
+    margin-bottom: 24px;
+}
+.donate-slider-block {
+    margin-bottom: 28px;
+    background: rgba(30, 30, 40, 0.7);
+    border-radius: 12px;
+    padding: 18px 16px 14px 16px;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.07);
+}
+.donate-slider-label {
+    color: #a78bfa;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+    margin-bottom: 8px;
+    font-size: 1.08em;
+}
+.donate-slider-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 18px;
+    gap: 16px;
+    margin-bottom: 8px;
 }
-.donate-item:nth-child(2) {
-    background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
+.donate-slider {
+    width: 70%;
+    accent-color: #a78bfa;
+    height: 4px;
+    border-radius: 4px;
+    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+    outline: none;
+    transition: background 0.3s;
 }
-.pay-btn {
-    background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
+.donate-slider-value {
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.13em;
+    min-width: 48px;
+    text-align: right;
+}
+.donate-slider-price {
+    color: #bbb;
+    font-size: 1.08em;
+    margin-bottom: 2px;
+}
+.donate-quick-packages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+.donate-quick-btn {
+    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+    color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 28px;
-    font-size: 1.08rem;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 1.08em;
+    font-weight: 600;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(124,58,237,0.10);
-    transition: background 0.2s, transform 0.15s;
+    transition: background 0.2s, transform 0.2s;
 }
-.pay-btn:hover {
-    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+.donate-quick-btn:hover {
+    background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
     transform: translateY(-2px) scale(1.04);
 }
-.btn-secondary {
-    background: #23232b;
-    color: #a78bfa;
-    border: none;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
-    transition: background 0.2s, color 0.2s;
+.donate-hint {
+    margin-top: 10px;
+    color: #888;
+    font-size: 0.95rem;
 }
-.btn-secondary:hover {
-    background: #2d2d3a;
-    color: #fff;
+@media (max-width: 600px) {
+    .donate-container { padding: 18px 4vw 18px 4vw; }
+    .donate-slider-row { flex-direction: column; gap: 8px; }
+    .donate-quick-packages { gap: 7px; }
 }
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
