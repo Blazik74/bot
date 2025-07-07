@@ -422,6 +422,7 @@ class SettingsManager {
             <div class="settings-actions">
                 <button class="btn btn-primary" id="saveSettings">Сохранить настройки</button>
                 <button class="btn btn-secondary" id="resetSettings">Сбросить к умолчаниям</button>
+                <button class="btn btn-secondary" id="logoutSettingsBtn">Выйти из аккаунта</button>
             </div>
         `;
 
@@ -489,6 +490,14 @@ class SettingsManager {
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
                 this.resetToDefaults();
+            });
+        }
+
+        // Кнопка выхода из аккаунта
+        const logoutSettingsBtn = document.getElementById('logoutSettingsBtn');
+        if (logoutSettingsBtn && window.AuthManager) {
+            logoutSettingsBtn.addEventListener('click', () => {
+                window.AuthManager.logout();
             });
         }
     }
