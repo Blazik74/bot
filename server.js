@@ -176,8 +176,8 @@ async function createDefaultAdmin() {
         if (check.rows.length === 0) {
             const passwordHash = await bcrypt.hash('0001', 10);
             await client.query(
-                `INSERT INTO users (username, email, password_hash, avatar_url) VALUES ($1, $2, $3, $4)`,
-                ['admin', 'admin', passwordHash, 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin']
+                `INSERT INTO users (username, name, email, password_hash, avatar_url) VALUES ($1, $2, $3, $4, $5)`,
+                ['admin', 'admin', 'admin', passwordHash, 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin']
             );
             console.log('✅ Пользователь admin/0001 создан');
         } else {
