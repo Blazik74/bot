@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return_url: window.location.origin + '/profile/donate',
                         error_callback: function(error) {
                             console.error('Ошибка оплаты:', error);
-                            alert('Ошибка при создании платежа. Попробуйте еще раз.');
+                            showCustomNotification('Ошибка при создании платежа. Попробуйте еще раз.', 'error');
                         }
                     });
                     
@@ -537,29 +537,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                alert(`Оплата прошла успешно!\nНачислено ${coins} монет.`);
+                                showCustomNotification('Оплата прошла успешно!\nНачислено ' + coins + ' монет.', 'success');
                                 // Обновляем баланс пользователя
                                 if (currentUser) {
                                     currentUser.coins = (currentUser.coins || 0) + coins;
                                     updateUserInterface();
                                 }
                             } else {
-                                alert('Ошибка начисления монет: ' + data.error);
+                                showCustomNotification('Ошибка начисления монет: ' + data.error, 'error');
                             }
                         })
                         .catch(error => {
                             console.error('Ошибка запроса:', error);
-                            alert('Ошибка обработки платежа. Обратитесь в поддержку.');
+                            showCustomNotification('Ошибка обработки платежа. Обратитесь в поддержку.', 'error');
                         });
                     });
                     
                 } else {
-                    alert('Ошибка создания платежа: ' + (data.error || 'Неизвестная ошибка'));
+                    showCustomNotification('Ошибка создания платежа: ' + (data.error || 'Неизвестная ошибка'), 'error');
                 }
             })
             .catch(error => {
                 console.error('Ошибка запроса:', error);
-                alert('Ошибка соединения с сервером. Попробуйте еще раз.');
+                showCustomNotification('Ошибка соединения с сервером. Попробуйте еще раз.', 'error');
             });
         });
     });
@@ -612,8 +612,81 @@ document.addEventListener('DOMContentLoaded', function() {
       if (typeof startYooKassaPayment === 'function') {
         startYooKassaPayment(amount, coins);
       } else {
-        alert('Оплата: ' + amount + '₽ за ' + coins + ' монет');
+        showCustomNotification('Оплата: ' + amount + '₽ за ' + coins + ' монет', 'info');
       }
     });
   }
-}); 
+});
+
+// === FOOTER CONTACTS TOGGLE ===
+document.addEventListener('DOMContentLoaded', function() {
+  const contactsBtn = document.getElementById('footerContactsBtn');
+  const contactsBlock = document.getElementById('footerContactsBlock');
+  if (contactsBtn && contactsBlock) {
+    contactsBtn.addEventListener('click', function() {
+      contactsBlock.classList.toggle('open');
+    });
+  }
+
+  // === DONATE SLIDER & PACKAGES ===
+  const donateRange = document.getElementById('donateRange');
+  if (donateRange) {
+    donateRange.min = 10;
+    donateRange.step = 10;
+    if (parseInt(donateRange.value, 10) < 10) donateRange.value = 10;
+  }
+  // ... остальной код DONATE SLIDER ...
+});
+
+// === CUSTOM NOTIFICATIONS ===
+(function() {
+  if (document.getElementById('customNotification')) return;
+  const notif = document.createElement('div');
+  notif.id = 'customNotification';
+  notif.style.position = 'fixed';
+  notif.style.right = '32px';
+  notif.style.bottom = '32px';
+  notif.style.zIndex = '9999';
+  notif.style.minWidth = '240px';
+  notif.style.maxWidth = '90vw';
+  notif.style.display = 'none';
+  notif.style.padding = '18px 28px 18px 22px';
+  notif.style.borderRadius = '14px';
+  notif.style.fontSize = '1.08em';
+  notif.style.fontWeight = '600';
+  notif.style.boxShadow = '0 4px 24px rgba(124,58,237,0.18)';
+  notif.style.transition = 'opacity 0.3s, transform 0.3s';
+  notif.style.opacity = '0';
+  notif.innerHTML = '<span id="notifIcon" style="margin-right:12px;font-size:1.3em;"></span><span id="notifText"></span>';
+  document.body.appendChild(notif);
+
+  window.showCustomNotification = function(message, type = 'info') {
+    const colors = {
+      success: '#2ed573',
+      error: '#ff4757',
+      info: '#a78bfa',
+      warn: '#ffd700'
+    };
+    const icons = {
+      success: '✔️',
+      error: '❌',
+      info: 'ℹ️',
+      warn: '⚠️'
+    };
+    notif.style.background = '#23232b';
+    notif.style.color = colors[type] || '#a78bfa';
+    notif.style.border = `2px solid ${colors[type] || '#a78bfa'}`;
+    notif.querySelector('#notifIcon').textContent = icons[type] || 'ℹ️';
+    notif.querySelector('#notifText').textContent = message;
+    notif.style.display = 'block';
+    setTimeout(() => {
+      notif.style.opacity = '1';
+      notif.style.transform = 'translateY(0)';
+    }, 10);
+    setTimeout(() => {
+      notif.style.opacity = '0';
+      notif.style.transform = 'translateY(30px)';
+      setTimeout(() => { notif.style.display = 'none'; }, 350);
+    }, 3200);
+  };
+})(); 
