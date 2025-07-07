@@ -718,4 +718,13 @@ document.addEventListener('DOMContentLoaded', function() {
       contactsBlock.classList.toggle('open');
     });
   }
+});
+
+document.querySelectorAll('.policy-modal').forEach(modal => {
+  modal.addEventListener('mousedown', function(e) {
+    if (e.target === modal) {
+      if (modal.id === 'privacyModal') closePolicyModal('privacy');
+      if (modal.id === 'agreementModal') closePolicyModal('agreement');
+    }
+  });
 }); 
