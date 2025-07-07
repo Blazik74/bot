@@ -107,14 +107,14 @@ class AuthManager {
     async handleLogin(e) {
         e.preventDefault();
         
-        const email = document.getElementById('loginEmail').value;
+        const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         
         // Сбросить ошибки
         this.clearErrors('login');
         
         // Валидация
-        if (!this.validateLoginForm(email, password)) {
+        if (!this.validateLoginForm(username, password)) {
             return;
         }
 
@@ -125,7 +125,7 @@ class AuthManager {
             submitBtn.disabled = true;
 
             // Здесь будет запрос к API
-            const user = await this.loginUser(email, password);
+            const user = await this.loginUser(username, password);
             
             this.currentUser = user;
             this.isAuthenticated = true;
@@ -188,11 +188,11 @@ class AuthManager {
     }
 
     // Валидация формы входа
-    validateLoginForm(email, password) {
+    validateLoginForm(username, password) {
         let isValid = true;
 
-        if (!email) {
-            this.showError('loginEmailError', 'Введите email или логин');
+        if (!username) {
+            this.showError('loginUsernameError', 'Введите ник');
             isValid = false;
         }
 
@@ -228,14 +228,14 @@ class AuthManager {
     }
 
     // Вход пользователя через API
-    async loginUser(email, password) {
+    async loginUser(username, password) {
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ username, password })
             });
 
             const data = await response.json();
@@ -444,6 +444,15 @@ class AuthManager {
     // Проверить, авторизован ли пользователь
     isUserAuthenticated() {
         return this.isAuthenticated;
+    }
+
+    // Сброс ошибок в формах
+    clearErrors(formType) {
+        const errorElements = document.querySelectorAll(`#${formType}Page .error-message`);
+        errorElements.forEach(element => {
+            element.textContent = '';
+            element.style.display = 'none';
+        });
     }
 }
 
