@@ -227,7 +227,6 @@ app.post('/api/auth/register', async (req, res) => {
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, avatar_url, created_at`,
             [username, username, email, passwordHash, `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`, 'user']
         );
-
         const user = newUser.rows[0];
         
         // Создание сессии
@@ -237,15 +236,19 @@ app.post('/api/auth/register', async (req, res) => {
             username: user.username,
             email: user.email,
             avatar: user.avatar_url,
-            registrationDate: user.created_at.toLocaleDateString()
+            registrationDate: user.created_at ? new Date(user.created_at).toLocaleDateString() : '',
+            discordId: user.discord_id
         };
 
-        res.json({
-            success: true,
-            user: req.session.user
-        });
+        res.json({ success: true, user: req.session.user });
 
     } catch (error) {
+        if (error.code === '23505') {
+            return res.status(400).json({ error: 'Пользователь с таким ником уже существует' });
+        }
+        if (error.code === '23514') {
+            return res.status(400).json({ error: 'Некорректные данные' });
+        }
         console.error('Ошибка регистрации:', error);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
@@ -286,7 +289,7 @@ app.post('/api/auth/login', async (req, res) => {
             username: user.username,
             email: user.email,
             avatar: user.avatar_url,
-            registrationDate: user.created_at.toLocaleDateString(),
+            registrationDate: user.created_at ? new Date(user.created_at).toLocaleDateString() : '',
             discordId: user.discord_id
         };
 
@@ -463,7 +466,7 @@ app.get('/auth/discord/callback', async (req, res) => {
             username: userData.username,
             email: userData.email,
             avatar: userData.avatar_url,
-            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
+            registrationDate: userData.created_at ? new Date(userData.created_at).toLocaleDateString() : '',
             discordId: userData.discord_id
         };
         
@@ -504,7 +507,7 @@ app.post('/api/auth/discord', async (req, res) => {
             username: userData.username,
             email: userData.email,
             avatar: userData.avatar_url,
-            registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
+            registrationDate: userData.created_at ? new Date(userData.created_at).toLocaleDateString() : '',
             discordId: userData.discord_id
         };
         res.json(req.session.user);
@@ -540,7 +543,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
             username: user.username,
             email: user.email,
             avatar: user.avatar_url,
-            registrationDate: user.created_at ? user.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
+            registrationDate: user.created_at ? new Date(user.created_at).toLocaleDateString() : '',
             settings: user.settings || {}
         });
 
