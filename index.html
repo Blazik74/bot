@@ -394,29 +394,27 @@
 
     <!-- Страница доната -->
     <div class="donate-page" id="donatePage" style="display:none;">
-        <div class="donate-container" style="max-width:480px;margin:40px auto;padding:32px 24px;background:#18181b;border-radius:18px;box-shadow:0 8px 32px rgba(124,58,237,0.10);text-align:center;">
-            <h2 style="color:#a78bfa;font-size:2rem;margin-bottom:10px;letter-spacing:1px;">Донат и поддержка</h2>
-            <p style="color:#bbb;margin-bottom:24px;">Покупка валюты и поддержка проекта.<br>Оплата через ЮMoney.</p>
-            <div class="donate-prices" style="display:flex;flex-direction:column;gap:22px;margin-bottom:32px;">
-                <div class="donate-item" style="background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);color:#fff;padding:22px 0 18px 0;border-radius:14px;font-size:1.18rem;font-weight:600;box-shadow:0 2px 8px rgba(124,58,237,0.10);display:flex;align-items:center;justify-content:space-between;gap:18px;">
-                    <span>100 монет</span>
-                    <span style="font-size:1.1em;">50₽</span>
-                    <button class="btn btn-primary pay-btn" data-amount="50" data-coins="100">Оплатить</button>
-                </div>
-                <div class="donate-item" style="background:linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);color:#fff;padding:22px 0 18px 0;border-radius:14px;font-size:1.18rem;font-weight:600;box-shadow:0 2px 8px rgba(124,58,237,0.10);display:flex;align-items:center;justify-content:space-between;gap:18px;">
-                    <span>500 монет</span>
-                    <span style="font-size:1.1em;">200₽</span>
-                    <button class="btn btn-primary pay-btn" data-amount="200" data-coins="500">Оплатить</button>
-                </div>
-                <div class="donate-item" style="background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);color:#fff;padding:22px 0 18px 0;border-radius:14px;font-size:1.18rem;font-weight:600;box-shadow:0 2px 8px rgba(124,58,237,0.10);display:flex;align-items:center;justify-content:space-between;gap:18px;">
-                    <span>1000 монет</span>
-                    <span style="font-size:1.1em;">350₽</span>
-                    <button class="btn btn-primary pay-btn" data-amount="350" data-coins="1000">Оплатить</button>
-                </div>
-            </div>
-            <p style="margin-top:10px;color:#888;font-size:0.95rem;">После оплаты монеты будут зачислены на ваш аккаунт.<br>Если возникнут вопросы — пишите в поддержку Discord.</p>
-            <button class="btn btn-secondary" id="backToProfileBtn" style="margin-top:28px;padding:12px 32px;font-size:1.1rem;border-radius:8px;">Назад в профиль</button>
+      <div class="donate-container">
+        <h2 class="donate-title">Донат и поддержка</h2>
+        <p class="donate-desc">Покупка валюты и поддержка проекта.<br>Оплата через ЮMoney.</p>
+        <div class="donate-slider-block">
+          <div class="donate-slider-label">Выберите количество монет:</div>
+          <div class="donate-slider-row">
+            <input type="range" min="100" max="5000" step="10" value="100" id="donateRange" class="donate-slider">
+            <span class="donate-slider-value" id="donateRangeValue">100</span> монет
+          </div>
+          <div class="donate-slider-price">Сумма: <span id="donateRangePrice">50</span> ₽</div>
         </div>
+        <div class="donate-quick-packages">
+          <button class="donate-quick-btn" data-coins="100" data-amount="50">100 монет</button>
+          <button class="donate-quick-btn" data-coins="500" data-amount="200">500 монет</button>
+          <button class="donate-quick-btn" data-coins="1000" data-amount="350">1000 монет</button>
+          <button class="donate-quick-btn" data-coins="2500" data-amount="800">2500 монет</button>
+        </div>
+        <button class="btn btn-primary pay-btn" id="donatePayBtn" style="margin-top:28px;">Задонатить</button>
+        <p class="donate-hint">После оплаты монеты будут зачислены на ваш аккаунт.<br>Если возникнут вопросы — пишите в поддержку Discord.</p>
+        <button class="btn btn-secondary" id="backToProfileBtn" style="margin-top:18px;">Назад в профиль</button>
+      </div>
     </div>
 
     <!-- Подключение JavaScript файлов -->
@@ -424,29 +422,27 @@
     <script src="js/settings.js"></script>
     <script src="js/main.js"></script>
 
-    <footer style="margin-top:48px;padding:36px 0 18px 0;background:#18181b;color:#bbb;font-size:1.12rem;">
-        <div style="color:#666;font-size:0.97em;margin-bottom:18px;">&copy; 2025 Арнесс</div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:18px;max-width:1100px;margin:0 auto;">
-            <div style="text-align:left;max-width:520px;line-height:1.8;margin:0 auto 0 0;">
-                <span style="font-weight:600;color:#a78bfa;font-size:1.13em;">Реквизиты:</span><br>
-                <span style="font-weight:600;color:#fff;">ИНН:</span> <span style="color:#a78bfa;letter-spacing:1px;">742534946667</span><br>
-                <span style="font-weight:600;color:#fff;">ФИО:</span> <span style="color:#fff;">Платонов Леонид Юрьевич</span><br>
-                <span style="font-weight:600;color:#fff;">Телефон:</span> <a href="tel:+79823195390" style="color:#a78bfa;text-decoration:none;">+7 (982) 319-53-90</a><br>
-                <span style="font-weight:600;color:#fff;">Почта:</span> <a href="mailto:blazikk01@gmail.com" style="color:#a78bfa;text-decoration:none;">blazikk01@gmail.com</a>
-            </div>
-            <div style="margin:10px 0 0 0;">
-                <a href="/agreement" style="color:#5865f2;font-weight:600;font-size:1.08em;text-decoration:underline;cursor:pointer;">Пользовательское соглашение</a>
-            </div>
+    <footer class="site-footer">
+      <div class="footer-copyright">&copy; 2025 Арнесс. Все права защищены.</div>
+      <div class="footer-content">
+        <div class="footer-col">
+          <div class="footer-title">Политика</div>
+          <a class="footer-link" href="/agreement">Пользовательское соглашение</a>
+          <a class="footer-link" href="#" onclick="alert('Политика конфиденциальности появится позже!')">Политика конфиденциальности</a>
         </div>
-        <div style="margin-top:18px;">
-            <a href="https://discord.gg/PAHWq2xE6P" target="_blank" rel="noopener"
-               style="display:inline-flex;align-items:center;gap:10px;padding:8px 24px;background:linear-gradient(90deg,#5865f2 0%,#a78bfa 100%);color:#fff;font-weight:600;border-radius:12px;text-decoration:none;font-size:1.15em;border:none;box-shadow:none;transition:background 0.2s;min-height:40px;">
-                <svg width="28" height="28" viewBox="0 0 40 40" fill="none" style="display:block;" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M32.92 9.87A32.13 32.13 0 0 0 25.8 7.2a.72.72 0 0 0-.74.36c-.3.52-.62 1.13-.85 1.65a29.7 29.7 0 0 0-8.42 0c-.23-.52-.55-1.13-.85-1.65a.72.72 0 0 0-.74-.36A32.13 32.13 0 0 0 7.08 9.87a.67.67 0 0 0-.31.27C3.6 15.1 2.02 20.2 1.87 25.2a.72.72 0 0 0 .28.56A32.7 32.7 0 0 0 12.2 33.2a.72.72 0 0 0 .78-.11c.6-.48 1.16-1 1.7-1.56a.72.72 0 0 0-.4-1.2c-.58-.12-1.13-.27-1.67-.44a.72.72 0 0 1-.46-.46c-.04-.11.01-.23.11-.29a.72.72 0 0 1 .6-.08c3.5.8 7.2.8 10.7 0a.72.72 0 0 1 .6.08c.1.06.15.18.11.29a.72.72 0 0 1-.46.46c-.54.17-1.09.32-1.67.44a.72.72 0 0 0-.4 1.2c.54.56 1.1 1.08 1.7 1.56a.72.72 0 0 0 .78.11 32.7 32.7 0 0 0 10.05-7.44.72.72 0 0 0 .28-.56c-.15-5-1.73-10.1-4.9-15.06a.67.67 0 0 0-.31-.27zM15.5 25.5c-1.17 0-2.12-1.06-2.12-2.36 0-1.3.95-2.36 2.12-2.36 1.2 0 2.13 1.06 2.12 2.36 0 1.3-.92 2.36-2.12 2.36zm11 0c-1.17 0-2.12-1.06-2.12-2.36 0-1.3.95-2.36 2.12-2.36 1.2 0 2.13 1.06 2.12 2.36 0 1.3-.92 2.36-2.12 2.36z" fill="#fff"/>
-                </svg>
-                Discord
-            </a>
+        <div class="footer-col">
+          <div class="footer-title">Контакты</div>
+          <a class="footer-link" href="mailto:blazikk01@gmail.com">blazikk01@gmail.com</a>
+          <a class="footer-link" href="https://discord.gg/PAHWq2xE6P" target="_blank">Discord</a>
+          <a class="footer-link" href="https://t.me/arness_community" target="_blank">Telegram</a>
         </div>
+        <div class="footer-col">
+          <div class="footer-title">Реквизиты</div>
+          <div class="footer-details"><span>ИНН:</span> <b>742534946667</b></div>
+          <div class="footer-details"><span>ФИО:</span> Платонов Леонид Юрьевич</div>
+          <div class="footer-details"><span>Тел.:</span> <a href="tel:+79823195390" class="footer-link">+7 (982) 319-53-90</a></div>
+        </div>
+      </div>
     </footer>
 </body>
 </html>
