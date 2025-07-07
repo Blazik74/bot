@@ -87,11 +87,17 @@ class App {
         const revealPoint = 150;
 
         const animateOnScroll = () => {
+            const animationsEnabled = this.settingsManager ? this.settingsManager.getSettings().animations.enabled : true;
             sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-
-                if (sectionTop < windowHeight - revealPoint) {
+                if (!animationsEnabled) {
                     section.classList.add('visible');
+                    section.style.transition = 'none';
+                } else {
+                    const sectionTop = section.getBoundingClientRect().top;
+                    if (sectionTop < windowHeight - revealPoint) {
+                        section.classList.add('visible');
+                        section.style.transition = '';
+                    }
                 }
             });
         };
@@ -109,8 +115,9 @@ class App {
         bgAnimation.innerHTML = '';
 
         // Получаем настройки анимаций
-        const particleCount = this.settingsManager ? 
-            this.settingsManager.getSettings().animations.particleCount : 30;
+        const settings = this.settingsManager ? this.settingsManager.getSettings() : { animations: { enabled: true, particleCount: 30 } };
+        if (!settings.animations.enabled) return;
+        const particleCount = settings.animations.particleCount;
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
@@ -723,8 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.querySelectorAll('.policy-modal').forEach(modal => {
   modal.addEventListener('mousedown', function(e) {
     if (e.target === modal) {
-      if (modal.id === 'privacyModal') closePolicyModal('privacy');
-      if (modal.id === 'agreementModal') closePolicyModal('agreement');
+      modal.style.display = 'none';
     }
   });
 }); 
