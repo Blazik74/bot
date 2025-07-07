@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Политика конфиденциальности</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .privacy-container {
+      max-width: 700px;
+      margin: 64px auto 0 auto;
+      background: var(--card-bg, #23232b);
+      border-radius: 18px;
+      box-shadow: 0 4px 32px rgba(124,58,237,0.13);
+      padding: 44px 32px 38px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .privacy-back {
+      position: absolute;
+      top: 24px;
+      left: 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #a78bfa;
+      font-weight: 700;
+      font-size: 1.13em;
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+      z-index: 2;
+    }
+    .privacy-back:hover { color: #fff; }
+    .privacy-title { color: #a78bfa; font-size: 2.1em; margin-bottom: 18px; text-align: center; margin-top: 0; font-weight: 800; letter-spacing: 0.01em; text-shadow: 0 2px 12px #6e42f540; }
+    .privacy-section h2 { color: #a78bfa; font-size: 1.35em; font-weight: 800; margin-top: 38px; margin-bottom: 10px; position: relative; padding-bottom: 4px; }
+    .privacy-section h2::after { content: ''; display: block; width: 48px; height: 3px; background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%); border-radius: 2px; margin-top: 6px; }
+    .privacy-section ul { margin-left: 1.2em; margin-bottom: 0.7em; color: #eee; font-size: 1.08em; padding-left: 0.5em; }
+    .privacy-section li { margin-bottom: 0.4em; line-height: 1.7; }
+    .privacy-section a { color: #a78bfa; text-decoration: underline; font-weight: 600; }
+    .scroll-top-btn { position: fixed; right: 32px; bottom: 32px; background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%); color: #fff; border: none; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 2em; box-shadow: 0 4px 24px rgba(124,58,237,0.18); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
+    .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
+    @media (max-width: 600px) {
+      .privacy-container { padding: 18px 4vw 18px 4vw; }
+      .privacy-back { left: 12px; top: 12px; }
+      .scroll-top-btn { right: 12px; bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="privacy-container">
+    <a href="/" class="privacy-back" title="На главную">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      На главную
+    </a>
+    <h1 class="privacy-title">Политика конфиденциальности</h1>
+    <div class="privacy-section">
+      <p>Настоящая Политика конфиденциальности определяет порядок сбора, хранения, использования и защиты персональных данных пользователей сайта «Арнесс».</p>
+      <h2>1. Сбор информации</h2>
+      <ul>
+        <li>Мы собираем только те данные, которые необходимы для регистрации, предоставления сервисов и обратной связи.</li>
+        <li>Данные могут включать: имя, email, Discord/Twitch ID, а также техническую информацию (IP-адрес, cookies).</li>
+      </ul>
+      <h2>2. Использование информации</h2>
+      <ul>
+        <li>Данные используются исключительно для предоставления сервисов, поддержки пользователей и улучшения работы сайта.</li>
+        <li>Мы не передаем ваши данные третьим лицам, за исключением случаев, предусмотренных законом.</li>
+      </ul>
+      <h2>3. Хранение и защита данных</h2>
+      <ul>
+        <li>Данные хранятся на защищённых серверах и обрабатываются с использованием современных средств защиты.</li>
+        <li>Мы принимаем все разумные меры для предотвращения несанкционированного доступа к данным.</li>
+      </ul>
+      <h2>4. Права пользователя</h2>
+      <ul>
+        <li>Пользователь вправе запросить удаление или изменение своих персональных данных, написав на <a href="mailto:blazikk01@gmail.com">blazikk01@gmail.com</a>.</li>
+        <li>Пользователь может отказаться от рассылок и уведомлений в любой момент.</li>
+      </ul>
+      <h2>5. Изменения политики</h2>
+      <ul>
+        <li>Мы оставляем за собой право изменять настоящую политику без предварительного уведомления.</li>
+        <li>Актуальная версия всегда доступна на этой странице.</li>
+      </ul>
+    </div>
+  </div>
+  <button class="scroll-top-btn" id="scrollTopBtn" title="Наверх">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <script>
+    // Кнопка "вверх"
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 180) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+    });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  </script>
+</body>
+</html> 
