@@ -1496,4 +1496,126 @@ footer {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: none; }
+}
+
+/* Новые стили для футера */
+.footer-btns {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.footer-main-btn {
+    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 32px;
+    font-size: 1.13em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+    transition: background 0.2s, transform 0.2s;
+    margin-bottom: 0;
+}
+.footer-main-btn:hover {
+    background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+.footer-contacts-block {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(.4,1.6,.4,1), padding 0.3s;
+    background: rgba(30, 30, 40, 0.9);
+    border-radius: 14px;
+    margin: 0 auto 18px auto;
+    box-shadow: 0 2px 12px rgba(124,58,237,0.10);
+    width: 100%;
+    max-width: 600px;
+    padding: 0 24px;
+}
+.footer-contacts-block.open {
+    max-height: 400px;
+    padding: 18px 24px 18px 24px;
+}
+.footer-contacts-inner {
+    text-align: left;
+    color: #bdbdbd;
+    font-size: 1.08em;
+}
+.footer-discord-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 340px;
+    margin: 24px auto 0 auto;
+    background: linear-gradient(90deg,#5865f2 0%,#a78bfa 100%);
+    color: #fff;
+    font-size: 1.25em;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    padding: 15px 0;
+    box-shadow: 0 2px 12px rgba(88,101,242,0.10);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    gap: 14px;
+}
+.footer-discord-btn:hover {
+    background: linear-gradient(90deg,#a78bfa 0%,#5865f2 100%);
+    transform: scale(1.03);
+}
+@media (max-width: 600px) {
+    .footer-btns { gap: 10px; }
+    .footer-main-btn { padding: 11px 10vw; font-size: 1em; }
+    .footer-contacts-block { padding: 0 4vw; }
+    .footer-contacts-block.open { padding: 12px 4vw 12px 4vw; }
+    .footer-discord-btn { font-size: 1.08em; padding: 12px 0; }
+}
+/* Стили для политики и соглашения */
+.agreement-title, .privacy-title {
+    color: #a78bfa;
+    font-size: 2.1em;
+    margin-bottom: 18px;
+    text-align: center;
+    margin-top: 0;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 12px #6e42f540;
+}
+.agreement-section h2, .privacy-section h2 {
+    color: #a78bfa;
+    font-size: 1.35em;
+    font-weight: 800;
+    margin-top: 38px;
+    margin-bottom: 10px;
+    position: relative;
+    padding-bottom: 4px;
+}
+.agreement-section h2::after, .privacy-section h2::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+    border-radius: 2px;
+    margin-top: 6px;
+}
+.agreement-section ul, .privacy-section ul {
+    margin-left: 1.2em;
+    margin-bottom: 0.7em;
+    color: #eee;
+    font-size: 1.08em;
+    padding-left: 0.5em;
+}
+.agreement-section li, .privacy-section li {
+    margin-bottom: 0.4em;
+    line-height: 1.7;
+}
+.agreement-section a, .privacy-section a {
+    color: #a78bfa;
+    text-decoration: underline;
+    font-weight: 600;
 } 
