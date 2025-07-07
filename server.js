@@ -156,6 +156,18 @@ async function initDatabase() {
     }
 }
 
+// Гарантируем наличие password_hash
+async function ensurePasswordHashColumn() {
+    try {
+        const client = await pool.connect();
+        await client.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);');
+        client.release();
+        console.log('Колонка password_hash гарантирована!');
+    } catch (err) {
+        console.error('Ошибка при добавлении password_hash:', err);
+    }
+}
+
 // После инициализации базы данных создаём пользователя admin/0001, если его нет
 async function createDefaultAdmin() {
     try {
@@ -695,7 +707,8 @@ async function startServer() {
         });
         
         // После инициализации базы данных создаём пользователя admin/0001, если его нет
-        createDefaultAdmin();
+        await ensurePasswordHashColumn();
+        await createDefaultAdmin();
         
         app.listen(process.env.PORT || 3000, () => {
             console.log(`🚀 Сервер запущен на http://localhost:${process.env.PORT || 3000}`);
