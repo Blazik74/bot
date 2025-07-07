@@ -1778,4 +1778,11 @@ body[style*="overflow: hidden"] {
 .footer-discord-btn:hover {
     background: linear-gradient(90deg,#a78bfa 0%,#5865f2 100%);
     transform: scale(1.03);
+}
+
+.footer-contacts-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 } 
