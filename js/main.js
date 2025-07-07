@@ -622,10 +622,17 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const contactsBtn = document.getElementById('footerContactsBtn');
   const contactsBlock = document.getElementById('footerContactsBlock');
+  const contactsCloseBtn = document.getElementById('contactsCloseBtn');
   if (contactsBtn && contactsBlock) {
     contactsBtn.addEventListener('click', function(e) {
       e.preventDefault();
       contactsBlock.classList.toggle('open');
+    });
+  }
+  if (contactsCloseBtn && contactsBlock) {
+    contactsCloseBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      contactsBlock.classList.remove('open');
     });
   }
 
@@ -730,10 +737,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // Контакты: только плавное раскрытие
   const contactsBtn = document.getElementById('footerContactsBtn');
   const contactsBlock = document.getElementById('footerContactsBlock');
+  const contactsCloseBtn = document.getElementById('contactsCloseBtn');
   if (contactsBtn && contactsBlock) {
     contactsBtn.addEventListener('click', function(e) {
       e.preventDefault();
       contactsBlock.classList.toggle('open');
+    });
+  }
+  if (contactsCloseBtn && contactsBlock) {
+    contactsCloseBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      contactsBlock.classList.remove('open');
     });
   }
 }); 
