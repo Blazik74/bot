@@ -623,7 +623,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const contactsBtn = document.getElementById('footerContactsBtn');
   const contactsBlock = document.getElementById('footerContactsBlock');
   if (contactsBtn && contactsBlock) {
-    contactsBtn.addEventListener('click', function() {
+    contactsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
       contactsBlock.classList.toggle('open');
     });
   }
@@ -689,4 +690,47 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => { notif.style.display = 'none'; }, 350);
     }, 3200);
   };
-})(); 
+})();
+
+// === SPA Policy/Agreement Modal ===
+function openPolicyModal(type) {
+  const modal = document.getElementById(type === 'privacy' ? 'privacyModal' : 'agreementModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.remove('hide'), 10);
+  document.body.style.overflow = 'hidden';
+}
+function closePolicyModal(type) {
+  const modal = document.getElementById(type === 'privacy' ? 'privacyModal' : 'agreementModal');
+  if (!modal) return;
+  modal.classList.add('hide');
+  setTimeout(() => { modal.style.display = 'none'; modal.classList.remove('hide'); document.body.style.overflow = ''; }, 400);
+}
+// Открытие по якорю
+function checkPolicyHash() {
+  if (window.location.hash === '#privacy') openPolicyModal('privacy');
+  else if (window.location.hash === '#agreement') openPolicyModal('agreement');
+}
+window.addEventListener('hashchange', checkPolicyHash);
+document.addEventListener('DOMContentLoaded', function() {
+  checkPolicyHash();
+  document.getElementById('closePrivacy').onclick = () => { closePolicyModal('privacy'); history.replaceState(null,null,' '); };
+  document.getElementById('closeAgreement').onclick = () => { closePolicyModal('agreement'); history.replaceState(null,null,' '); };
+  document.querySelectorAll('.footer-nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      if (this.getAttribute('href') === '/privacy.html' || this.getAttribute('href') === '/agreement') {
+        e.preventDefault();
+        window.location.hash = this.getAttribute('href') === '/privacy.html' ? '#privacy' : '#agreement';
+      }
+    });
+  });
+  // Контакты: только плавное раскрытие
+  const contactsBtn = document.getElementById('footerContactsBtn');
+  const contactsBlock = document.getElementById('footerContactsBlock');
+  if (contactsBtn && contactsBlock) {
+    contactsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      contactsBlock.classList.toggle('open');
+    });
+  }
+}); 
