@@ -106,84 +106,72 @@ class AuthManager {
     // Обработка входа
     async handleLogin(e) {
         e.preventDefault();
-        
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
-        
-        // Сбросить ошибки
         this.clearErrors('login');
-        
-        // Валидация
         if (!this.validateLoginForm(username, password)) {
             return;
         }
-
+        let originalText = '';
         try {
             const submitBtn = e.target.querySelector('.form-submit');
-            const originalText = submitBtn.textContent;
-            submitBtn.innerHTML = '<span class="loading"></span> Вход...';
-            submitBtn.disabled = true;
-
-            // Здесь будет запрос к API
+            if (submitBtn) {
+                originalText = submitBtn.textContent;
+                submitBtn.innerHTML = '<span class="loading"></span> Вход...';
+                submitBtn.disabled = true;
+            }
             const user = await this.loginUser(username, password);
-            
             this.currentUser = user;
             this.isAuthenticated = true;
             this.saveUserToStorage(user);
-            
             this.showNotification('Успешный вход!', 'success');
             this.checkAuth();
             showPage('main');
-            
         } catch (error) {
             this.showNotification(error.message, 'error');
         } finally {
             const submitBtn = e.target.querySelector('.form-submit');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+            if (submitBtn && originalText) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
     }
 
     // Обработка регистрации
     async handleRegister(e) {
         e.preventDefault();
-        
         const username = document.getElementById('registerUsername').value;
         const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
         const confirmPassword = document.getElementById('registerConfirmPassword').value;
-        
-        // Сбросить ошибки
         this.clearErrors('register');
-        
-        // Валидация
         if (!this.validateRegisterForm(username, email, password, confirmPassword)) {
             return;
         }
-
+        let originalText = '';
         try {
             const submitBtn = e.target.querySelector('.form-submit');
-            const originalText = submitBtn.textContent;
-            submitBtn.innerHTML = '<span class="loading"></span> Регистрация...';
-            submitBtn.disabled = true;
-
-            // Здесь будет запрос к API
+            if (submitBtn) {
+                originalText = submitBtn.textContent;
+                submitBtn.innerHTML = '<span class="loading"></span> Регистрация...';
+                submitBtn.disabled = true;
+            }
             const user = await this.registerUser(username, email, password);
-            
             this.currentUser = user;
             this.isAuthenticated = true;
             this.saveUserToStorage(user);
-            
             this.showNotification('Регистрация успешна! Добро пожаловать!', 'success');
             this.checkAuth();
             showPage('main');
-            
         } catch (error) {
             this.showNotification(error.message, 'error');
         } finally {
             const submitBtn = e.target.querySelector('.form-submit');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+            if (submitBtn && originalText) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
     }
 
