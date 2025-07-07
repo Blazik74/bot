@@ -1757,7 +1757,7 @@ footer {
     pointer-events: none;
 }
 .policy-modal-content {
-    background: var(--card-bg, #23232b) !important;
+    background: #23232b !important;
     border-radius: 18px;
     box-shadow: 0 8px 32px rgba(124,58,237,0.13);
     padding: 44px 32px 38px 32px;
@@ -1768,6 +1768,7 @@ footer {
     position: relative;
     animation: policyIn 0.5s cubic-bezier(.4,1.6,.4,1);
     opacity: 1 !important;
+    backdrop-filter: none !important;
 }
 .policy-modal.hide .policy-modal-content {
     animation: policyOut 0.4s cubic-bezier(.4,1.6,.4,1);
