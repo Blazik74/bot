@@ -292,9 +292,9 @@
             <h2 class="auth-title">Вход в аккаунт</h2>
             <form class="auth-form" id="loginForm">
                 <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required>
-                    <div class="error-message" id="loginEmailError"></div>
+                    <label for="loginUsername">Ник</label>
+                    <input type="text" id="loginUsername" required>
+                    <div class="error-message" id="loginUsernameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Пароль</label>
@@ -302,7 +302,6 @@
                     <div class="error-message" id="loginPasswordError"></div>
                 </div>
                 <button type="submit" class="form-submit">Войти</button>
-                
                 <!-- Discord авторизация -->
                 <div class="discord-auth-section">
                     <div class="divider">
@@ -313,7 +312,6 @@
                         <span>Discord</span>
                     </button>
                 </div>
-                
                 <div class="form-toggle">
                     Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
                 </div>
