@@ -692,35 +692,38 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 })();
 
-// === SPA Policy/Agreement Modal ===
-function openPolicyModal(type) {
+// === SPA Policy/Agreement Modal (исправлено, без hash, с pushState) ===
+function openPolicyModal(type, push = true) {
   const modal = document.getElementById(type === 'privacy' ? 'privacyModal' : 'agreementModal');
   if (!modal) return;
   modal.style.display = 'flex';
   setTimeout(() => modal.classList.remove('hide'), 10);
   document.body.style.overflow = 'hidden';
+  if (push) history.pushState({modal: type}, '', type === 'privacy' ? '?privacy' : '?agreement');
 }
-function closePolicyModal(type) {
+function closePolicyModal(type, push = true) {
   const modal = document.getElementById(type === 'privacy' ? 'privacyModal' : 'agreementModal');
   if (!modal) return;
   modal.classList.add('hide');
   setTimeout(() => { modal.style.display = 'none'; modal.classList.remove('hide'); document.body.style.overflow = ''; }, 400);
+  if (push) history.replaceState({}, '', '/');
 }
-// Открытие по якорю
-function checkPolicyHash() {
-  if (window.location.hash === '#privacy') openPolicyModal('privacy');
-  else if (window.location.hash === '#agreement') openPolicyModal('agreement');
-}
-window.addEventListener('hashchange', checkPolicyHash);
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.modal) openPolicyModal(e.state.modal, false);
+  else {
+    closePolicyModal('privacy', false);
+    closePolicyModal('agreement', false);
+  }
+});
 document.addEventListener('DOMContentLoaded', function() {
-  checkPolicyHash();
-  document.getElementById('closePrivacy').onclick = () => { closePolicyModal('privacy'); history.replaceState(null,null,' '); };
-  document.getElementById('closeAgreement').onclick = () => { closePolicyModal('agreement'); history.replaceState(null,null,' '); };
+  // Открытие по ссылкам
+  document.getElementById('closePrivacy').onclick = () => { closePolicyModal('privacy'); };
+  document.getElementById('closeAgreement').onclick = () => { closePolicyModal('agreement'); };
   document.querySelectorAll('.footer-nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
       if (this.getAttribute('href') === '/privacy.html' || this.getAttribute('href') === '/agreement') {
         e.preventDefault();
-        window.location.hash = this.getAttribute('href') === '/privacy.html' ? '#privacy' : '#agreement';
+        openPolicyModal(this.getAttribute('href') === '/privacy.html' ? 'privacy' : 'agreement');
       }
     });
   });
