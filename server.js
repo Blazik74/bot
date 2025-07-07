@@ -176,8 +176,8 @@ async function createDefaultAdmin() {
         if (check.rows.length === 0) {
             const passwordHash = await bcrypt.hash('0001', 10);
             await client.query(
-                `INSERT INTO users (username, name, email, password_hash, avatar_url) VALUES ($1, $2, $3, $4, $5)`,
-                ['admin', 'admin', 'admin', passwordHash, 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin']
+                `INSERT INTO users (username, name, email, password_hash, avatar_url, role) VALUES ($1, $2, $3, $4, $5, $6)`,
+                ['admin', 'admin', 'admin', passwordHash, 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin', 'admin']
             );
             console.log('✅ Пользователь admin/0001 создан');
         } else {
@@ -223,9 +223,9 @@ app.post('/api/auth/register', async (req, res) => {
 
         // Создание пользователя
         const newUser = await pool.query(
-            `INSERT INTO users (username, email, password_hash, avatar_url) 
-             VALUES ($1, $2, $3, $4) RETURNING id, username, email, avatar_url, created_at`,
-            [username, email, passwordHash, `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`]
+            `INSERT INTO users (username, name, email, password_hash, avatar_url, role) 
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, avatar_url, created_at`,
+            [username, username, email, passwordHash, `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`, 'user']
         );
 
         const user = newUser.rows[0];
