@@ -85,6 +85,22 @@ class AuthManager {
         if (discordLoginBtn) {
             discordLoginBtn.addEventListener('click', () => this.handleDiscordLogin());
         }
+
+        // Кнопки входа/регистрации в выпадающей панели
+        const loginBtnDropdown = document.getElementById('loginBtnDropdown');
+        if (loginBtnDropdown) {
+            loginBtnDropdown.addEventListener('click', () => {
+                showPage('login');
+                document.getElementById('authDropdown').classList.remove('active');
+            });
+        }
+        const registerBtnDropdown = document.getElementById('registerBtnDropdown');
+        if (registerBtnDropdown) {
+            registerBtnDropdown.addEventListener('click', () => {
+                showPage('register');
+                document.getElementById('authDropdown').classList.remove('active');
+            });
+        }
     }
 
     // Обработка входа
