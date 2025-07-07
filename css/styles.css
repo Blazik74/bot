@@ -1734,7 +1734,11 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.35s;
+    transition: opacity 0.35s, background 0.35s;
+    pointer-events: all;
+}
+.policy-modal[style*="display: none"] {
+    pointer-events: none;
 }
 .policy-modal-content {
     background: var(--card-bg, #23232b);
@@ -1808,4 +1812,7 @@ footer {
     color: #a78bfa;
     text-decoration: underline;
     font-weight: 600;
+}
+body[style*="overflow: hidden"] {
+    overscroll-behavior: none;
 } 
