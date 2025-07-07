@@ -6,11 +6,15 @@ const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 const app = express();
 
-// Конфигурация
-const CLIENT_ID = '1391384219661500558';
-const CLIENT_SECRET = 'jN3YUbVedyFfveM_FQXi2mXd1C_6Jewj';
-const REDIRECT_URI = 'https://arness-community.onrender.com';
-const PORT = process.env.PORT || 3000;
+// Получение переменных из process.env
+const CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1391384219661500558';
+const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO';
+const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI || 'https://arness-community.onrender.com/auth/discord/callback';
+
+if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
+  console.error('❌ Discord OAuth переменные не заданы! Проверьте .env');
+  process.exit(1);
+}
 
 // --- Twitch OAuth ---
 const TWITCH_CLIENT_ID = '7pewyshzfymoj5at2odselalrjj1gm';
@@ -29,12 +33,12 @@ const pool = new Pool({
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(session({
-    secret: 'arness-secret-key-2024',
+    secret: process.env.SESSION_SECRET || 'arness-secret-key-2024',
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        secure: false, // установите true для HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 часа
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
@@ -367,20 +371,18 @@ app.post('/api/settings', async (req, res) => {
 app.get('/api/settings', async (req, res) => {
     try {
         if (!req.session.userId) {
+            console.warn('Попытка доступа к /api/settings без авторизации');
             return res.status(401).json({ error: 'Не авторизован' });
         }
-
         const result = await pool.query(
             'SELECT settings FROM users WHERE id = $1',
             [req.session.userId]
         );
-
         const settings = result.rows[0]?.settings || {};
         res.json({ settings });
-
     } catch (error) {
         console.error('Ошибка получения настроек:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        res.status(500).json({ error: 'Ошибка сервера', details: error.message });
     }
 });
 
@@ -444,11 +446,9 @@ app.get('/auth/discord/callback', async (req, res) => {
 // API endpoint для обработки Discord авторизации
 app.post('/api/auth/discord', async (req, res) => {
     const { code } = req.body;
-    
     if (!code) {
         return res.status(400).json({ error: 'No code provided' });
     }
-    
     try {
         const params = new URLSearchParams();
         params.append('client_id', CLIENT_ID);
@@ -456,29 +456,15 @@ app.post('/api/auth/discord', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('code', code);
         params.append('redirect_uri', REDIRECT_URI);
-        
-        // Обмен кода на токен
         const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
-        
         const { access_token } = tokenResponse.data;
-        
-        // Получение информации о пользователе
         const userResponse = await axios.get('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
+            headers: { Authorization: `Bearer ${access_token}` }
         });
-        
         const discordUser = userResponse.data;
-        
-        // Поиск или создание пользователя
         const userData = await handleDiscordUser(discordUser);
-        
-        // Создание сессии
         req.session.userId = userData.id;
         req.session.user = {
             id: userData.id,
@@ -488,12 +474,10 @@ app.post('/api/auth/discord', async (req, res) => {
             registrationDate: userData.created_at ? userData.created_at.toLocaleDateString() : new Date().toLocaleDateString(),
             discordId: userData.discord_id
         };
-        
         res.json(req.session.user);
-        
     } catch (error) {
-        console.error('Discord OAuth error:', error);
-        res.status(500).json({ error: 'OAuth failed' });
+        console.error('Discord OAuth error:', error.response ? error.response.data : error);
+        res.status(500).json({ error: 'OAuth failed', details: error.response ? error.response.data : error.message });
     }
 });
 
@@ -689,8 +673,8 @@ async function startServer() {
             console.log('Сервер продолжит работу, но некоторые функции могут быть недоступны');
         });
         
-        app.listen(PORT, () => {
-            console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
+        app.listen(process.env.PORT || 3000, () => {
+            console.log(`🚀 Сервер запущен на http://localhost:${process.env.PORT || 3000}`);
             console.log(`📱 Discord Client ID: ${CLIENT_ID}`);
             console.log(`🔗 Discord OAuth2 URL: https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20email`);
         });
