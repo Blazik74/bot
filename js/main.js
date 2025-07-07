@@ -622,28 +622,12 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const contactsBtn = document.getElementById('footerContactsBtn');
   const contactsBlock = document.getElementById('footerContactsBlock');
-  const contactsCloseBtn = document.getElementById('contactsCloseBtn');
   if (contactsBtn && contactsBlock) {
     contactsBtn.addEventListener('click', function(e) {
       e.preventDefault();
       contactsBlock.classList.toggle('open');
     });
   }
-  if (contactsCloseBtn && contactsBlock) {
-    contactsCloseBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      contactsBlock.classList.remove('open');
-    });
-  }
-
-  // === DONATE SLIDER & PACKAGES ===
-  const donateRange = document.getElementById('donateRange');
-  if (donateRange) {
-    donateRange.min = 10;
-    donateRange.step = 10;
-    if (parseInt(donateRange.value, 10) < 10) donateRange.value = 10;
-  }
-  // ... остальной код DONATE SLIDER ...
 });
 
 // === CUSTOM NOTIFICATIONS ===
