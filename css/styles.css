@@ -1549,12 +1549,16 @@ footer {
 .footer-contacts-block {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s, padding 0.3s;
+    transition: max-height 0.7s cubic-bezier(.4,1.6,.4,1), padding 0.5s cubic-bezier(.4,1.6,.4,1), opacity 0.5s, transform 0.5s;
     padding: 0 24px;
+    opacity: 0;
+    transform: translateY(30px) scaleY(0.95);
 }
 .footer-contacts-block.open {
     max-height: 400px;
     padding: 18px 24px;
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
 }
 .scroll-top-btn { position: fixed; right: 32px; bottom: 32px; background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%); color: #fff; border: none; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 2em; box-shadow: 0 4px 24px rgba(124,58,237,0.18); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
 .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
@@ -1772,12 +1776,30 @@ body[style*="overflow: hidden"] {
     padding: 15px 0;
     box-shadow: 0 2px 12px rgba(88,101,242,0.10);
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.45s cubic-bezier(.4,1.6,.4,1), transform 0.45s cubic-bezier(.4,1.6,.4,1), box-shadow 0.45s cubic-bezier(.4,1.6,.4,1);
     gap: 14px;
+    position: relative;
+    overflow: hidden;
+}
+.footer-discord-btn::after {
+    content: '';
+    position: absolute;
+    left: -60%;
+    top: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.05) 100%);
+    transform: skewX(-25deg);
+    transition: left 0.7s cubic-bezier(.4,1.6,.4,1);
+    pointer-events: none;
+}
+.footer-discord-btn:hover::after {
+    left: 110%;
 }
 .footer-discord-btn:hover {
     background: linear-gradient(90deg,#a78bfa 0%,#5865f2 100%);
-    transform: scale(1.03);
+    transform: scale(1.07) translateY(-3px);
+    box-shadow: 0 8px 32px 0 #7c3aed55, 0 2px 12px rgba(88,101,242,0.18);
 }
 
 .footer-contacts-inner {
