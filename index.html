@@ -423,26 +423,26 @@
     <script src="js/main.js"></script>
 
     <footer class="site-footer">
-      <div class="footer-copyright">&copy; 2025 Арнесс. Все права защищены.</div>
-      <div class="footer-content">
-        <div class="footer-col">
-          <div class="footer-title">Политика</div>
-          <a class="footer-link" href="/agreement">Пользовательское соглашение</a>
-          <a class="footer-link" href="#" onclick="alert('Политика конфиденциальности появится позже!')">Политика конфиденциальности</a>
-        </div>
-        <div class="footer-col">
-          <div class="footer-title">Контакты</div>
-          <a class="footer-link" href="mailto:blazikk01@gmail.com">blazikk01@gmail.com</a>
-          <a class="footer-link" href="https://discord.gg/PAHWq2xE6P" target="_blank">Discord</a>
-          <a class="footer-link" href="https://t.me/arness_community" target="_blank">Telegram</a>
-        </div>
-        <div class="footer-col">
-          <div class="footer-title">Реквизиты</div>
+      <div class="footer-btns">
+        <button class="footer-main-btn" onclick="window.location='/privacy.html'">Политика конфиденциальности</button>
+        <button class="footer-main-btn" onclick="window.location='/agreement'">Пользовательское соглашение</button>
+        <button class="footer-main-btn" id="footerContactsBtn">Контакты</button>
+      </div>
+      <div class="footer-contacts-block" id="footerContactsBlock">
+        <div class="footer-contacts-inner">
+          <div class="footer-title">Контакты и реквизиты</div>
           <div class="footer-details"><span>ИНН:</span> <b>742534946667</b></div>
           <div class="footer-details"><span>ФИО:</span> Платонов Леонид Юрьевич</div>
           <div class="footer-details"><span>Тел.:</span> <a href="tel:+79823195390" class="footer-link">+7 (982) 319-53-90</a></div>
+          <div class="footer-details"><span>Email:</span> <a href="mailto:blazikk01@gmail.com" class="footer-link">blazikk01@gmail.com</a></div>
+          <div class="footer-details"><span>Discord:</span> <a href="https://discord.gg/PAHWq2xE6P" class="footer-link" target="_blank">discord.gg/PAHWq2xE6P</a></div>
+          <div class="footer-details"><span>Telegram:</span> <a href="https://t.me/arness_community" class="footer-link" target="_blank">@arness_community</a></div>
         </div>
       </div>
+      <button class="footer-discord-btn" onclick="window.open('https://discord.gg/PAHWq2xE6P','_blank')">
+        <i class="fab fa-discord"></i> Discord
+      </button>
+      <div class="footer-copyright">&copy; 2025 Арнесс. Все права защищены.</div>
     </footer>
 </body>
 </html>
