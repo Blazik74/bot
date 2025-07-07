@@ -254,21 +254,21 @@ app.post('/api/auth/register', async (req, res) => {
 // API для входа
 app.post('/api/auth/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
         // Валидация
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email и пароль обязательны' });
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Ник и пароль обязательны' });
         }
 
-        // Поиск пользователя
+        // Поиск пользователя по нику
         const userResult = await pool.query(
-            'SELECT * FROM users WHERE email = $1',
-            [email]
+            'SELECT * FROM users WHERE username = $1',
+            [username]
         );
 
         if (userResult.rows.length === 0) {
-            return res.status(400).json({ error: 'Неверный email или пароль' });
+            return res.status(400).json({ error: 'Неверный ник или пароль' });
         }
 
         const user = userResult.rows[0];
@@ -276,7 +276,7 @@ app.post('/api/auth/login', async (req, res) => {
         // Проверка пароля
         const isValidPassword = await bcrypt.compare(password, user.password_hash);
         if (!isValidPassword) {
-            return res.status(400).json({ error: 'Неверный email или пароль' });
+            return res.status(400).json({ error: 'Неверный ник или пароль' });
         }
 
         // Создание сессии
