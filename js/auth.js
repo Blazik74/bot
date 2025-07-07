@@ -265,7 +265,7 @@ class AuthManager {
     handleDiscordLogin() {
         // Discord OAuth2 URL
         const clientId = '1391384219661500558'; // Discord Client ID
-        const redirectUri = encodeURIComponent('https://arness-community.onrender.com');
+        const redirectUri = encodeURIComponent('https://arness-community.onrender.com/auth/discord/callback');
         const scope = 'identify email';
         const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}`;
         
