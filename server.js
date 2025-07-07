@@ -208,14 +208,21 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ error: 'Пароль должен быть не менее 6 символов' });
         }
 
-        // Проверка существования пользователя
+        // Проверка существования пользователя по email
         const existingUser = await pool.query(
             'SELECT id FROM users WHERE email = $1',
             [email]
         );
-
         if (existingUser.rows.length > 0) {
             return res.status(400).json({ error: 'Пользователь с таким email уже существует' });
+        }
+        // Проверка существования пользователя по username
+        const existingUsername = await pool.query(
+            'SELECT id FROM users WHERE username = $1',
+            [username]
+        );
+        if (existingUsername.rows.length > 0) {
+            return res.status(400).json({ error: 'Пользователь с таким ником уже существует' });
         }
 
         // Хеширование пароля
