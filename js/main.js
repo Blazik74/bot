@@ -563,4 +563,57 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+});
+
+// === DONATE SLIDER & PACKAGES ===
+document.addEventListener('DOMContentLoaded', function() {
+  const donateRange = document.getElementById('donateRange');
+  const donateRangeValue = document.getElementById('donateRangeValue');
+  const donateRangePrice = document.getElementById('donateRangePrice');
+  const quickBtns = document.querySelectorAll('.donate-quick-btn');
+  const payBtn = document.getElementById('donatePayBtn');
+
+  // Курс: 100 монет = 50₽, 500 = 200₽, 1000 = 350₽, 2500 = 800₽, иначе 1 монета = 0.5₽
+  function calcPrice(coins) {
+    if (coins == 100) return 50;
+    if (coins == 500) return 200;
+    if (coins == 1000) return 350;
+    if (coins == 2500) return 800;
+    return Math.round(coins * 0.5);
+  }
+
+  function updateSlider() {
+    const coins = parseInt(donateRange.value, 10);
+    donateRangeValue.textContent = coins;
+    donateRangePrice.textContent = calcPrice(coins);
+    payBtn.dataset.amount = calcPrice(coins);
+    payBtn.dataset.coins = coins;
+  }
+
+  if (donateRange) {
+    donateRange.addEventListener('input', updateSlider);
+    updateSlider();
+  }
+
+  quickBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const coins = this.dataset.coins;
+      donateRange.value = coins;
+      updateSlider();
+    });
+  });
+
+  if (payBtn) {
+    payBtn.addEventListener('click', function() {
+      const amount = this.dataset.amount || calcPrice(donateRange.value);
+      const coins = this.dataset.coins || donateRange.value;
+      // Здесь должна быть логика оплаты через ЮMoney с amount и coins
+      // Например: startYooKassaPayment(amount, coins);
+      if (typeof startYooKassaPayment === 'function') {
+        startYooKassaPayment(amount, coins);
+      } else {
+        alert('Оплата: ' + amount + '₽ за ' + coins + ' монет');
+      }
+    });
+  }
 }); 
