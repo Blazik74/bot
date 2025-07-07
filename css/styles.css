@@ -1546,22 +1546,8 @@ footer {
     background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
     transform: translateY(-2px) scale(1.04);
 }
-.footer-contacts-block {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(.4,1.6,.4,1), padding 0.3s;
-    background: rgba(30, 30, 40, 0.9);
-    border-radius: 14px;
-    margin: 0 auto 18px auto;
-    box-shadow: 0 2px 12px rgba(124,58,237,0.10);
-    width: 100%;
-    max-width: 600px;
-    padding: 0 24px;
-}
-.footer-contacts-block.open {
-    max-height: 400px;
-    padding: 18px 24px 18px 24px;
-}
+.footer-contacts-block { max-height: 0; overflow: hidden; transition: max-height 0.5s, padding 0.3s; }
+.footer-contacts-block.open { max-height: 400px; padding: 18px 24px; }
 .footer-contacts-inner {
     display: grid;
     grid-template-columns: 32px 1fr;
