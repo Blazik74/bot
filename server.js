@@ -337,14 +337,13 @@ app.get('/api/auth/check', (req, res) => {
 async function handleDiscordUser(discordUser) {
     let user;
     try {
-        // Сначала пытаемся найти пользователя по discord_id
+        console.log('[Discord] Поиск пользователя по discord_id:', discordUser.id);
         user = await pool.query(
             'SELECT * FROM users WHERE discord_id = $1',
             [discordUser.id]
         );
-
         if (user.rows.length === 0) {
-            // Создание нового пользователя с discord_id
+            console.log('[Discord] Пользователь не найден, создаём нового:', discordUser.username);
             const newUser = await pool.query(
                 `INSERT INTO users (discord_id, username, name, email, avatar_url, role) 
                  VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
@@ -360,9 +359,11 @@ async function handleDiscordUser(discordUser) {
                 ]
             );
             user = newUser;
+        } else {
+            console.log('[Discord] Пользователь найден:', user.rows[0].username);
         }
     } catch (dbError) {
-        console.error('Ошибка работы с БД при Discord авторизации:', dbError);
+        console.error('[Discord] Ошибка работы с БД при Discord авторизации:', dbError);
         // Если колонка discord_id не существует, создаем пользователя без неё
         try {
             const newUser = await pool.query(
@@ -380,11 +381,10 @@ async function handleDiscordUser(discordUser) {
             );
             user = newUser;
         } catch (insertError) {
-            console.error('Ошибка создания пользователя:', insertError);
+            console.error('[Discord] Ошибка создания пользователя:', insertError);
             throw new Error('Не удалось создать пользователя');
         }
     }
-    
     return user.rows[0];
 }
 
@@ -432,11 +432,11 @@ app.get('/api/settings', async (req, res) => {
 // Discord OAuth2 callback
 app.get('/auth/discord/callback', async (req, res) => {
     const { code } = req.query;
-    
+    console.log('[Discord] /auth/discord/callback вызван, code:', code);
     if (!code) {
+        console.warn('[Discord] Нет кода авторизации в callback!');
         return res.redirect('/?error=no_code');
     }
-    
     try {
         const params = new URLSearchParams();
         params.append('client_id', CLIENT_ID);
@@ -444,29 +444,23 @@ app.get('/auth/discord/callback', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('code', code);
         params.append('redirect_uri', REDIRECT_URI);
-        
-        // Обмен кода на токен
+        console.log('[Discord] Обмениваем code на access_token...');
         const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        
         const { access_token } = tokenResponse.data;
-        
-        // Получение информации о пользователе
+        console.log('[Discord] Получен access_token:', !!access_token);
+        console.log('[Discord] Получаем данные пользователя...');
         const userResponse = await axios.get('https://discord.com/api/users/@me', {
             headers: {
                 Authorization: `Bearer ${access_token}`
             }
         });
-        
         const discordUser = userResponse.data;
-        
-        // Поиск или создание пользователя
+        console.log('[Discord] Данные пользователя:', discordUser.id, discordUser.username);
         const userData = await handleDiscordUser(discordUser);
-        
-        // Создание сессии
         req.session.userId = userData.id;
         req.session.user = {
             id: userData.id,
@@ -476,12 +470,10 @@ app.get('/auth/discord/callback', async (req, res) => {
             registrationDate: userData.created_at ? new Date(userData.created_at).toLocaleDateString() : '',
             discordId: userData.discord_id
         };
-        
-        // Перенаправляем обратно на сайт
+        console.log('[Discord] Сессия установлена для userId:', req.session.userId);
         res.redirect('/?discord_success=true');
-        
     } catch (error) {
-        console.error('Discord OAuth error:', error);
+        console.error('[Discord] OAuth error:', error.response ? error.response.data : error);
         res.redirect('/?error=oauth_failed');
     }
 });
@@ -489,7 +481,9 @@ app.get('/auth/discord/callback', async (req, res) => {
 // API endpoint для обработки Discord авторизации
 app.post('/api/auth/discord', async (req, res) => {
     const { code } = req.body;
+    console.log('[Discord] POST /api/auth/discord вызван, code:', code);
     if (!code) {
+        console.warn('[Discord] Нет кода авторизации в POST!');
         return res.status(400).json({ error: 'No code provided' });
     }
     try {
@@ -499,14 +493,18 @@ app.post('/api/auth/discord', async (req, res) => {
         params.append('grant_type', 'authorization_code');
         params.append('code', code);
         params.append('redirect_uri', REDIRECT_URI);
+        console.log('[Discord] Обмениваем code на access_token...');
         const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         const { access_token } = tokenResponse.data;
+        console.log('[Discord] Получен access_token:', !!access_token);
+        console.log('[Discord] Получаем данные пользователя...');
         const userResponse = await axios.get('https://discord.com/api/users/@me', {
             headers: { Authorization: `Bearer ${access_token}` }
         });
         const discordUser = userResponse.data;
+        console.log('[Discord] Данные пользователя:', discordUser.id, discordUser.username);
         const userData = await handleDiscordUser(discordUser);
         req.session.userId = userData.id;
         req.session.user = {
@@ -517,9 +515,10 @@ app.post('/api/auth/discord', async (req, res) => {
             registrationDate: userData.created_at ? new Date(userData.created_at).toLocaleDateString() : '',
             discordId: userData.discord_id
         };
+        console.log('[Discord] Сессия установлена для userId:', req.session.userId);
         res.json(req.session.user);
     } catch (error) {
-        console.error('Discord OAuth error:', error.response ? error.response.data : error);
+        console.error('[Discord] OAuth error:', error.response ? error.response.data : error);
         res.status(500).json({ error: 'OAuth failed', details: error.response ? error.response.data : error.message });
     }
 });
