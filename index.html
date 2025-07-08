@@ -455,9 +455,25 @@
     <!-- Модальное окно для Twitch-плеера -->
     <div id="twitchPlayerModal" class="twitch-player-modal" style="display:none;">
         <div class="twitch-player-backdrop"></div>
-        <div class="twitch-player-content">
+        <div class="twitch-player-content" style="display:flex;flex-direction:row;align-items:flex-start;position:relative;">
             <button class="twitch-player-close" id="twitchPlayerCloseBtn">×</button>
             <div id="twitchPlayerIframeContainer"></div>
+            <div id="twitchChatToggle" class="twitch-chat-toggle" title="Открыть чат">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div id="twitchChatContainer" class="twitch-chat-container" style="display:none;">
+                <div class="twitch-chat-header">
+                    <span>Чат стрима</span>
+                    <button id="twitchChatClose" class="twitch-chat-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="twitchChatMessages" class="twitch-chat-messages"></div>
+                <div class="twitch-chat-input-row">
+                    <input type="text" id="twitchChatInput" class="twitch-chat-input" placeholder="Сообщение...">
+                    <button id="twitchChatSend" class="twitch-chat-send"><i class="fas fa-paper-plane"></i></button>
+                    <button id="twitchChatSticker" class="twitch-chat-sticker"><i class="fas fa-smile"></i></button>
+                </div>
+                <div id="twitchChatStickers" class="twitch-chat-stickers" style="display:none;"></div>
+            </div>
         </div>
     </div>
 
@@ -541,7 +557,7 @@
           <h2>3. Донаты и внутренняя валюта</h2>
           <ul>
             <li>Донаты и покупки игровой валюты осуществляются добровольно и не подлежат возврату.</li>
-            <li>Вся внутренняя валюта является виртуальной и не может быть обменяна на реальные деньги.</li>
+            <li>Вся внутренняя валюта является виртуальной и не может быть обменана на реальные деньги.</li>
           </ul>
           <h2>4. Ограничения и ответственность</h2>
           <ul>
