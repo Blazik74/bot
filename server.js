@@ -792,21 +792,47 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
         const twitchId = req.session.user.twitchId;
         const twitchUsername = req.session.user.twitchUsername;
         const token = await getTwitchAppToken();
-        // Получаем список фолловингов (подписок)
-        const followsResp = await axios.get(`${TWITCH_API_BASE}/users/follows`, {
-            headers: {
-                'Client-ID': TWITCH_CLIENT_ID,
-                'Authorization': `Bearer ${token}`
-            },
-            params: {
-                from_id: twitchId,
-                first: 100
+        let follows = [];
+        let liveStreams = [];
+        // Пробуем старый endpoint
+        try {
+            const followsResp = await axios.get(`${TWITCH_API_BASE}/users/follows`, {
+                headers: {
+                    'Client-ID': TWITCH_CLIENT_ID,
+                    'Authorization': `Bearer ${token}`
+                },
+                params: {
+                    from_id: twitchId,
+                    first: 100
+                }
+            });
+            follows = followsResp.data.data;
+        } catch (err) {
+            // Если 410 Gone, используем новый Helix endpoint
+            if (err.response && err.response.status === 410) {
+                const followsResp = await axios.get(`${TWITCH_API_BASE}/channels/followed`, {
+                    headers: {
+                        'Client-ID': TWITCH_CLIENT_ID,
+                        'Authorization': `Bearer ${token}`
+                    },
+                    params: {
+                        user_id: twitchId,
+                        first: 100
+                    }
+                });
+                // Новый формат: data -> [{broadcaster_id, broadcaster_name, broadcaster_login, followed_at}]
+                follows = followsResp.data.data.map(f => ({
+                    to_id: f.broadcaster_id,
+                    to_name: f.broadcaster_name,
+                    to_login: f.broadcaster_login,
+                    followed_at: f.followed_at
+                }));
+            } else {
+                throw err;
             }
-        });
-        const follows = followsResp.data.data;
+        }
         // Получаем инфу о стримах для всех followings
         const toIds = follows.map(f => f.to_id);
-        let liveStreams = [];
         if (toIds.length > 0) {
             // Twitch API ограничивает до 100 id за раз
             const streamsResp = await axios.get(`${TWITCH_API_BASE}/streams`, {
