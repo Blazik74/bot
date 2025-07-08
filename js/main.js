@@ -22,7 +22,9 @@ class App {
             main: document.getElementById('mainPage'),
             login: document.getElementById('loginPage'),
             register: document.getElementById('registerPage'),
-            account: document.getElementById('accountPage')
+            account: document.getElementById('accountPage'),
+            donate: document.getElementById('donatePage'),
+            twitchProfile: document.getElementById('twitchProfilePage')
         };
     }
 
@@ -296,7 +298,7 @@ class App {
     showPage(pageName) {
         // Список всех возможных страниц
         const allPages = [
-            'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage'
+            'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage', 'twitchProfilePage'
         ];
         allPages.forEach(id => {
             const el = document.getElementById(id);
@@ -326,6 +328,7 @@ class App {
             if (pageName === 'account') url = '/profile';
             if (pageName === 'settings') url = '/profile/settings';
             if (pageName === 'donate') url = '/profile/donate';
+            if (pageName === 'twitchProfile') url = '/profile/twitch';
             if (window.location.pathname !== url) {
                 window.history.pushState({page: pageName}, '', url);
             }
@@ -351,7 +354,7 @@ class App {
     // Запуск приложения
     async start() {
         // Сброс всех страниц
-        ['mainPage','loginPage','registerPage','accountPage','donatePage'].forEach(id => {
+        ['mainPage','loginPage','registerPage','accountPage','donatePage','twitchProfilePage'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
         });
@@ -361,6 +364,7 @@ class App {
         if (path === '/profile') this.showPage('account');
         else if (path === '/profile/settings') this.showPage('settings');
         else if (path === '/profile/donate') this.showPage('donate');
+        else if (path === '/profile/twitch') this.showTwitchProfilePage();
         else this.showPage('main');
         // Проверяем Twitch callback
         this.checkTwitchCallback();
@@ -465,8 +469,85 @@ class App {
             if (path === '/profile') this.showPage('account');
             else if (path === '/profile/settings') this.showPage('settings');
             else if (path === '/profile/donate') this.showPage('donate');
+            else if (path === '/profile/twitch') this.showTwitchProfilePage();
             else this.showPage('main');
         });
+    }
+
+    function showTwitchProfilePage() {
+        if (this.pages.account) this.pages.account.style.display = 'none';
+        if (this.pages.twitchProfile) this.pages.twitchProfile.style.display = 'block';
+        this.loadTwitchProfile();
+        // Меняем URL
+        if (window.location.pathname !== '/profile/twitch') {
+            window.history.pushState({page: 'twitch'}, '', '/profile/twitch');
+        }
+    }
+
+    async loadTwitchProfile() {
+        const user = this.authManager?.getCurrentUser?.();
+        if (!user || !user.twitchUsername) {
+            this.pages.twitchProfile.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
+            return;
+        }
+        // Центрируем аватар и ник, добавляем кнопку выхода из Twitch
+        this.pages.twitchProfile.innerHTML = `
+            <div class="twitch-profile-center">
+                <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
+                <div class="twitch-nick">${user.twitchUsername}</div>
+                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
+            </div>
+        `;
+        // Назначаем обработчик кнопке выхода из Twitch
+        setTimeout(() => {
+            const logoutBtn = document.getElementById('twitchLogoutBtn');
+            if (logoutBtn) logoutBtn.onclick = this.logoutTwitch.bind(this);
+        }, 0);
+        try {
+            const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
+            if (!resp.ok) throw new Error('Ошибка Twitch API');
+            const data = await resp.json();
+            if (data.subscriptions && data.subscriptions.length > 0) {
+                this.pages.twitchProfile.innerHTML = data.subscriptions.map(sub =>
+                    `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
+                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                    </div>`
+                ).join('');
+            } else {
+                this.pages.twitchProfile.innerHTML = '<div class="twitch-empty">Нет подписок.</div>';
+            }
+            if (data.live && data.live.length > 0) {
+                this.pages.twitchProfile.innerHTML = data.live.map(stream =>
+                    `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
+                        <b class="twitch-live-dot">●</b> <span class="twitch-live-nick">${stream.user_name}</span>
+                        <span class="twitch-live-title">${stream.title}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}">Смотреть</button>
+                    </div>`
+                ).join('');
+            } else {
+                this.pages.twitchProfile.innerHTML = '<div class="twitch-empty">Нет стримов онлайн.</div>';
+            }
+        } catch (e) {
+            this.pages.twitchProfile.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
+        }
+    }
+
+    async logoutTwitch() {
+        try {
+            const resp = await fetch('/api/twitch/logout', { method: 'POST', credentials: 'include' });
+            if (!resp.ok) throw new Error('Ошибка выхода из Twitch');
+            // Обновляем профиль и возвращаем на страницу аккаунта
+            if (this.authManager) {
+                await this.authManager.checkServerSession();
+                this.authManager.checkAuth();
+                this.authManager.updateProfileDisplay();
+            }
+            this.showPage('account');
+            if (this.showNotification) this.showNotification('Twitch-аккаунт отвязан', 'info');
+        } catch (e) {
+            if (this.showNotification) this.showNotification('Ошибка выхода из Twitch', 'error');
+        }
     }
 }
 
@@ -552,6 +633,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (accountPage) accountPage.style.display = 'none';
         if (twitchProfilePage) twitchProfilePage.style.display = 'block';
         loadTwitchProfile();
+        // Меняем URL
+        if (window.location.pathname !== '/profile/twitch') {
+            window.history.pushState({page: 'twitch'}, '', '/profile/twitch');
+        }
     }
     function showAccountPage() {
         if (twitchProfilePage) twitchProfilePage.style.display = 'none';
@@ -601,8 +686,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.subscriptions && data.subscriptions.length > 0) {
                 twitchSubscriptionsList.innerHTML = data.subscriptions.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <img class="twitch-sub-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${sub.to_id}-profile_image-50x50.png" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name">${sub.to_name}</span>
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
+                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
                     </div>`
                 ).join('');
             } else {
