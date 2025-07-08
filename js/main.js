@@ -570,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
         backToAccountBtn.addEventListener('click', showAccountPage);
     }
     async function loadTwitchProfile() {
-        // Получаем пользователя
         const user = window.app?.authManager?.getCurrentUser?.();
         if (!user || !user.twitchUsername) {
             twitchProfileInfo.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
@@ -579,13 +578,11 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Красивый вывод ника и аватара
+        // Центрируем аватар и ник, делаем крупно
         twitchProfileInfo.innerHTML = `
-            <div class="twitch-profile-header">
+            <div class="twitch-profile-center">
                 <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-70x70.png" onerror="this.style.display='none'" alt="Twitch Avatar">
-                <div class="twitch-nick-block">
-                    <span class="twitch-nick">${user.twitchUsername}</span>
-                </div>
+                <div class="twitch-nick">${user.twitchUsername}</div>
             </div>
         `;
         twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
@@ -595,7 +592,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка Twitch API');
             const data = await resp.json();
-            // Подписки
             if (data.subscriptions && data.subscriptions.length > 0) {
                 twitchSubscriptionsList.innerHTML = data.subscriptions.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
@@ -606,7 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 twitchSubscriptionsList.innerHTML = '<div class="twitch-empty">Нет подписок.</div>';
             }
-            // Стримы онлайн
             if (data.live && data.live.length > 0) {
                 twitchLiveStreams.innerHTML = data.live.map(stream =>
                     `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
