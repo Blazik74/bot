@@ -723,8 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btn) {
                 const channel = btn.getAttribute('data-twitch-name');
                 if (channel) {
-                    twitchPlayerContainer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}" height="420" width="720" allowfullscreen frameborder="0" style="display:block;margin:0 auto;"></iframe>`;
-                    window.scrollTo({ top: twitchPlayerContainer.offsetTop - 40, behavior: 'smooth' });
+                    openTwitchPlayer(channel);
                 }
             }
         });
@@ -1027,6 +1026,53 @@ if (accountAvatar && avatarModal && avatarModalImg) {
         if (e.target === avatarModal || e.target.classList.contains('avatar-modal-close') || e.target.classList.contains('avatar-modal-backdrop')) {
             avatarModal.style.display = 'none';
             avatarModalImg.src = '';
+        }
+    });
+}
+
+// --- Twitch-плеер: модальное окно ---
+const twitchPlayerModal = document.getElementById('twitchPlayerModal');
+const twitchPlayerIframeContainer = document.getElementById('twitchPlayerIframeContainer');
+const twitchPlayerCloseBtn = document.getElementById('twitchPlayerCloseBtn');
+let currentTwitchChannel = null;
+function openTwitchPlayer(channel) {
+    if (!twitchPlayerModal || !twitchPlayerIframeContainer) return;
+    if (currentTwitchChannel === channel) return; // уже открыт этот канал
+    currentTwitchChannel = channel;
+    twitchPlayerIframeContainer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}" allowfullscreen frameborder="0"></iframe>`;
+    twitchPlayerModal.style.display = 'flex';
+    setTimeout(() => {
+        twitchPlayerModal.classList.add('show');
+    }, 10);
+}
+function closeTwitchPlayer() {
+    if (!twitchPlayerModal) return;
+    twitchPlayerModal.classList.remove('show');
+    setTimeout(() => {
+        twitchPlayerModal.style.display = 'none';
+        twitchPlayerIframeContainer.innerHTML = '';
+        currentTwitchChannel = null;
+    }, 250);
+}
+if (twitchPlayerCloseBtn) {
+    twitchPlayerCloseBtn.onclick = closeTwitchPlayer;
+}
+if (twitchPlayerModal) {
+    twitchPlayerModal.addEventListener('click', (e) => {
+        if (e.target === twitchPlayerModal || e.target.classList.contains('twitch-player-backdrop')) {
+            closeTwitchPlayer();
+        }
+    });
+}
+// --- Кнопка 'Смотреть' ---
+if (twitchSubscriptionsList) {
+    twitchSubscriptionsList.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-watch-stream');
+        if (btn) {
+            const channel = btn.getAttribute('data-twitch-name');
+            if (channel) {
+                openTwitchPlayer(channel);
+            }
         }
     });
 } 
