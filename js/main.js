@@ -529,6 +529,14 @@ class App {
                 html = '<div class="twitch-empty">Нет подписок.</div>';
             }
             this.pages.twitchProfile.innerHTML = html;
+            // После рендера подписок пересоздаём обработчик на кнопки 'Смотреть'
+            Array.from(this.pages.twitchProfile.querySelectorAll('.btn-watch-stream')).forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    const channel = btn.getAttribute('data-twitch-name');
+                    if (channel) this.openTwitchPlayer(channel);
+                }.bind(this);
+            });
         } catch (e) {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
         }
@@ -712,6 +720,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 html = '<div class="twitch-empty">Нет подписок.</div>';
             }
             twitchSubscriptionsList.innerHTML = html;
+            // После рендера подписок пересоздаём обработчик на кнопки 'Смотреть'
+            Array.from(twitchSubscriptionsList.querySelectorAll('.btn-watch-stream')).forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    const channel = btn.getAttribute('data-twitch-name');
+                    if (channel) openTwitchPlayer(channel);
+                };
+            });
         } catch (e) {
             twitchSubscriptionsList.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
         }
