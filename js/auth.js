@@ -287,6 +287,7 @@ class AuthManager {
             this.currentUser = user;
             this.isAuthenticated = true;
             this.saveUserToStorage(user);
+            await this.checkServerSession();
             this.showNotification('Успешный вход через Discord!', 'success');
             this.checkAuth();
             this.updateProfileDisplay();
