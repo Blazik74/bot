@@ -578,14 +578,19 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Центрируем аватар и ник, БЕЗ кнопки назад
+        // Центрируем аватар и ник, добавляем кнопку выхода из Twitch
         twitchProfileInfo.innerHTML = `
             <div class="twitch-profile-center">
                 <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
                 <div class="twitch-nick">${user.twitchUsername}</div>
+                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
             </div>
         `;
-        // НЕ добавляем кнопку назад
+        // Назначаем обработчик кнопке выхода из Twitch
+        setTimeout(() => {
+            const logoutBtn = document.getElementById('twitchLogoutBtn');
+            if (logoutBtn) logoutBtn.onclick = logoutTwitch;
+        }, 0);
         twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
         twitchLiveStreams.innerHTML = '<div class="twitch-loading">Загрузка стримов...</div>';
         twitchPlayerContainer.innerHTML = '';
@@ -631,6 +636,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    // Проверяем кнопку выхода из аккаунта
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.onclick = function() {
+            if (window.app?.authManager) {
+                window.app.authManager.logout();
+            }
+        };
     }
 });
 
@@ -883,4 +898,22 @@ document.querySelectorAll('.policy-modal').forEach(modal => {
       if (modal.id === 'agreementModal') closePolicyModal('agreement');
     }
   });
-}); 
+});
+
+// Добавляю функцию выхода из Twitch
+async function logoutTwitch() {
+    try {
+        const resp = await fetch('/api/twitch/logout', { method: 'POST', credentials: 'include' });
+        if (!resp.ok) throw new Error('Ошибка выхода из Twitch');
+        // Обновляем профиль и возвращаем на страницу аккаунта
+        if (window.app?.authManager) {
+            await window.app.authManager.checkServerSession();
+            window.app.authManager.checkAuth();
+            window.app.authManager.updateProfileDisplay();
+        }
+        showAccountPage();
+        if (window.app?.showNotification) window.app.showNotification('Twitch-аккаунт отвязан', 'info');
+    } catch (e) {
+        if (window.app?.showNotification) window.app.showNotification('Ошибка выхода из Twitch', 'error');
+    }
+} 
