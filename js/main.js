@@ -476,15 +476,14 @@ class App {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
             return;
         }
-        // Центрируем аватар и ник, добавляем кнопку выхода из Twitch
+        // Верх: аватарка и ник
         this.pages.twitchProfile.innerHTML = `
             <div class="twitch-profile-center">
-                <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
-                <div class="twitch-nick">${user.twitchUsername}</div>
+                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
+                <div class="twitch-nick" id="twitchProfileNick">${user.twitchUsername}</div>
                 <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
             </div>
         `;
-        // Назначаем обработчик кнопке выхода из Twitch
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = this.logoutTwitch.bind(this);
@@ -499,22 +498,22 @@ class App {
             const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
             let html = '';
             if (online.length > 0) {
-                html += '<div class="twitch-section-title">Онлайн</div>';
+                html += '<div class="twitch-section-title" style="font-size:1.5em;font-weight:800;color:#a78bfa;letter-spacing:1px;margin:18px 0 10px 0;text-shadow:0 2px 12px #a78bfa33;">Онлайн</div>';
                 html += online.map(sub =>
                     `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;">${sub.to_name}</span>
                         <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
             }
             if (offline.length > 0) {
-                if (online.length > 0) html += '<div class="twitch-section-title" style="margin-top:18px;">Офлайн</div>';
+                if (online.length > 0) html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
+                else html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 html += offline.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;">${sub.to_name}</span>
                     </div>`
                 ).join('');
             }
@@ -647,15 +646,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!user || !user.twitchUsername) {
             twitchProfileInfo.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
             twitchSubscriptionsList.innerHTML = '';
-            twitchLiveStreams.innerHTML = '';
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Центрируем аватар и ник, добавляем кнопку выхода из Twitch
+        // Верх: аватарка и ник
         twitchProfileInfo.innerHTML = `
             <div class="twitch-profile-center">
-                <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
-                <div class="twitch-nick">${user.twitchUsername}</div>
+                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
+                <div class="twitch-nick" id="twitchProfileNick">${user.twitchUsername}</div>
                 <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
             </div>
         `;
@@ -675,22 +673,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
             let html = '';
             if (online.length > 0) {
-                html += '<div class="twitch-section-title">Онлайн</div>';
+                html += '<div class="twitch-section-title" style="font-size:1.5em;font-weight:800;color:#a78bfa;letter-spacing:1px;margin:18px 0 10px 0;text-shadow:0 2px 12px #a78bfa33;">Онлайн</div>';
                 html += online.map(sub =>
                     `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;">${sub.to_name}</span>
                         <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
             }
             if (offline.length > 0) {
-                if (online.length > 0) html += '<div class="twitch-section-title" style="margin-top:18px;">Офлайн</div>';
+                if (online.length > 0) html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
+                else html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 html += offline.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;">${sub.to_name}</span>
                     </div>`
                 ).join('');
             }
@@ -702,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchSubscriptionsList.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
         }
     }
-    // Twitch-плеер: обработчик кнопок "Смотреть" для всех подписок
+    // Twitch-плеер: обработчик кнопок "Смотреть" только для онлайн
     if (twitchSubscriptionsList) {
         twitchSubscriptionsList.addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-watch-stream');
@@ -994,4 +992,25 @@ async function logoutTwitch() {
     } catch (e) {
         if (window.app?.showNotification) window.app.showNotification('Ошибка выхода из Twitch', 'error');
     }
+}
+
+// --- Модальное окно для аватарки профиля ---
+const accountAvatar = document.getElementById('accountAvatar');
+const avatarModal = document.getElementById('avatarModal');
+const avatarModalImg = document.getElementById('avatarModalImg');
+if (accountAvatar && avatarModal && avatarModalImg) {
+    accountAvatar.addEventListener('click', () => {
+        avatarModal.style.display = 'flex';
+        avatarModalImg.src = accountAvatar.src;
+        avatarModalImg.classList.add('avatar-modal-animate');
+        setTimeout(() => {
+            avatarModalImg.classList.remove('avatar-modal-animate');
+        }, 600);
+    });
+    avatarModal.addEventListener('click', (e) => {
+        if (e.target === avatarModal || e.target.classList.contains('avatar-modal-close') || e.target.classList.contains('avatar-modal-backdrop')) {
+            avatarModal.style.display = 'none';
+            avatarModalImg.src = '';
+        }
+    });
 } 
