@@ -470,10 +470,6 @@ class App {
         });
     }
 
-    function showTwitchProfilePage() {
-        showPage('twitchProfile');
-    }
-
     async loadTwitchProfile() {
         const user = this.authManager?.getCurrentUser?.();
         if (!user || !user.twitchUsername) {
