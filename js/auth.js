@@ -35,7 +35,7 @@ class AuthManager {
     // Проверка сессии на сервере
     async checkServerSession() {
         try {
-            const response = await fetch('/api/auth/check');
+            const response = await fetch('/api/auth/check', { credentials: 'include' });
             const data = await response.json();
             if (data.authenticated) {
                 this.currentUser = data.user;
@@ -230,7 +230,8 @@ class AuthManager {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password }),
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -253,7 +254,8 @@ class AuthManager {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ username, email, password }),
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -305,7 +307,8 @@ class AuthManager {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code })
+                body: JSON.stringify({ code }),
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -327,7 +330,8 @@ class AuthManager {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: 'include'
             });
         } catch (error) {
             console.error('Ошибка выхода:', error);
