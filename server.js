@@ -322,12 +322,33 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 // API для проверки авторизации
-app.get('/api/auth/check', (req, res) => {
-    if (req.session.user) {
-        res.json({ 
-            authenticated: true, 
-            user: req.session.user 
-        });
+app.get('/api/auth/check', async (req, res) => {
+    if (req.session.userId) {
+        try {
+            const result = await pool.query(
+                'SELECT id, username, email, avatar_url, created_at, discord_id, twitch_id, twitch_username FROM users WHERE id = $1',
+                [req.session.userId]
+            );
+            if (result.rows.length === 0) {
+                return res.json({ authenticated: false });
+            }
+            const user = result.rows[0];
+            const userObj = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar_url,
+                registrationDate: user.created_at ? new Date(user.created_at).toLocaleDateString() : '',
+                discordId: user.discord_id,
+                twitchId: user.twitch_id,
+                twitchUsername: user.twitch_username
+            };
+            // Обновляем сессию
+            req.session.user = userObj;
+            res.json({ authenticated: true, user: userObj });
+        } catch (e) {
+            return res.json({ authenticated: false });
+        }
     } else {
         res.json({ authenticated: false });
     }
