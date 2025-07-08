@@ -361,19 +361,20 @@ class App {
         });
         this.setupSpaRouting();
         const path = window.location.pathname;
-        if (path === '/profile') this.showPage('account');
-        else if (path === '/profile/settings') this.showPage('settings');
-        else if (path === '/profile/donate' || path === '/donate') this.showPage('donate');
-        else if (path === '/profile/twitch') this.showPage('twitchProfile');
-        else this.showPage('main');
-        this.checkTwitchCallback();
         if (!this.authManager) this.authManager = new AuthManager();
         await this.authManager.loadUserFromStorage();
         this.authManager.checkAuth();
         if (!this.settingsManager) this.settingsManager = new SettingsManager();
         await this.settingsManager.loadSettings();
         this.settingsManager.applySettings();
+        this.checkTwitchCallback();
         this.checkDiscordCallback();
+        // Корректный порядок показа страниц после загрузки пользователя
+        if (path === '/profile') this.showPage('account');
+        else if (path === '/profile/settings') this.showPage('settings');
+        else if (path === '/profile/donate' || path === '/donate') this.showPage('donate');
+        else if (path === '/profile/twitch') this.showPage('twitchProfile');
+        else this.showPage('main');
     }
 
     checkTwitchCallback() {
@@ -592,11 +593,35 @@ document.addEventListener('DOMContentLoaded', () => {
         modalCopied.style.display = 'none';
     }
     if (avatar) {
+        avatar.classList.add('profile-icon-animate');
         avatar.style.cursor = 'pointer';
-        avatar.addEventListener('click', openAvatarModal);
+        avatar.addEventListener('click', () => {
+            modal.classList.add('animated-scale-in');
+            modal.style.display = 'flex';
+            modalImg.src = avatar.src;
+            setTimeout(() => {
+                modal.classList.remove('animated-scale-in');
+            }, 350);
+        });
     }
-    if (modalClose) modalClose.addEventListener('click', closeAvatarModal);
-    if (modalBackdrop) modalBackdrop.addEventListener('click', closeAvatarModal);
+    if (modalClose) modalClose.addEventListener('click', () => {
+        modal.classList.add('animated-fade-out');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modalImg.src = '';
+            modalCopied.style.display = 'none';
+            modal.classList.remove('animated-fade-out');
+        }, 350);
+    });
+    if (modalBackdrop) modalBackdrop.addEventListener('click', () => {
+        modal.classList.add('animated-fade-out');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modalImg.src = '';
+            modalCopied.style.display = 'none';
+            modal.classList.remove('animated-fade-out');
+        }, 350);
+    });
     // Закрытие по Esc
     document.addEventListener('keydown', (e) => {
         if (modal.style.display === 'flex' && e.key === 'Escape') closeAvatarModal();
@@ -1074,9 +1099,19 @@ if (twitchPlayerCloseBtn) {
     twitchPlayerCloseBtn.onclick = closeTwitchPlayer;
 }
 if (twitchPlayerModal) {
+    twitchPlayerModal.classList.add('animated-fade-in');
+    setTimeout(() => {
+        twitchPlayerModal.classList.remove('animated-fade-in');
+    }, 350);
     twitchPlayerModal.addEventListener('click', (e) => {
         if (e.target === twitchPlayerModal || e.target.classList.contains('twitch-player-backdrop')) {
-            closeTwitchPlayer();
+            twitchPlayerModal.classList.add('animated-fade-out');
+            setTimeout(() => {
+                twitchPlayerModal.style.display = 'none';
+                twitchPlayerIframeContainer.innerHTML = '';
+                currentTwitchChannel = null;
+                twitchPlayerModal.classList.remove('animated-fade-out');
+            }, 350);
         }
     });
 }
@@ -1091,4 +1126,87 @@ if (twitchSubscriptionsList) {
             }
         }
     });
+} 
+
+// --- Twitch Chat Logic ---
+const twitchChatToggle = document.getElementById('twitchChatToggle');
+const twitchChatContainer = document.getElementById('twitchChatContainer');
+const twitchChatClose = document.getElementById('twitchChatClose');
+const twitchChatMessages = document.getElementById('twitchChatMessages');
+const twitchChatInput = document.getElementById('twitchChatInput');
+const twitchChatSend = document.getElementById('twitchChatSend');
+const twitchChatSticker = document.getElementById('twitchChatSticker');
+const twitchChatStickers = document.getElementById('twitchChatStickers');
+
+// Список стикеров (можно расширить)
+const stickers = ['😀','😂','😍','😎','🔥','👍','🎉','🥳','😈','💜','👾','🤘','😺','🥲','😭','😡','🤡','👻','💩','🍕'];
+
+function renderStickers() {
+    twitchChatStickers.innerHTML = '';
+    stickers.forEach(sticker => {
+        const btn = document.createElement('span');
+        btn.className = 'twitch-chat-sticker-item';
+        btn.textContent = sticker;
+        btn.onclick = () => {
+            twitchChatInput.value += sticker;
+            twitchChatStickers.style.display = 'none';
+            twitchChatInput.focus();
+        };
+        twitchChatStickers.appendChild(btn);
+    });
+}
+renderStickers();
+
+function openChat() {
+    twitchChatContainer.style.display = 'flex';
+    twitchChatContainer.classList.remove('hide');
+    twitchChatContainer.classList.add('animated-slide-in-up');
+    setTimeout(() => {
+        twitchChatContainer.classList.remove('animated-slide-in-up');
+    }, 380);
+    twitchChatToggle.style.display = 'none';
+}
+function closeChat() {
+    twitchChatContainer.classList.add('hide');
+    twitchChatContainer.classList.add('animated-slide-out-down');
+    setTimeout(() => {
+        twitchChatContainer.style.display = 'none';
+        twitchChatContainer.classList.remove('animated-slide-out-down');
+        twitchChatContainer.classList.remove('hide');
+        twitchChatToggle.style.display = 'flex';
+    }, 320);
+}
+if (twitchChatToggle) {
+    twitchChatToggle.onclick = openChat;
+}
+if (twitchChatClose) {
+    twitchChatClose.onclick = closeChat;
+}
+if (twitchChatSticker) {
+    twitchChatSticker.onclick = () => {
+        twitchChatStickers.style.display = twitchChatStickers.style.display === 'none' ? 'flex' : 'none';
+    };
+}
+if (twitchChatSend) {
+    twitchChatSend.onclick = sendMessage;
+}
+if (twitchChatInput) {
+    twitchChatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+}
+function sendMessage() {
+    const text = twitchChatInput.value.trim();
+    if (!text) return;
+    addMessage(text, true);
+    twitchChatInput.value = '';
+    twitchChatStickers.style.display = 'none';
+    // Здесь можно добавить отправку на сервер/вебсокет для live-режима
+}
+function addMessage(text, self = false) {
+    const msg = document.createElement('div');
+    msg.className = 'twitch-chat-message' + (self ? ' self' : '');
+    msg.textContent = text;
+    twitchChatMessages.appendChild(msg);
+    twitchChatMessages.scrollTop = twitchChatMessages.scrollHeight;
 } 
