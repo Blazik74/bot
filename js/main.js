@@ -363,7 +363,7 @@ class App {
         const path = window.location.pathname;
         if (path === '/profile') this.showPage('account');
         else if (path === '/profile/settings') this.showPage('settings');
-        else if (path === '/profile/donate') this.showPage('donate');
+        else if (path === '/profile/donate' || path === '/donate') this.showPage('donate');
         else if (path === '/profile/twitch') this.showPage('twitchProfile');
         else this.showPage('main');
         this.checkTwitchCallback();
@@ -464,7 +464,7 @@ class App {
             const path = window.location.pathname;
             if (path === '/profile') this.showPage('account');
             else if (path === '/profile/settings') this.showPage('settings');
-            else if (path === '/profile/donate') this.showPage('donate');
+            else if (path === '/profile/donate' || path === '/donate') this.showPage('donate');
             else if (path === '/profile/twitch') this.showPage('twitchProfile');
             else this.showPage('main');
         });
