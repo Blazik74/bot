@@ -4,6 +4,7 @@ const path = require('path');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
+const pgSession = require('connect-pg-simple')(session);
 const app = express();
 
 // Получение переменных из process.env
@@ -33,11 +34,16 @@ const pool = new Pool({
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(session({
+    store: new pgSession({
+        pool: pool,
+        tableName: 'session'
+    }),
     secret: process.env.SESSION_SECRET || 'arness-secret-key-2024',
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
