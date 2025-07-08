@@ -570,47 +570,57 @@ document.addEventListener('DOMContentLoaded', () => {
         backToAccountBtn.addEventListener('click', showAccountPage);
     }
     async function loadTwitchProfile() {
-        // Показать ник
+        // Получаем пользователя
         const user = window.app?.authManager?.getCurrentUser?.();
         if (!user || !user.twitchUsername) {
-            twitchProfileInfo.textContent = 'Twitch не подключён.';
-            twitchSubscriptionsList.textContent = '';
-            twitchLiveStreams.textContent = '';
+            twitchProfileInfo.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
+            twitchSubscriptionsList.innerHTML = '';
+            twitchLiveStreams.innerHTML = '';
+            twitchPlayerContainer.innerHTML = '';
             return;
         }
-        twitchProfileInfo.innerHTML = `<b>Ник:</b> ${user.twitchUsername}`;
-        twitchSubscriptionsList.textContent = 'Загрузка подписок...';
-        twitchLiveStreams.textContent = 'Загрузка стримов...';
+        // Красивый вывод ника и аватара
+        twitchProfileInfo.innerHTML = `
+            <div class="twitch-profile-header">
+                <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-70x70.png" onerror="this.style.display='none'" alt="Twitch Avatar">
+                <div class="twitch-nick-block">
+                    <span class="twitch-nick">${user.twitchUsername}</span>
+                </div>
+            </div>
+        `;
+        twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
+        twitchLiveStreams.innerHTML = '<div class="twitch-loading">Загрузка стримов...</div>';
         twitchPlayerContainer.innerHTML = '';
         try {
-            const resp = await fetch('/api/twitch/subscriptions');
+            const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка Twitch API');
             const data = await resp.json();
             // Подписки
             if (data.subscriptions && data.subscriptions.length > 0) {
                 twitchSubscriptionsList.innerHTML = data.subscriptions.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <span>${sub.to_name}</span>
+                        <img class="twitch-sub-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${sub.to_id}-profile_image-50x50.png" onerror="this.style.display='none'">
+                        <span class="twitch-sub-name">${sub.to_name}</span>
                     </div>`
                 ).join('');
             } else {
-                twitchSubscriptionsList.textContent = 'Нет подписок.';
+                twitchSubscriptionsList.innerHTML = '<div class="twitch-empty">Нет подписок.</div>';
             }
             // Стримы онлайн
             if (data.live && data.live.length > 0) {
                 twitchLiveStreams.innerHTML = data.live.map(stream =>
                     `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
-                        <b style="color:#a78bfa;">●</b> <span style="font-weight:600;">${stream.user_name}</span>
-                        <span style="margin-left:8px; color:#aaa;">${stream.title}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}" style="margin-left:16px;">Смотреть</button>
+                        <b class="twitch-live-dot">●</b> <span class="twitch-live-nick">${stream.user_name}</span>
+                        <span class="twitch-live-title">${stream.title}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}">Смотреть</button>
                     </div>`
                 ).join('');
             } else {
-                twitchLiveStreams.textContent = 'Нет стримов онлайн.';
+                twitchLiveStreams.innerHTML = '<div class="twitch-empty">Нет стримов онлайн.</div>';
             }
         } catch (e) {
-            twitchSubscriptionsList.textContent = 'Ошибка загрузки.';
-            twitchLiveStreams.textContent = 'Ошибка загрузки.';
+            twitchSubscriptionsList.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
+            twitchLiveStreams.innerHTML = '<div class="twitch-error">Ошибка загрузки стримов.</div>';
         }
     }
     // Twitch-плеер: обработчик кнопок "Смотреть"
