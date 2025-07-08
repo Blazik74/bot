@@ -1985,4 +1985,159 @@ body[style*="overflow: hidden"] {
         max-width: 90vw;
         max-height: 40vh;
     }
+}
+
+/* --- Twitch Profile Custom Styles --- */
+.twitch-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 18px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 18px 24px;
+    box-shadow: 0 2px 16px var(--shadow-color);
+}
+.twitch-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: #18181c;
+    object-fit: cover;
+    box-shadow: 0 0 12px #a78bfa44;
+}
+.twitch-nick-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.twitch-nick {
+    font-size: 2.1em;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-shadow: 0 2px 12px #a78bfa33;
+}
+.twitch-profile-empty {
+    color: var(--secondary-text);
+    font-size: 1.2em;
+    text-align: center;
+    margin: 32px 0;
+}
+.twitch-loading {
+    color: var(--accent);
+    font-size: 1.1em;
+    text-align: center;
+    margin: 18px 0;
+}
+.twitch-error {
+    color: var(--error);
+    font-size: 1.1em;
+    text-align: center;
+    margin: 18px 0;
+}
+.twitch-empty {
+    color: var(--secondary-text);
+    font-size: 1.1em;
+    text-align: center;
+    margin: 18px 0;
+}
+.twitch-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--secondary-bg);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 6px var(--shadow-color);
+    transition: background 0.2s;
+}
+.twitch-sub-item:hover {
+    background: #2d1e4d;
+}
+.twitch-sub-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #222;
+    object-fit: cover;
+    border: 2px solid #a78bfa44;
+}
+.twitch-sub-name {
+    font-size: 1.1em;
+    color: var(--primary-text);
+    font-weight: 500;
+}
+.twitch-live-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a0b2e;
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 8px #a78bfa22;
+    transition: background 0.2s;
+}
+.twitch-live-item:hover {
+    background: #2d1e4d;
+}
+.twitch-live-dot {
+    color: #a78bfa;
+    font-size: 1.3em;
+    margin-right: 2px;
+}
+.twitch-live-nick {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 1.1em;
+}
+.twitch-live-title {
+    margin-left: 8px;
+    color: #aaa;
+    font-size: 1em;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.btn-watch-stream {
+    margin-left: auto;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-watch-stream:hover {
+    background: var(--accent-dark);
+}
+@media (max-width: 600px) {
+    .twitch-profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 8px;
+    }
+    .twitch-avatar {
+        width: 54px;
+        height: 54px;
+    }
+    .twitch-nick {
+        font-size: 1.3em;
+    }
+    .twitch-sub-item, .twitch-live-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 8px;
+    }
+    .twitch-sub-avatar {
+        width: 30px;
+        height: 30px;
+    }
 } 
