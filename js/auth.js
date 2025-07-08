@@ -447,6 +447,20 @@ class AuthManager {
             element.style.display = 'none';
         });
     }
+
+    checkTwitchCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const twitchSuccess = urlParams.get('twitch_success');
+        if (twitchSuccess && this.authManager) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Обновляем профиль (перезагружаем данные)
+            this.authManager.checkServerSession();
+            this.authManager.checkAuth();
+            this.authManager.updateProfileDisplay();
+            this.showPage('account');
+            this.showNotification('Twitch аккаунт успешно привязан!', 'success');
+        }
+    }
 }
 
 // Экспорт для использования в других модулях
