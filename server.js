@@ -894,6 +894,11 @@ app.post('/api/twitch/logout', async (req, res) => {
     }
 });
 
+// SPA fallback: для всех неизвестных путей отдаём index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Инициализация и запуск сервера
 async function startServer() {
     try {
