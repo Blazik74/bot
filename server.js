@@ -839,6 +839,27 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
     }
 });
 
+// API для отвязки Twitch-аккаунта
+app.post('/api/twitch/logout', async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Не авторизован' });
+        }
+        // Очищаем Twitch-поля в БД
+        await pool.query('UPDATE users SET twitch_id = NULL, twitch_username = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1', [req.session.userId]);
+        // Очищаем Twitch-поля в сессии
+        if (req.session.user) {
+            delete req.session.user.twitchId;
+            delete req.session.user.twitchUsername;
+        }
+        delete req.session.twitchUserAccessToken;
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Ошибка отвязки Twitch:', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
 // Инициализация и запуск сервера
 async function startServer() {
     try {
