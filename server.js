@@ -626,7 +626,7 @@ app.get('/auth/twitch/callback', async (req, res) => {
     const { code } = req.query;
     if (!code) return res.redirect('/accountPage?error=twitch_no_code');
     try {
-        // Получаем access_token
+        // Получаем user access_token
         const tokenResp = await axios.post('https://id.twitch.tv/oauth2/token', null, {
             params: {
                 client_id: TWITCH_CLIENT_ID,
@@ -658,6 +658,8 @@ app.get('/auth/twitch/callback', async (req, res) => {
             req.session.user.twitchId = twitchUser.id;
             req.session.user.twitchUsername = twitchUser.login;
         }
+        // Сохраняем user access_token в сессии
+        req.session.twitchUserAccessToken = access_token;
         // Перенаправляем обратно в профиль
         res.redirect('/?twitch_success=true');
     } catch (error) {
@@ -789,48 +791,31 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
         if (!req.session.user || !req.session.user.twitchId) {
             return res.status(401).json({ error: 'Нет Twitch-профиля' });
         }
+        // Используем user access_token из сессии
+        const userAccessToken = req.session.twitchUserAccessToken;
+        if (!userAccessToken) {
+            return res.status(401).json({ error: 'Нет Twitch access token. Переподключите Twitch.' });
+        }
         const twitchId = req.session.user.twitchId;
-        const twitchUsername = req.session.user.twitchUsername;
-        const token = await getTwitchAppToken();
         let follows = [];
         let liveStreams = [];
-        // Пробуем старый endpoint
-        try {
-            const followsResp = await axios.get(`${TWITCH_API_BASE}/users/follows`, {
-                headers: {
-                    'Client-ID': TWITCH_CLIENT_ID,
-                    'Authorization': `Bearer ${token}`
-                },
-                params: {
-                    from_id: twitchId,
-                    first: 100
-                }
-            });
-            follows = followsResp.data.data;
-        } catch (err) {
-            // Если 410 Gone, используем новый Helix endpoint
-            if (err.response && err.response.status === 410) {
-                const followsResp = await axios.get(`${TWITCH_API_BASE}/channels/followed`, {
-                    headers: {
-                        'Client-ID': TWITCH_CLIENT_ID,
-                        'Authorization': `Bearer ${token}`
-                    },
-                    params: {
-                        user_id: twitchId,
-                        first: 100
-                    }
-                });
-                // Новый формат: data -> [{broadcaster_id, broadcaster_name, broadcaster_login, followed_at}]
-                follows = followsResp.data.data.map(f => ({
-                    to_id: f.broadcaster_id,
-                    to_name: f.broadcaster_name,
-                    to_login: f.broadcaster_login,
-                    followed_at: f.followed_at
-                }));
-            } else {
-                throw err;
+        // Пробуем Helix endpoint /channels/followed
+        const followsResp = await axios.get(`${TWITCH_API_BASE}/channels/followed`, {
+            headers: {
+                'Client-ID': TWITCH_CLIENT_ID,
+                'Authorization': `Bearer ${userAccessToken}`
+            },
+            params: {
+                user_id: twitchId,
+                first: 100
             }
-        }
+        });
+        follows = followsResp.data.data.map(f => ({
+            to_id: f.broadcaster_id,
+            to_name: f.broadcaster_name,
+            to_login: f.broadcaster_login,
+            followed_at: f.followed_at
+        }));
         // Получаем инфу о стримах для всех followings
         const toIds = follows.map(f => f.to_id);
         if (toIds.length > 0) {
@@ -838,7 +823,7 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
             const streamsResp = await axios.get(`${TWITCH_API_BASE}/streams`, {
                 headers: {
                     'Client-ID': TWITCH_CLIENT_ID,
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${userAccessToken}`
                 },
                 params: { user_id: toIds }
             });
