@@ -480,10 +480,153 @@ function showPage(pageName) {
 // Инициализация приложения при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new App();
-});
 
-// Экспорт для использования в других модулях
-window.App = App;
+    // --- Аватарка: модальное окно ---
+    const avatar = document.getElementById('accountAvatar');
+    const modal = document.getElementById('avatarModal');
+    const modalImg = document.getElementById('avatarModalImg');
+    const modalClose = document.getElementById('avatarModalClose');
+    const modalBackdrop = document.getElementById('avatarModalBackdrop');
+    const modalDownload = document.getElementById('avatarModalDownload');
+    const modalCopy = document.getElementById('avatarModalCopy');
+    const modalCopied = document.getElementById('avatarModalCopied');
+
+    function openAvatarModal() {
+        if (!avatar || !modalImg) return;
+        modalImg.src = avatar.src;
+        modal.style.display = 'flex';
+    }
+    function closeAvatarModal() {
+        modal.style.display = 'none';
+        modalImg.src = '';
+        modalCopied.style.display = 'none';
+    }
+    if (avatar) {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', openAvatarModal);
+    }
+    if (modalClose) modalClose.addEventListener('click', closeAvatarModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeAvatarModal);
+    // Закрытие по Esc
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'flex' && e.key === 'Escape') closeAvatarModal();
+    });
+    // Скачать аватарку
+    if (modalDownload) {
+        modalDownload.addEventListener('click', () => {
+            const url = modalImg.src;
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'avatar.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+    }
+    // Копировать ссылку
+    if (modalCopy) {
+        modalCopy.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(modalImg.src);
+                modalCopied.style.display = 'block';
+                setTimeout(() => { modalCopied.style.display = 'none'; }, 1500);
+            } catch (e) {
+                modalCopied.textContent = 'Ошибка копирования!';
+                modalCopied.style.display = 'block';
+                setTimeout(() => { modalCopied.style.display = 'none'; modalCopied.textContent = 'Ссылка скопирована!'; }, 2000);
+            }
+        });
+    }
+
+    // --- Twitch профиль ---
+    const twitchUsernameEl = document.getElementById('accountTwitchUsername');
+    const twitchProfilePage = document.getElementById('twitchProfilePage');
+    const accountPage = document.getElementById('accountPage');
+    const backToAccountBtn = document.getElementById('backToAccountBtn');
+    const twitchProfileInfo = document.getElementById('twitchProfileInfo');
+    const twitchSubscriptionsList = document.getElementById('twitchSubscriptionsList');
+    const twitchLiveStreams = document.getElementById('twitchLiveStreams');
+    const twitchPlayerContainer = document.getElementById('twitchPlayerContainer');
+
+    function showTwitchProfilePage() {
+        if (accountPage) accountPage.style.display = 'none';
+        if (twitchProfilePage) twitchProfilePage.style.display = 'block';
+        loadTwitchProfile();
+    }
+    function showAccountPage() {
+        if (twitchProfilePage) twitchProfilePage.style.display = 'none';
+        if (accountPage) accountPage.style.display = 'block';
+    }
+    if (twitchUsernameEl) {
+        twitchUsernameEl.style.cursor = 'pointer';
+        twitchUsernameEl.style.textDecoration = 'underline';
+        twitchUsernameEl.addEventListener('click', () => {
+            if (twitchUsernameEl.textContent && twitchUsernameEl.textContent !== 'Не подключен') {
+                showTwitchProfilePage();
+            }
+        });
+    }
+    if (backToAccountBtn) {
+        backToAccountBtn.addEventListener('click', showAccountPage);
+    }
+    async function loadTwitchProfile() {
+        // Показать ник
+        const user = window.app?.authManager?.getCurrentUser?.();
+        if (!user || !user.twitchUsername) {
+            twitchProfileInfo.textContent = 'Twitch не подключён.';
+            twitchSubscriptionsList.textContent = '';
+            twitchLiveStreams.textContent = '';
+            return;
+        }
+        twitchProfileInfo.innerHTML = `<b>Ник:</b> ${user.twitchUsername}`;
+        twitchSubscriptionsList.textContent = 'Загрузка подписок...';
+        twitchLiveStreams.textContent = 'Загрузка стримов...';
+        twitchPlayerContainer.innerHTML = '';
+        try {
+            const resp = await fetch('/api/twitch/subscriptions');
+            if (!resp.ok) throw new Error('Ошибка Twitch API');
+            const data = await resp.json();
+            // Подписки
+            if (data.subscriptions && data.subscriptions.length > 0) {
+                twitchSubscriptionsList.innerHTML = data.subscriptions.map(sub =>
+                    `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
+                        <span>${sub.to_name}</span>
+                    </div>`
+                ).join('');
+            } else {
+                twitchSubscriptionsList.textContent = 'Нет подписок.';
+            }
+            // Стримы онлайн
+            if (data.live && data.live.length > 0) {
+                twitchLiveStreams.innerHTML = data.live.map(stream =>
+                    `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
+                        <b style="color:#a78bfa;">●</b> <span style="font-weight:600;">${stream.user_name}</span>
+                        <span style="margin-left:8px; color:#aaa;">${stream.title}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}" style="margin-left:16px;">Смотреть</button>
+                    </div>`
+                ).join('');
+            } else {
+                twitchLiveStreams.textContent = 'Нет стримов онлайн.';
+            }
+        } catch (e) {
+            twitchSubscriptionsList.textContent = 'Ошибка загрузки.';
+            twitchLiveStreams.textContent = 'Ошибка загрузки.';
+        }
+    }
+    // Twitch-плеер: обработчик кнопок "Смотреть"
+    if (twitchLiveStreams) {
+        twitchLiveStreams.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-watch-stream');
+            if (btn) {
+                const channel = btn.getAttribute('data-twitch-name');
+                if (channel) {
+                    twitchPlayerContainer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}" height="420" width="720" allowfullscreen frameborder="0"></iframe>`;
+                    window.scrollTo({ top: twitchPlayerContainer.offsetTop - 40, behavior: 'smooth' });
+                }
+            }
+        });
+    }
+});
 
 // --- DONATE PAGE: ЮMoney integration ---
 document.addEventListener('DOMContentLoaded', function() {
