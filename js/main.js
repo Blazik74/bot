@@ -476,17 +476,25 @@ class App {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
             return;
         }
-        // Верх: аватарка и ник
+        // Блок профиля пользователя Twitch
         this.pages.twitchProfile.innerHTML = `
-            <div class="twitch-profile-center">
-                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
-                <div class="twitch-nick" id="twitchProfileNick">${user.twitchUsername}</div>
-                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
+            <div class="twitch-profile-user-block" style="display:flex;align-items:center;gap:22px;margin-bottom:24px;">
+                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar" style="cursor:pointer;">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <a href="https://twitch.tv/${user.twitchUsername}" target="_blank" style="font-size:2.1em;font-weight:800;color:#a78bfa;text-decoration:none;line-height:1.1;">${user.twitchUsername}</a>
+                    <span style="color:#888;font-size:1.1em;">Профиль Twitch</span>
+                </div>
+                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-left:auto;">Выйти из Twitch</button>
             </div>
         `;
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = this.logoutTwitch.bind(this);
+            // Клик по аватарке — переход на Twitch
+            const twitchProfileAvatar = document.getElementById('twitchProfileAvatar');
+            if (twitchProfileAvatar) {
+                twitchProfileAvatar.onclick = () => window.open(`https://twitch.tv/${user.twitchUsername}`, '_blank');
+            }
         }, 0);
         try {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
@@ -500,10 +508,10 @@ class App {
             if (online.length > 0) {
                 html += '<div class="twitch-section-title" style="font-size:1.5em;font-weight:800;color:#a78bfa;letter-spacing:1px;margin:18px 0 10px 0;text-shadow:0 2px 12px #a78bfa33;">Онлайн</div>';
                 html += online.map(sub =>
-                    `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;">${sub.to_name}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                    `<div class="twitch-sub-item twitch-sub-online" style="display:flex;align-items:center;gap:18px;" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_login}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'" style="cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">
+                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" style="margin-left:auto;" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
             }
@@ -511,9 +519,9 @@ class App {
                 if (online.length > 0) html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 else html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 html += offline.map(sub =>
-                    `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;">${sub.to_name}</span>
+                    `<div class="twitch-sub-item" style="display:flex;align-items:center;gap:18px;" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_login}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'" style="cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">
+                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
                     </div>`
                 ).join('');
             }
@@ -649,17 +657,25 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Верх: аватарка и ник
+        // Блок профиля пользователя Twitch
         twitchProfileInfo.innerHTML = `
-            <div class="twitch-profile-center">
-                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
-                <div class="twitch-nick" id="twitchProfileNick">${user.twitchUsername}</div>
-                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
+            <div class="twitch-profile-user-block" style="display:flex;align-items:center;gap:22px;margin-bottom:24px;">
+                <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar" style="cursor:pointer;">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <a href="https://twitch.tv/${user.twitchUsername}" target="_blank" style="font-size:2.1em;font-weight:800;color:#a78bfa;text-decoration:none;line-height:1.1;">${user.twitchUsername}</a>
+                    <span style="color:#888;font-size:1.1em;">Профиль Twitch</span>
+                </div>
+                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-left:auto;">Выйти из Twitch</button>
             </div>
         `;
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = logoutTwitch;
+            // Клик по аватарке — переход на Twitch
+            const twitchProfileAvatar = document.getElementById('twitchProfileAvatar');
+            if (twitchProfileAvatar) {
+                twitchProfileAvatar.onclick = () => window.open(`https://twitch.tv/${user.twitchUsername}`, '_blank');
+            }
         }, 0);
         twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
         twitchPlayerContainer.innerHTML = '';
@@ -675,10 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (online.length > 0) {
                 html += '<div class="twitch-section-title" style="font-size:1.5em;font-weight:800;color:#a78bfa;letter-spacing:1px;margin:18px 0 10px 0;text-shadow:0 2px 12px #a78bfa33;">Онлайн</div>';
                 html += online.map(sub =>
-                    `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;">${sub.to_name}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                    `<div class="twitch-sub-item twitch-sub-online" style="display:flex;align-items:center;gap:18px;" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_login}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'" style="cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">
+                        <span class="twitch-sub-name" style="font-weight:600;color:#fff;font-size:1.1em;cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" style="margin-left:auto;" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
             }
@@ -686,9 +702,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (online.length > 0) html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 else html += '<div class="twitch-section-title" style="font-size:1.2em;font-weight:700;color:#888;margin:18px 0 10px 0;">Офлайн</div>';
                 html += offline.map(sub =>
-                    `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
-                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
-                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;">${sub.to_name}</span>
+                    `<div class="twitch-sub-item" style="display:flex;align-items:center;gap:18px;" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_login}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'" style="cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">
+                        <span class="twitch-sub-name" style="font-weight:600;color:#aaa;font-size:1.1em;cursor:pointer;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
                     </div>`
                 ).join('');
             }
