@@ -616,7 +616,7 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
 // Endpoint для старта Twitch OAuth
 app.get('/auth/twitch', (req, res) => {
-    const scope = 'user:read:email';
+    const scope = 'user:read:email user:read:follows';
     const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(TWITCH_REDIRECT_URI)}&response_type=code&scope=${scope}`;
     res.redirect(twitchAuthUrl);
 });
