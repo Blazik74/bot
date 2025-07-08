@@ -296,7 +296,6 @@ class App {
 
     // Показать страницу
     showPage(pageName) {
-        // Список всех возможных страниц
         const allPages = [
             'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage', 'twitchProfilePage'
         ];
@@ -304,7 +303,6 @@ class App {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
         });
-        // Показываем нужную страницу
         let pageEl = null;
         if (this.pages && this.pages[pageName]) {
             pageEl = this.pages[pageName];
@@ -332,6 +330,10 @@ class App {
             if (window.location.pathname !== url) {
                 window.history.pushState({page: pageName}, '', url);
             }
+            // Если Twitch-профиль — подгружаем данные
+            if (pageName === 'twitchProfile') {
+                this.loadTwitchProfile();
+            }
         }
     }
 
@@ -353,30 +355,24 @@ class App {
 
     // Запуск приложения
     async start() {
-        // Сброс всех страниц
         ['mainPage','loginPage','registerPage','accountPage','donatePage','twitchProfilePage'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
         });
-        // SPA-роутинг: открытие нужной страницы по URL
         this.setupSpaRouting();
         const path = window.location.pathname;
         if (path === '/profile') this.showPage('account');
         else if (path === '/profile/settings') this.showPage('settings');
         else if (path === '/profile/donate') this.showPage('donate');
-        else if (path === '/profile/twitch') this.showTwitchProfilePage();
+        else if (path === '/profile/twitch') this.showPage('twitchProfile');
         else this.showPage('main');
-        // Проверяем Twitch callback
         this.checkTwitchCallback();
-        // Проверяем авторизацию
         if (!this.authManager) this.authManager = new AuthManager();
         await this.authManager.loadUserFromStorage();
         this.authManager.checkAuth();
-        // Применяем настройки
         if (!this.settingsManager) this.settingsManager = new SettingsManager();
         await this.settingsManager.loadSettings();
         this.settingsManager.applySettings();
-        // Проверяем Discord callback
         this.checkDiscordCallback();
     }
 
@@ -469,19 +465,13 @@ class App {
             if (path === '/profile') this.showPage('account');
             else if (path === '/profile/settings') this.showPage('settings');
             else if (path === '/profile/donate') this.showPage('donate');
-            else if (path === '/profile/twitch') this.showTwitchProfilePage();
+            else if (path === '/profile/twitch') this.showPage('twitchProfile');
             else this.showPage('main');
         });
     }
 
     function showTwitchProfilePage() {
-        if (this.pages.account) this.pages.account.style.display = 'none';
-        if (this.pages.twitchProfile) this.pages.twitchProfile.style.display = 'block';
-        this.loadTwitchProfile();
-        // Меняем URL
-        if (window.location.pathname !== '/profile/twitch') {
-            window.history.pushState({page: 'twitch'}, '', '/profile/twitch');
-        }
+        showPage('twitchProfile');
     }
 
     async loadTwitchProfile() {
@@ -630,13 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const twitchPlayerContainer = document.getElementById('twitchPlayerContainer');
 
     function showTwitchProfilePage() {
-        if (accountPage) accountPage.style.display = 'none';
-        if (twitchProfilePage) twitchProfilePage.style.display = 'block';
-        loadTwitchProfile();
-        // Меняем URL
-        if (window.location.pathname !== '/profile/twitch') {
-            window.history.pushState({page: 'twitch'}, '', '/profile/twitch');
-        }
+        showPage('twitchProfile');
     }
     function showAccountPage() {
         if (twitchProfilePage) twitchProfilePage.style.display = 'none';
