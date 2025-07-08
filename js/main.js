@@ -493,27 +493,35 @@ class App {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка Twitch API');
             const data = await resp.json();
-            if (data.subscriptions && data.subscriptions.length > 0) {
-                this.pages.twitchProfile.innerHTML = data.subscriptions.map(sub =>
+            // Разделяем онлайн и офлайн
+            const liveIds = new Set((data.live||[]).map(s => s.user_id));
+            const online = (data.subscriptions||[]).filter(s => liveIds.has(s.to_id));
+            const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
+            let html = '';
+            if (online.length > 0) {
+                html += '<div class="twitch-section-title">Онлайн</div>';
+                html += online.map(sub =>
+                    `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
+                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                    </div>`
+                ).join('');
+            }
+            if (offline.length > 0) {
+                if (online.length > 0) html += '<div class="twitch-section-title" style="margin-top:18px;">Офлайн</div>';
+                html += offline.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
                         <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
-            } else {
-                this.pages.twitchProfile.innerHTML = '<div class="twitch-empty">Нет подписок.</div>';
             }
-            if (data.live && data.live.length > 0) {
-                this.pages.twitchProfile.innerHTML = data.live.map(stream =>
-                    `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
-                        <b class="twitch-live-dot">●</b> <span class="twitch-live-nick">${stream.user_name}</span>
-                        <span class="twitch-live-title">${stream.title}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}">Смотреть</button>
-                    </div>`
-                ).join('');
-            } else {
-                this.pages.twitchProfile.innerHTML = '<div class="twitch-empty">Нет стримов онлайн.</div>';
+            if (!online.length && !offline.length) {
+                html = '<div class="twitch-empty">Нет подписок.</div>';
             }
+            this.pages.twitchProfile.innerHTML = html;
         } catch (e) {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
         }
@@ -651,52 +659,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-top:22px;">Выйти из Twitch</button>
             </div>
         `;
-        // Назначаем обработчик кнопке выхода из Twitch
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = logoutTwitch;
         }, 0);
         twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
-        twitchLiveStreams.innerHTML = '<div class="twitch-loading">Загрузка стримов...</div>';
         twitchPlayerContainer.innerHTML = '';
         try {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка Twitch API');
             const data = await resp.json();
-            if (data.subscriptions && data.subscriptions.length > 0) {
-                twitchSubscriptionsList.innerHTML = data.subscriptions.map(sub =>
+            // Разделяем онлайн и офлайн
+            const liveIds = new Set((data.live||[]).map(s => s.user_id));
+            const online = (data.subscriptions||[]).filter(s => liveIds.has(s.to_id));
+            const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
+            let html = '';
+            if (online.length > 0) {
+                html += '<div class="twitch-section-title">Онлайн</div>';
+                html += online.map(sub =>
+                    `<div class="twitch-sub-item twitch-sub-online" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
+                        <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
+                        <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
+                    </div>`
+                ).join('');
+            }
+            if (offline.length > 0) {
+                if (online.length > 0) html += '<div class="twitch-section-title" style="margin-top:18px;">Офлайн</div>';
+                html += offline.map(sub =>
                     `<div class="twitch-sub-item" data-twitch-id="${sub.to_id}" data-twitch-name="${sub.to_name}">
                         <img class="twitch-sub-avatar" src="${sub.avatar_url || ''}" onerror="this.style.display='none'">
                         <span class="twitch-sub-name" style="cursor:pointer;text-decoration:underline;" onclick="window.open('${sub.twitch_url}','_blank')">${sub.to_name}</span>
+                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${sub.to_login}">Смотреть</button>
                     </div>`
                 ).join('');
-            } else {
-                twitchSubscriptionsList.innerHTML = '<div class="twitch-empty">Нет подписок.</div>';
             }
-            if (data.live && data.live.length > 0) {
-                twitchLiveStreams.innerHTML = data.live.map(stream =>
-                    `<div class="twitch-live-item" data-twitch-name="${stream.user_name}">
-                        <b class="twitch-live-dot">●</b> <span class="twitch-live-nick">${stream.user_name}</span>
-                        <span class="twitch-live-title">${stream.title}</span>
-                        <button class="btn btn-secondary btn-watch-stream" data-twitch-name="${stream.user_name}">Смотреть</button>
-                    </div>`
-                ).join('');
-            } else {
-                twitchLiveStreams.innerHTML = '<div class="twitch-empty">Нет стримов онлайн.</div>';
+            if (!online.length && !offline.length) {
+                html = '<div class="twitch-empty">Нет подписок.</div>';
             }
+            twitchSubscriptionsList.innerHTML = html;
         } catch (e) {
             twitchSubscriptionsList.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
-            twitchLiveStreams.innerHTML = '<div class="twitch-error">Ошибка загрузки стримов.</div>';
         }
     }
-    // Twitch-плеер: обработчик кнопок "Смотреть"
-    if (twitchLiveStreams) {
-        twitchLiveStreams.addEventListener('click', function(e) {
+    // Twitch-плеер: обработчик кнопок "Смотреть" для всех подписок
+    if (twitchSubscriptionsList) {
+        twitchSubscriptionsList.addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-watch-stream');
             if (btn) {
                 const channel = btn.getAttribute('data-twitch-name');
                 if (channel) {
-                    twitchPlayerContainer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}" height="420" width="720" allowfullscreen frameborder="0"></iframe>`;
+                    twitchPlayerContainer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}" height="420" width="720" allowfullscreen frameborder="0" style="display:block;margin:0 auto;"></iframe>`;
                     window.scrollTo({ top: twitchPlayerContainer.offsetTop - 40, behavior: 'smooth' });
                 }
             }
