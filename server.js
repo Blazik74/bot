@@ -195,6 +195,26 @@ async function createDefaultAdmin() {
     }
 }
 
+// Автоматическое создание таблицы session для connect-pg-simple
+async function ensureSessionTable() {
+    try {
+        const client = await pool.connect();
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS "session" (
+                "sid" varchar NOT NULL COLLATE "default",
+                "sess" json NOT NULL,
+                "expire" timestamp(6) NOT NULL
+            ) WITH (OIDS=FALSE);
+            ALTER TABLE "session" ADD CONSTRAINT IF NOT EXISTS "session_pkey" PRIMARY KEY ("sid");
+            CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
+        `);
+        client.release();
+        console.log('Таблица session для сессий готова');
+    } catch (err) {
+        console.error('Ошибка создания таблицы session:', err);
+    }
+}
+
 // Главная страница
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -803,16 +823,13 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
 // Инициализация и запуск сервера
 async function startServer() {
     try {
-        // Инициализируем БД, но не прерываем запуск сервера при ошибках
         await initDatabase().catch(error => {
             console.error('Предупреждение: Ошибка инициализации БД:', error.message);
             console.log('Сервер продолжит работу, но некоторые функции могут быть недоступны');
         });
-        
-        // После инициализации базы данных создаём пользователя admin/0001, если его нет
         await ensurePasswordHashColumn();
         await createDefaultAdmin();
-        
+        await ensureSessionTable();
         app.listen(process.env.PORT || 3000, () => {
             console.log(`🚀 Сервер запущен на http://localhost:${process.env.PORT || 3000}`);
             console.log(`📱 Discord Client ID: ${CLIENT_ID}`);
