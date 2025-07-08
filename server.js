@@ -799,7 +799,7 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
         const twitchId = req.session.user.twitchId;
         let follows = [];
         let liveStreams = [];
-        // Пробуем Helix endpoint /channels/followed
+        // Получаем список фолловингов
         const followsResp = await axios.get(`${TWITCH_API_BASE}/channels/followed`, {
             headers: {
                 'Client-ID': TWITCH_CLIENT_ID,
@@ -829,8 +829,42 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
             });
             liveStreams = streamsResp.data.data;
         }
+        // Получаем инфу о каналах (users) для аватарок
+        let usersInfo = [];
+        if (toIds.length > 0) {
+            // Twitch API ограничивает до 100 id за раз
+            const usersResp = await axios.get(`${TWITCH_API_BASE}/users`, {
+                headers: {
+                    'Client-ID': TWITCH_CLIENT_ID,
+                    'Authorization': `Bearer ${userAccessToken}`
+                },
+                params: { id: toIds }
+            });
+            usersInfo = usersResp.data.data;
+        }
+        // Мапа id -> userInfo
+        const userInfoMap = {};
+        usersInfo.forEach(u => { userInfoMap[u.id] = u; });
+        // Формируем подписки с аватарками и ссылками
+        let subscriptions = follows.map(f => {
+            const user = userInfoMap[f.to_id];
+            return {
+                to_id: f.to_id,
+                to_name: f.to_name,
+                to_login: f.to_login,
+                followed_at: f.followed_at,
+                avatar_url: user ? user.profile_image_url : null,
+                twitch_url: user ? `https://twitch.tv/${user.login}` : null
+            };
+        });
+        // Сортируем: сначала онлайн, потом офлайн
+        const liveIds = new Set(liveStreams.map(s => s.user_id));
+        subscriptions = [
+            ...subscriptions.filter(s => liveIds.has(s.to_id)),
+            ...subscriptions.filter(s => !liveIds.has(s.to_id))
+        ];
         res.json({
-            subscriptions: follows,
+            subscriptions,
             live: liveStreams
         });
     } catch (error) {
