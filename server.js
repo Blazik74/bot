@@ -706,6 +706,73 @@ app.get('/agreement', (req, res) => {
   res.sendFile(path.join(__dirname, 'agreement.html'));
 });
 
+const TWITCH_API_BASE = 'https://api.twitch.tv/helix';
+let TWITCH_APP_TOKEN = null;
+
+// Получить app access token для Twitch API
+async function getTwitchAppToken() {
+    if (TWITCH_APP_TOKEN && TWITCH_APP_TOKEN.expires > Date.now()) {
+        return TWITCH_APP_TOKEN.token;
+    }
+    const resp = await axios.post('https://id.twitch.tv/oauth2/token', null, {
+        params: {
+            client_id: TWITCH_CLIENT_ID,
+            client_secret: TWITCH_CLIENT_SECRET,
+            grant_type: 'client_credentials'
+        }
+    });
+    TWITCH_APP_TOKEN = {
+        token: resp.data.access_token,
+        expires: Date.now() + (resp.data.expires_in - 60) * 1000
+    };
+    return TWITCH_APP_TOKEN.token;
+}
+
+// Получить список подписок и стримов пользователя Twitch
+app.get('/api/twitch/subscriptions', async (req, res) => {
+    try {
+        if (!req.session.user || !req.session.user.twitchId) {
+            return res.status(401).json({ error: 'Нет Twitch-профиля' });
+        }
+        const twitchId = req.session.user.twitchId;
+        const twitchUsername = req.session.user.twitchUsername;
+        const token = await getTwitchAppToken();
+        // Получаем список фолловингов (подписок)
+        const followsResp = await axios.get(`${TWITCH_API_BASE}/users/follows`, {
+            headers: {
+                'Client-ID': TWITCH_CLIENT_ID,
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                from_id: twitchId,
+                first: 100
+            }
+        });
+        const follows = followsResp.data.data;
+        // Получаем инфу о стримах для всех followings
+        const toIds = follows.map(f => f.to_id);
+        let liveStreams = [];
+        if (toIds.length > 0) {
+            // Twitch API ограничивает до 100 id за раз
+            const streamsResp = await axios.get(`${TWITCH_API_BASE}/streams`, {
+                headers: {
+                    'Client-ID': TWITCH_CLIENT_ID,
+                    'Authorization': `Bearer ${token}`
+                },
+                params: { user_id: toIds }
+            });
+            liveStreams = streamsResp.data.data;
+        }
+        res.json({
+            subscriptions: follows,
+            live: liveStreams
+        });
+    } catch (error) {
+        console.error('Ошибка Twitch API:', error.response?.data || error);
+        res.status(500).json({ error: 'Ошибка Twitch API', details: error.response?.data || error.message });
+    }
+});
+
 // Инициализация и запуск сервера
 async function startServer() {
     try {
