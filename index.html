@@ -424,6 +424,34 @@
       </div>
     </div>
 
+    <!-- Модальное окно для аватарки -->
+    <div id="avatarModal" class="avatar-modal" style="display:none;">
+        <div class="avatar-modal-backdrop" id="avatarModalBackdrop"></div>
+        <div class="avatar-modal-content">
+            <span class="avatar-modal-close" id="avatarModalClose">&times;</span>
+            <img id="avatarModalImg" src="" alt="Аватар пользователя" class="avatar-modal-img">
+            <div class="avatar-modal-actions">
+                <button id="avatarModalDownload" class="btn btn-secondary">Скачать</button>
+                <button id="avatarModalCopy" class="btn btn-secondary">Скопировать ссылку</button>
+            </div>
+            <div id="avatarModalCopied" class="avatar-modal-copied" style="display:none;">Ссылка скопирована!</div>
+        </div>
+    </div>
+
+    <!-- Страница Twitch профиля -->
+    <div class="twitch-profile-page" id="twitchProfilePage" style="display:none;">
+        <div class="twitch-profile-container">
+            <button class="btn btn-secondary" id="backToAccountBtn" style="margin-bottom:18px;">Назад к профилю</button>
+            <h2>Профиль Twitch</h2>
+            <div id="twitchProfileInfo"></div>
+            <h3>Подписки</h3>
+            <div id="twitchSubscriptionsList">Загрузка...</div>
+            <h3 style="margin-top:24px;">Стримы онлайн</h3>
+            <div id="twitchLiveStreams">Загрузка...</div>
+            <div id="twitchPlayerContainer" style="margin-top:32px;"></div>
+        </div>
+    </div>
+
     <!-- Подключение JavaScript файлов -->
     <script src="js/auth.js"></script>
     <script src="js/settings.js"></script>
