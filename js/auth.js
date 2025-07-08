@@ -19,13 +19,16 @@ class AuthManager {
             try {
                 this.currentUser = JSON.parse(savedUser);
                 this.isAuthenticated = true;
-                
                 // Проверяем сессию на сервере
                 await this.checkServerSession();
+                // Обновляем профиль после загрузки
+                this.updateProfileDisplay();
             } catch (error) {
                 console.error('Ошибка загрузки пользователя:', error);
                 localStorage.removeItem('arness_user');
             }
+        } else {
+            this.updateProfileDisplay();
         }
     }
 
@@ -34,19 +37,21 @@ class AuthManager {
         try {
             const response = await fetch('/api/auth/check');
             const data = await response.json();
-            
             if (data.authenticated) {
                 this.currentUser = data.user;
                 this.isAuthenticated = true;
                 this.saveUserToStorage(data.user);
+                this.updateProfileDisplay();
             } else {
                 // Сессия истекла
                 this.currentUser = null;
                 this.isAuthenticated = false;
                 this.removeUserFromStorage();
+                this.updateProfileDisplay();
             }
         } catch (error) {
             console.error('Ошибка проверки сессии:', error);
+            this.updateProfileDisplay();
         }
     }
 
@@ -126,6 +131,7 @@ class AuthManager {
             this.saveUserToStorage(user);
             this.showNotification('Успешный вход!', 'success');
             this.checkAuth();
+            this.updateProfileDisplay();
             showPage('main');
         } catch (error) {
             this.showNotification(error.message, 'error');
@@ -163,6 +169,7 @@ class AuthManager {
             this.saveUserToStorage(user);
             this.showNotification('Регистрация успешна! Добро пожаловать!', 'success');
             this.checkAuth();
+            this.updateProfileDisplay();
             showPage('main');
         } catch (error) {
             this.showNotification(error.message, 'error');
@@ -277,15 +284,13 @@ class AuthManager {
         try {
             // Здесь будет обмен кода на токен и получение данных пользователя
             const user = await this.exchangeDiscordCode(code);
-            
             this.currentUser = user;
             this.isAuthenticated = true;
             this.saveUserToStorage(user);
-            
             this.showNotification('Успешный вход через Discord!', 'success');
             this.checkAuth();
+            this.updateProfileDisplay();
             showPage('main');
-            
         } catch (error) {
             this.showNotification('Ошибка входа через Discord', 'error');
         }
