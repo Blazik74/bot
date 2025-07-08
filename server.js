@@ -205,7 +205,11 @@ async function ensureSessionTable() {
                 "sess" json NOT NULL,
                 "expire" timestamp(6) NOT NULL
             ) WITH (OIDS=FALSE);
+        `);
+        await client.query(`
             ALTER TABLE "session" ADD CONSTRAINT IF NOT EXISTS "session_pkey" PRIMARY KEY ("sid");
+        `);
+        await client.query(`
             CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
         `);
         client.release();
