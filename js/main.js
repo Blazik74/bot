@@ -534,8 +534,8 @@ class App {
                 btn.onclick = function(e) {
                     e.preventDefault();
                     const channel = btn.getAttribute('data-twitch-name');
-                    if (channel) this.openTwitchPlayer(channel);
-                }.bind(this);
+                    if (channel) openTwitchPlayer(channel);
+                };
             });
         } catch (e) {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
