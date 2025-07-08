@@ -199,6 +199,7 @@ async function createDefaultAdmin() {
 async function ensureSessionTable() {
     try {
         const client = await pool.connect();
+        // Пробуем создать таблицу session вручную, если её нет
         await client.query(`
             CREATE TABLE IF NOT EXISTS "session" (
                 "sid" varchar NOT NULL COLLATE "default",
@@ -207,15 +208,19 @@ async function ensureSessionTable() {
             ) WITH (OIDS=FALSE);
         `);
         await client.query(`
-            ALTER TABLE "session" ADD CONSTRAINT IF NOT EXISTS "session_pkey" PRIMARY KEY ("sid");
+            DO $$ BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'session_pkey') THEN
+                    ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid");
+                END IF;
+            END $$;
         `);
         await client.query(`
             CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
         `);
         client.release();
-        console.log('Таблица session для сессий готова');
+        console.log('Таблица session для сессий готова (через ensureSessionTable)');
     } catch (err) {
-        console.error('Ошибка создания таблицы session:', err);
+        console.error('Ошибка создания таблицы session (через ensureSessionTable):', err);
     }
 }
 
