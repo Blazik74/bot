@@ -578,19 +578,14 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Центрируем аватар, ник и кнопку назад
+        // Центрируем аватар и ник, БЕЗ кнопки назад
         twitchProfileInfo.innerHTML = `
             <div class="twitch-profile-center">
                 <img class="twitch-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar">
                 <div class="twitch-nick">${user.twitchUsername}</div>
-                <button id="backToAccountBtn" class="twitch-back-btn">Назад к профилю</button>
             </div>
         `;
-        // Назначаем обработчик кнопке назад
-        setTimeout(() => {
-            const backBtn = document.getElementById('backToAccountBtn');
-            if (backBtn) backBtn.onclick = showAccountPage;
-        }, 0);
+        // НЕ добавляем кнопку назад
         twitchSubscriptionsList.innerHTML = '<div class="twitch-loading">Загрузка подписок...</div>';
         twitchLiveStreams.innerHTML = '<div class="twitch-loading">Загрузка стримов...</div>';
         twitchPlayerContainer.innerHTML = '';
