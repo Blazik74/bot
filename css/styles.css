@@ -1,5 +1,4 @@
 :root {
-    /* Основные цвета */
     --dark-bg: #0a0a0a;
     --darker-bg: #050505;
     --accent: #6e42f5;
@@ -9,7 +8,6 @@
     --error: #ff4757;
     --success: #2ed573;
     
-    /* Переменные для тем */
     --primary-bg: var(--dark-bg);
     --secondary-bg: var(--darker-bg);
     --primary-text: var(--text);
@@ -18,17 +16,14 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
     --card-bg: rgba(20, 20, 20, 0.7);
     
-    /* Анимации */
     --transition-speed: 0.3s;
     --bounce-timing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Кастомные переменные для скроллбара */
     --scrollbar-bg: #18181c;
     --scrollbar-thumb: #7c4dff;
     --scrollbar-thumb-hover: #a084ff;
 }
 
-/* Темы */
 [data-theme="dark"] {
     --primary-bg: #0a0a0a;
     --secondary-bg: #050505;
@@ -91,7 +86,6 @@
     --accent-dark: #ffb347;
 }
 
-/* Общие стили */
 * {
     margin: 0;
     padding: 0;
@@ -111,7 +105,6 @@ body {
     padding-top: 70px;
 }
 
-/* Навигационная панель */
 .navbar {
     position: fixed;
     top: 0;
@@ -213,7 +206,6 @@ body {
     color: var(--primary-text);
 }
 
-/* Выпадающее меню авторизации */
 .auth-dropdown {
     position: absolute;
     top: 50px;
@@ -279,12 +271,10 @@ body {
     transform: translateY(0) scale(0.98);
 }
 
-/* Главная страница */
 .main-page {
     display: block;
 }
 
-/* Анимация фона */
 .bg-animation {
     position: fixed;
     top: 0;
@@ -309,7 +299,6 @@ body {
     100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
 }
 
-/* Основные стили */
 header {
     padding: 3rem 2rem;
     text-align: center;
@@ -345,7 +334,6 @@ header {
     margin-right: auto;
 }
 
-/* Анимация кнопки Discord */
 .discord-btn {
     display: inline-block;
     padding: 12px 30px;
@@ -494,12 +482,10 @@ p {
     color: var(--primary-text);
 }
 
-/* Страницы авторизации */
 .auth-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 70px - 80px); /* учёт футера */
     padding: 50px 20px 30px 20px;
     background: var(--primary-bg);
 }
@@ -651,7 +637,6 @@ p {
     color: var(--accent-dark);
 }
 
-/* Discord авторизация на страницах */
 .discord-auth-section {
     margin-top: 20px;
     text-align: center;
@@ -728,7 +713,6 @@ p {
     font-size: 1.2rem;
 }
 
-/* Discord информация в профиле */
 #accountDiscord {
     display: flex;
     align-items: center;
@@ -747,7 +731,6 @@ p {
     font-weight: 500;
 }
 
-/* Личный кабинет */
 .account-page {
     display: none;
     min-height: calc(100vh - 70px);
@@ -799,7 +782,6 @@ p {
     margin-bottom: 5px;
 }
 
-/* Настройки */
 .settings-section {
     margin-top: 30px;
     padding-top: 30px;
@@ -888,7 +870,6 @@ p {
     background: linear-gradient(135deg, #1a0f1f, #0f0a14);
 }
 
-/* Переключатели */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -934,7 +915,6 @@ input:checked + .toggle-slider:before {
     transform: translateX(26px);
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .features, .rules-grid, .channels-grid, .team-grid {
         grid-template-columns: 1fr;
@@ -977,7 +957,6 @@ input:checked + .toggle-slider:before {
     }
 }
 
-/* Анимации переходов между страницами */
 .page-transition {
     animation: pageTransition 0.5s var(--bounce-timing);
 }
@@ -993,7 +972,6 @@ input:checked + .toggle-slider:before {
     }
 }
 
-/* Загрузка */
 .loading {
     display: inline-block;
     width: 20px;
@@ -1008,7 +986,6 @@ input:checked + .toggle-slider:before {
     to { transform: rotate(360deg); }
 }
 
-/* Уведомления */
 .notification {
     position: fixed;
     top: 20px;
@@ -1038,7 +1015,6 @@ input:checked + .toggle-slider:before {
     background: var(--accent);
 }
 
-/* Статистика в одну строку */
 .stats-row {
     display: flex;
     justify-content: center;
@@ -1088,7 +1064,6 @@ input:checked + .toggle-slider:before {
     letter-spacing: 0.01em;
 }
 
-/* Команда: аватарки и анимации */
 .team-grid {
     display: flex;
     flex-wrap: nowrap;
@@ -1169,7 +1144,6 @@ input:checked + .toggle-slider:before {
     margin: 0;
 }
 
-/* Копирайт-блок */
 .copyright-block {
     width: 100%;
     text-align: center;
@@ -1181,7 +1155,6 @@ input:checked + .toggle-slider:before {
     text-shadow: 0 1px 8px #00000033;
 }
 
-/* Футер */
 .site-footer {
     width: 100%;
     background: #18181c;
@@ -1290,7 +1263,6 @@ input:checked + .toggle-slider:before {
     }
 }
 
-/* --- КАНАЛЫ --- */
 .channels-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1318,7 +1290,6 @@ input:checked + .toggle-slider:before {
     font-size: 0.95rem;
 }
 
-/* --- ПРАВИЛА и FAQ --- */
 .rules-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1348,7 +1319,6 @@ input:checked + .toggle-slider:before {
     margin-bottom: 0.2rem;
 }
 
-/* --- ФУТЕР --- */
 footer {
     text-align: center;
     padding: 2.1rem 0 1.1rem 0;
@@ -1405,7 +1375,6 @@ footer {
     color: #6e42f5;
 }
 
-/* --- КАСТОМНЫЙ СКРОЛЛБАР --- */
 ::-webkit-scrollbar {
     width: 12px;
     background: var(--scrollbar-bg);
@@ -1420,7 +1389,6 @@ footer {
     background: var(--scrollbar-thumb-hover);
 }
 
-/* --- DONATE PAGE --- */
 .donate-page {
     animation: fadeIn 0.5s;
 }
@@ -1594,7 +1562,6 @@ footer {
     to { opacity: 1; transform: none; }
 }
 
-/* Новые стили для футера */
 .footer-btns {
     display: flex;
     justify-content: center;
@@ -1641,7 +1608,6 @@ footer {
     .footer-contacts-block { padding: 0 4vw; }
     .footer-contacts-block.open { padding: 12px 4vw 12px 4vw; }
 }
-/* Стили для политики и соглашения */
 .agreement-title, .privacy-title {
     color: #a78bfa;
     font-size: 2.1em;
@@ -1686,7 +1652,6 @@ footer {
     text-decoration: underline;
     font-weight: 600;
 }
-/* agreement.html стиль как privacy.html */
 .agreement-container {
     max-width: 700px;
     margin: 64px auto 0 auto;
@@ -1727,7 +1692,6 @@ footer {
     .agreement-back { left: 12px; top: 12px; }
     .scroll-top-btn { right: 12px; bottom: 12px; }
 }
-/* Анимация появления/закрытия страниц политики */
 .policy-animate {
     animation: policyIn 0.55s cubic-bezier(.4,1.6,.4,1);
 }
@@ -1987,7 +1951,6 @@ body[style*="overflow: hidden"] {
     }
 }
 
-/* --- Twitch Profile Custom Styles --- */
 .twitch-profile-header {
     display: flex;
     align-items: center;
@@ -2231,7 +2194,6 @@ body[style*="overflow: hidden"] {
     }
 }
 
-/* --- Twitch Player Modal --- */
 .twitch-player-modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -2312,7 +2274,6 @@ body[style*="overflow: hidden"] {
     to { transform: translateY(0); opacity: 1; }
 } 
 
-/* === UNIVERSAL ANIMATIONS === */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
@@ -2360,7 +2321,6 @@ body[style*="overflow: hidden"] {
   transform: scale(0.96);
 }
 
-/* === TWITCH STREAM CHAT === */
 .twitch-chat-toggle {
   position: absolute;
   right: -28px;
@@ -2515,4 +2475,28 @@ body[style*="overflow: hidden"] {
     right: -18px;
     top: 18px;
   }
+}
+
+.twitch-logout-btn {
+  background: linear-gradient(90deg,#a78bfa 0%,#7c3aed 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-size: 1.1em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 12px #a78bfa33;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.18s;
+}
+.twitch-logout-btn:hover {
+  background: linear-gradient(90deg,#7c3aed 0%,#a78bfa 100%);
+  transform: scale(1.04);
+  color: #fff;
+}
+.twitch-logout-btn i {
+  font-size: 1.2em;
 }
