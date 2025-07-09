@@ -617,7 +617,13 @@ app.get('/auth/twitch/callback', async (req, res) => {
     }
 });
 
+const YOOKASSA_SHOP_ID = process.env.YOOKASSA_SHOP_ID || 'demo_shop_id'; // <-- ВСТАВЬТЕ shopId сюда
+const YOOKASSA_SECRET_KEY = process.env.YOOKASSA_SECRET_KEY || 'demo_secret_key'; // <-- ВСТАВЬТЕ secretKey сюда
+
 app.post('/api/donate/create-payment', async (req, res) => {
+    if (!YOOKASSA_SHOP_ID || !YOOKASSA_SECRET_KEY || YOOKASSA_SHOP_ID === 'demo_shop_id') {
+        return res.json({ success: false, error: 'ЮKassa не настроена. Ожидается shopId и secretKey.' });
+    }
     try {
         const { orderId, amount, coins, userId, description } = req.body;
         if (!orderId || !amount || !coins || !userId) {
@@ -627,9 +633,7 @@ app.post('/api/donate/create-payment', async (req, res) => {
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        const shopId = process.env.YUMONEY_SHOP_ID;
-        const secretKey = process.env.YUMONEY_SECRET_KEY;
-        const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
+        const auth = Buffer.from(`${YOOKASSA_SHOP_ID}:${YOOKASSA_SECRET_KEY}`).toString('base64');
         const paymentData = {
             amount: { value: amount.toString(), currency: 'RUB' },
             confirmation: { type: 'embedded' },
@@ -671,9 +675,7 @@ app.post('/api/donate/success', async (req, res) => {
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        const shopId = process.env.YUMONEY_SHOP_ID;
-        const secretKey = process.env.YUMONEY_SECRET_KEY;
-        const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
+        const auth = Buffer.from(`${YOOKASSA_SHOP_ID}:${YOOKASSA_SECRET_KEY}`).toString('base64');
         const paymentResp = await axios.get(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
             headers: {
                 'Authorization': `Basic ${auth}`
