@@ -1,4 +1,3 @@
-// Модуль настроек
 class SettingsManager {
     constructor() {
         this.settings = {
@@ -64,7 +63,6 @@ class SettingsManager {
         this.renderSettingsPage();
     }
 
-    // Загрузка настроек из localStorage и сервера
     async loadSettings() {
         const savedSettings = localStorage.getItem('arness_settings');
         if (savedSettings) {
@@ -75,11 +73,9 @@ class SettingsManager {
             }
         }
         
-        // Загружаем настройки с сервера если пользователь авторизован
         await this.loadServerSettings();
     }
 
-    // Загрузка настроек с сервера
     async loadServerSettings() {
         try {
             const response = await fetch('/api/settings');
@@ -94,11 +90,9 @@ class SettingsManager {
         }
     }
 
-    // Сохранение настроек в localStorage и на сервер
     async saveSettings() {
         localStorage.setItem('arness_settings', JSON.stringify(this.settings));
         
-        // Сохраняем настройки на сервер если пользователь авторизован
         try {
             await fetch('/api/settings', {
                 method: 'POST',
@@ -112,22 +106,16 @@ class SettingsManager {
         }
     }
 
-    // Применение настроек
     applySettings() {
-        // Применение темы
         document.documentElement.setAttribute('data-theme', this.settings.theme);
         
-        // Применение анимаций
         this.applyAnimationSettings();
         
-        // Применение кастомизации шапки
         this.applyHeaderCustomization();
         
-        // Применение настроек доступности
         this.applyAccessibilitySettings();
     }
 
-    // Применение настроек анимаций
     applyAnimationSettings() {
         const body = document.body;
         
@@ -141,11 +129,9 @@ class SettingsManager {
             body.style.setProperty('--bounce-timing', 'cubic-bezier(0.68, -0.55, 0.265, 1.55)');
         }
         
-        // Управление частицами
         this.updateParticleCount();
     }
 
-    // Универсальная функция анимации скрытия/показа
     animateToggle(element, show) {
         if (!element) return;
         if (show) {
@@ -154,7 +140,6 @@ class SettingsManager {
         } else {
             element.classList.remove('fade-in');
             element.classList.add('fade-out');
-            // После завершения анимации скрываем полностью
             element.addEventListener('transitionend', function handler() {
                 element.classList.add('hidden');
                 element.removeEventListener('transitionend', handler);
@@ -162,33 +147,28 @@ class SettingsManager {
         }
     }
 
-    // Применение кастомизации шапки
     applyHeaderCustomization() {
         const navbar = document.querySelector('.navbar');
         if (!navbar) return;
 
         const customization = this.settings.headerCustomization;
         
-        // Показ/скрытие логотипа
         const logo = navbar.querySelector('.nav-logo');
         if (logo) {
             this.animateToggle(logo, customization.showLogo);
         }
         
-        // Показ/скрытие навигационных ссылок
         const navLinks = navbar.querySelector('.nav-links');
         if (navLinks) {
             this.animateToggle(navLinks, customization.showNavLinks);
         }
         
-        // Цвет фона
         if (customization.backgroundColor !== 'default') {
             navbar.style.backgroundColor = customization.backgroundColor;
         } else {
             navbar.style.backgroundColor = '';
         }
         
-        // Эффект размытия
         if (customization.blurEffect) {
             navbar.style.backdropFilter = 'blur(10px)';
         } else {
@@ -196,26 +176,22 @@ class SettingsManager {
         }
     }
 
-    // Применение настроек доступности
     applyAccessibilitySettings() {
         const body = document.body;
         const accessibility = this.settings.accessibility;
         
-        // Высокий контраст
         if (accessibility.highContrast) {
             body.classList.add('high-contrast');
         } else {
             body.classList.remove('high-contrast');
         }
         
-        // Уменьшенное движение
         if (accessibility.reducedMotion) {
             body.classList.add('reduced-motion');
         } else {
             body.classList.remove('reduced-motion');
         }
         
-        // Размер шрифта
         const fontSizeMap = {
             small: '0.9rem',
             medium: '1rem',
@@ -226,22 +202,18 @@ class SettingsManager {
         body.style.fontSize = fontSizeMap[accessibility.fontSize] || '1rem';
     }
 
-    // Обновление количества частиц
     updateParticleCount() {
         const bgAnimation = document.getElementById('bg-animation');
         if (!bgAnimation) return;
 
-        // Удаляем существующие частицы
         const existingParticles = bgAnimation.querySelectorAll('.particle');
         existingParticles.forEach(particle => particle.remove());
 
-        // Создаем новые частицы если анимации включены
         if (this.settings.animations.enabled) {
             this.createParticles(this.settings.animations.particleCount);
         }
     }
 
-    // Создание частиц
     createParticles(count) {
         const bgAnimation = document.getElementById('bg-animation');
         if (!bgAnimation) return;
@@ -270,12 +242,9 @@ class SettingsManager {
         }
     }
 
-    // Настройка обработчиков событий
     setupEventListeners() {
-        // Обработчики будут добавлены при рендере страницы настроек
     }
 
-    // Рендер страницы настроек
     renderSettingsPage() {
         const settingsContainer = document.querySelector('.settings-section');
         if (!settingsContainer) return;
@@ -429,9 +398,7 @@ class SettingsManager {
         this.setupSettingsEventListeners();
     }
 
-    // Настройка обработчиков событий для настроек
     setupSettingsEventListeners() {
-        // Выбор темы
         document.querySelectorAll('.theme-option').forEach(option => {
             option.addEventListener('click', () => {
                 const theme = option.dataset.theme;
@@ -439,7 +406,6 @@ class SettingsManager {
             });
         });
 
-        // Переключатели
         const toggles = [
             'showLogo', 'showNavLinks', 'blurEffect', 'animationsEnabled',
             'notificationsEnabled', 'notificationSound', 'highContrast', 'reducedMotion'
@@ -454,7 +420,6 @@ class SettingsManager {
             }
         });
 
-        // Слайдер количества частиц
         const particleSlider = document.getElementById('particleCount');
         const particleValue = document.getElementById('particleCountValue');
         if (particleSlider && particleValue) {
@@ -465,7 +430,6 @@ class SettingsManager {
             });
         }
 
-        // Селекты
         const selects = ['transitionSpeed', 'fontSize'];
         selects.forEach(selectId => {
             const select = document.getElementById(selectId);
@@ -476,7 +440,6 @@ class SettingsManager {
             }
         });
 
-        // Кнопки
         const saveBtn = document.getElementById('saveSettings');
         const resetBtn = document.getElementById('resetSettings');
 
@@ -493,7 +456,6 @@ class SettingsManager {
             });
         }
 
-        // Кнопка выхода из аккаунта
         const logoutSettingsBtn = document.getElementById('logoutSettingsBtn');
         if (logoutSettingsBtn && window.AuthManager) {
             logoutSettingsBtn.addEventListener('click', () => {
@@ -502,12 +464,10 @@ class SettingsManager {
         }
     }
 
-    // Изменение темы
     changeTheme(theme) {
         this.settings.theme = theme;
         document.documentElement.setAttribute('data-theme', theme);
         
-        // Обновляем активную тему в селекторе
         document.querySelectorAll('.theme-option').forEach(option => {
             option.classList.remove('active');
         });
@@ -517,9 +477,7 @@ class SettingsManager {
         this.showNotification(`Тема изменена на "${this.themes[theme].name}"`, 'success');
     }
 
-    // Обновление настройки
     updateSetting(key, value) {
-        // Определяем путь к настройке
         if (key === 'showLogo' || key === 'showNavLinks' || key === 'blurEffect') {
             this.settings.headerCustomization[key] = value;
         } else if (key === 'animationsEnabled' || key === 'particleCount' || key === 'transitionSpeed') {
@@ -530,11 +488,9 @@ class SettingsManager {
             this.settings.accessibility[key] = value;
         }
 
-        // Применяем изменения
         this.applySettings();
     }
 
-    // Сброс к умолчаниям
     resetToDefaults() {
         if (confirm('Вы уверены, что хотите сбросить все настройки к умолчаниям?')) {
             this.settings = {
@@ -569,7 +525,6 @@ class SettingsManager {
         }
     }
 
-    // Показать уведомление
     showNotification(message, type = 'info') {
         if (window.AuthManager) {
             window.AuthManager.showNotification(message, type);
@@ -578,16 +533,13 @@ class SettingsManager {
         }
     }
 
-    // Получить текущие настройки
     getSettings() {
         return this.settings;
     }
 
-    // Получить доступные темы
     getThemes() {
         return this.themes;
     }
 }
 
-// Экспорт для использования в других модулях
 window.SettingsManager = SettingsManager; 

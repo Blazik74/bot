@@ -1,4 +1,3 @@
-// Основной модуль приложения
 class App {
     constructor() {
         this.currentPage = 'main';
@@ -16,7 +15,6 @@ class App {
         await this.start();
     }
 
-    // Настройка страниц
     setupPages() {
         this.pages = {
             main: document.getElementById('mainPage'),
@@ -28,9 +26,7 @@ class App {
         };
     }
 
-    // Настройка навигации
     setupNavigation() {
-        // Навигационные ссылки
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -46,7 +42,6 @@ class App {
             });
         });
 
-        // Логотип - переход на главную
         const navLogo = document.getElementById('navLogo');
         if (navLogo) {
             navLogo.addEventListener('click', () => {
@@ -54,7 +49,6 @@ class App {
             });
         }
 
-        // Иконка пользователя
         const userIcon = document.getElementById('userIcon');
         if (userIcon) {
             userIcon.addEventListener('click', (e) => {
@@ -67,22 +61,17 @@ class App {
             });
         }
 
-        // Выпадающее меню авторизации
         document.addEventListener('click', () => {
             this.hideAuthDropdown();
         });
     }
 
-    // Настройка анимаций
     setupAnimations() {
-        // Анимация появления секций при скролле
         this.setupScrollAnimations();
         
-        // Анимация частиц фона
         this.createParticles();
     }
 
-    // Настройка анимаций скролла
     setupScrollAnimations() {
         const sections = document.querySelectorAll('section');
         const windowHeight = window.innerHeight;
@@ -108,15 +97,12 @@ class App {
         window.addEventListener('load', animateOnScroll);
     }
 
-    // Создание частиц фона
     createParticles() {
         const bgAnimation = document.getElementById('bg-animation');
         if (!bgAnimation) return;
 
-        // Очищаем существующие частицы
         bgAnimation.innerHTML = '';
 
-        // Получаем настройки анимаций
         const settings = this.settingsManager ? this.settingsManager.getSettings() : { animations: { enabled: true, particleCount: 30 } };
         if (!settings.animations.enabled) return;
         const particleCount = settings.animations.particleCount;
@@ -145,50 +131,37 @@ class App {
         }
     }
 
-    // Инициализация менеджеров
     async initializeManagers() {
-        // Инициализация менеджера авторизации
         this.authManager = new AuthManager();
         
-        // Инициализация менеджера настроек
         this.settingsManager = new SettingsManager();
         
-        // Добавляем страницу настроек в аккаунт
         this.setupAccountPage();
     }
 
-    // Настройка страницы аккаунта
     setupAccountPage() {
         const accountContainer = document.querySelector('.account-container');
         if (!accountContainer) return;
 
-        // Добавляем секцию настроек
         const settingsSection = document.createElement('div');
         settingsSection.className = 'settings-section';
         accountContainer.appendChild(settingsSection);
 
-        // Рендерим настройки
         if (this.settingsManager) {
             this.settingsManager.renderSettingsPage();
         }
     }
 
-    // Настройка обработчиков событий
     setupEventListeners() {
-        // Обработчики кнопок авторизации
         this.setupAuthButtons();
         
-        // Обработчики форм
         this.setupFormHandlers();
         
-        // Обработчики Discord авторизации на страницах
         this.setupDiscordAuthButtons();
         
-        // Обработчики переключения страниц
         this.setupPageSwitchers();
     }
 
-    // Настройка кнопок авторизации
     setupAuthButtons() {
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
@@ -226,9 +199,7 @@ class App {
         }
     }
 
-    // Настройка обработчиков форм
     setupFormHandlers() {
-        // Переключение между формами входа и регистрации
         const showRegister = document.getElementById('showRegister');
         const showLogin = document.getElementById('showLogin');
 
@@ -247,7 +218,6 @@ class App {
         }
     }
 
-    // Настройка Discord авторизации на страницах
     setupDiscordAuthButtons() {
         const discordLoginBtn = document.getElementById('discordLoginBtnPage');
         const discordRegisterBtn = document.getElementById('discordRegisterBtnPage');
@@ -269,23 +239,19 @@ class App {
         }
     }
 
-    // Настройка переключателей страниц
     setupPageSwitchers() {
-        // Переход на страницу доната по клику на баланс
         const balance = document.getElementById('accountBalance');
         if (balance) {
             balance.addEventListener('click', () => {
                 this.showDonatePage();
             });
         }
-        // Кнопка назад на странице доната
         const backBtn = document.getElementById('backToProfileBtn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
                 this.showPage('account');
             });
         }
-        // Кнопка Twitch OAuth
         const twitchBtn = document.getElementById('twitchLoginBtn');
         if (twitchBtn) {
             twitchBtn.addEventListener('click', () => {
@@ -294,7 +260,6 @@ class App {
         }
     }
 
-    // Показать страницу
     showPage(pageName) {
         const allPages = [
             'mainPage', 'loginPage', 'registerPage', 'accountPage', 'donatePage', 'twitchProfilePage'
@@ -321,7 +286,6 @@ class App {
                     this.settingsManager.renderSettingsPage();
                 }, 100);
             }
-            // Меняем URL
             let url = '/';
             if (pageName === 'account') url = '/profile';
             if (pageName === 'settings') url = '/profile/settings';
@@ -330,14 +294,12 @@ class App {
             if (window.location.pathname !== url) {
                 window.history.pushState({page: pageName}, '', url);
             }
-            // Если Twitch-профиль — подгружаем данные
             if (pageName === 'twitchProfile') {
                 this.loadTwitchProfile();
             }
         }
     }
 
-    // Переключение выпадающего меню авторизации
     toggleAuthDropdown() {
         const authDropdown = document.getElementById('authDropdown');
         if (authDropdown) {
@@ -345,7 +307,6 @@ class App {
         }
     }
 
-    // Скрытие выпадающего меню авторизации
     hideAuthDropdown() {
         const authDropdown = document.getElementById('authDropdown');
         if (authDropdown) {
@@ -353,7 +314,6 @@ class App {
         }
     }
 
-    // Запуск приложения
     async start() {
         ['mainPage','loginPage','registerPage','accountPage','donatePage','twitchProfilePage'].forEach(id => {
             const el = document.getElementById(id);
@@ -369,7 +329,6 @@ class App {
         this.settingsManager.applySettings();
         this.checkTwitchCallback();
         this.checkDiscordCallback();
-        // Корректный порядок показа страниц после загрузки пользователя
         if (path === '/profile') this.showPage('account');
         else if (path === '/profile/settings') this.showPage('settings');
         else if (path === '/profile/donate' || path === '/donate') this.showPage('donate');
@@ -382,7 +341,6 @@ class App {
         const twitchSuccess = urlParams.get('twitch_success');
         if (twitchSuccess && this.authManager) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            // Обновляем профиль (перезагружаем данные)
             this.authManager.checkServerSession();
             this.authManager.checkAuth();
             this.showPage('account');
@@ -395,7 +353,6 @@ class App {
         }
     }
 
-    // Проверка Discord callback
     checkDiscordCallback() {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
@@ -404,26 +361,20 @@ class App {
         const userData = urlParams.get('user');
 
         if (code && this.authManager) {
-            // Очищаем URL
             window.history.replaceState({}, document.title, window.location.pathname);
-            // Обрабатываем код Discord
             this.authManager.handleDiscordCallback(code);
         } else if (discordSuccess && this.authManager) {
-            // После успешного входа через Discord
             window.history.replaceState({}, document.title, window.location.pathname);
-            // Обновляем профиль (перезагружаем данные)
             this.authManager.checkServerSession();
             this.authManager.checkAuth();
             this.showPage('account');
             this.showNotification('Успешный вход через Discord!', 'success');
         } else if (error) {
-            // Обрабатываем ошибку Discord
             window.history.replaceState({}, document.title, window.location.pathname);
             this.showNotification('Ошибка авторизации через Discord', 'error');
         }
     }
 
-    // Показать уведомление
     showNotification(message, type = 'info') {
         if (this.authManager) {
             this.authManager.showNotification(message, type);
@@ -432,34 +383,27 @@ class App {
         }
     }
 
-    // Получить текущую страницу
     getCurrentPage() {
         return this.currentPage;
     }
 
-    // Получить менеджер авторизации
     getAuthManager() {
         return this.authManager;
     }
 
-    // Получить менеджер настроек
     getSettingsManager() {
         return this.settingsManager;
     }
 
-    // Показать страницу доната
     showDonatePage() {
-        // Скрыть все страницы
         Object.values(this.pages).forEach(page => {
             if (page) page.style.display = 'none';
         });
-        // Показать страницу доната
         const donatePage = document.getElementById('donatePage');
         if (donatePage) donatePage.style.display = 'block';
         this.currentPage = 'donate';
     }
 
-    // SPA-роутинг: обработка перехода по истории браузера
     setupSpaRouting() {
         window.addEventListener('popstate', (e) => {
             const path = window.location.pathname;
@@ -477,7 +421,6 @@ class App {
             this.pages.twitchProfile.innerHTML = '<div class="twitch-profile-empty">Twitch не подключён.</div>';
             return;
         }
-        // Блок профиля пользователя Twitch
         this.pages.twitchProfile.innerHTML = `
             <div class="twitch-profile-user-block" style="display:flex;align-items:center;gap:22px;margin-bottom:24px;">
                 <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar" style="cursor:pointer;">
@@ -485,13 +428,14 @@ class App {
                     <a href="https://twitch.tv/${user.twitchUsername}" target="_blank" style="font-size:2.1em;font-weight:800;color:#a78bfa;text-decoration:none;line-height:1.1;">${user.twitchUsername}</a>
                     <span style="color:#888;font-size:1.1em;">Профиль Twitch</span>
                 </div>
-                <button id="twitchLogoutBtn" class="twitch-back-btn" style="margin-left:auto;">Выйти из Twitch</button>
+                <button id="twitchLogoutBtn" class="twitch-logout-btn" style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:1.1em;font-weight:600;background:#a78bfa;color:#fff;border:none;border-radius:10px;box-shadow:0 2px 12px #a78bfa33;cursor:pointer;transition:background 0.2s,transform 0.18s;">
+                    <i class="fab fa-twitch" style="font-size:1.2em;"></i> Выйти из Twitch
+                </button>
             </div>
         `;
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = this.logoutTwitch.bind(this);
-            // Клик по аватарке — переход на Twitch
             const twitchProfileAvatar = document.getElementById('twitchProfileAvatar');
             if (twitchProfileAvatar) {
                 twitchProfileAvatar.onclick = () => window.open(`https://twitch.tv/${user.twitchUsername}`, '_blank');
@@ -499,9 +443,32 @@ class App {
         }, 0);
         try {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
-            if (!resp.ok) throw new Error('Ошибка Twitch API');
+            if (!resp.ok) {
+                if (resp.status === 401) {
+                    this.pages.twitchProfile.innerHTML = `
+                        <div class="twitch-error">Twitch-аккаунт не авторизован или истёк токен.<br>
+                        <button id="reconnectTwitchBtn" class="twitch-logout-btn" style="margin-top:18px;"><i class='fab fa-twitch'></i> Переподключить Twitch</button>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        const btn = document.getElementById('reconnectTwitchBtn');
+                        if (btn) btn.onclick = () => { window.location.href = '/auth/twitch'; };
+                    }, 0);
+                    return;
+                } else {
+                    this.pages.twitchProfile.innerHTML = `
+                        <div class="twitch-error">Ошибка загрузки подписок Twitch (код ${resp.status}).<br>
+                        <button id="reconnectTwitchBtn" class="twitch-logout-btn" style="margin-top:18px;"><i class='fab fa-twitch'></i> Переподключить Twitch</button>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        const btn = document.getElementById('reconnectTwitchBtn');
+                        if (btn) btn.onclick = () => { window.location.href = '/auth/twitch'; };
+                    }, 0);
+                    return;
+                }
+            }
             const data = await resp.json();
-            // Разделяем онлайн и офлайн
             const liveIds = new Set((data.live||[]).map(s => s.user_id));
             const online = (data.subscriptions||[]).filter(s => liveIds.has(s.to_id));
             const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
@@ -530,7 +497,6 @@ class App {
                 html = '<div class="twitch-empty">Нет подписок.</div>';
             }
             this.pages.twitchProfile.innerHTML = html;
-            // После рендера подписок пересоздаём обработчик на кнопки 'Смотреть'
             Array.from(this.pages.twitchProfile.querySelectorAll('.btn-watch-stream')).forEach(btn => {
                 btn.onclick = function(e) {
                     e.preventDefault();
@@ -547,7 +513,6 @@ class App {
         try {
             const resp = await fetch('/api/twitch/logout', { method: 'POST', credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка выхода из Twitch');
-            // Обновляем профиль и возвращаем на страницу аккаунта
             if (this.authManager) {
                 await this.authManager.checkServerSession();
                 this.authManager.checkAuth();
@@ -561,18 +526,15 @@ class App {
     }
 }
 
-// Глобальная функция для показа страниц (для совместимости)
 function showPage(pageName) {
     if (window.app) {
         window.app.showPage(pageName);
     }
 }
 
-// Инициализация приложения при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new App();
 
-    // --- Аватарка: модальное окно ---
     const avatar = document.getElementById('accountAvatar');
     const modal = document.getElementById('avatarModal');
     const modalImg = document.getElementById('avatarModalImg');
@@ -622,11 +584,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('animated-fade-out');
         }, 350);
     });
-    // Закрытие по Esc
     document.addEventListener('keydown', (e) => {
         if (modal.style.display === 'flex' && e.key === 'Escape') closeAvatarModal();
     });
-    // Скачать аватарку
     if (modalDownload) {
         modalDownload.addEventListener('click', () => {
             const url = modalImg.src;
@@ -638,7 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(a);
         });
     }
-    // Копировать ссылку
     if (modalCopy) {
         modalCopy.addEventListener('click', async () => {
             try {
@@ -653,7 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Twitch профиль ---
     const twitchUsernameEl = document.getElementById('accountTwitchUsername');
     const twitchProfilePage = document.getElementById('twitchProfilePage');
     const accountPage = document.getElementById('accountPage');
@@ -690,7 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchPlayerContainer.innerHTML = '';
             return;
         }
-        // Блок профиля пользователя Twitch
         twitchProfileInfo.innerHTML = `
             <div class="twitch-profile-user-block" style="display:flex;align-items:center;gap:22px;margin-bottom:24px;">
                 <img class="twitch-avatar" id="twitchProfileAvatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/${user.twitchId}-profile_image-110x110.png" onerror="this.style.display='none'" alt="Twitch Avatar" style="cursor:pointer;">
@@ -704,7 +661,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const logoutBtn = document.getElementById('twitchLogoutBtn');
             if (logoutBtn) logoutBtn.onclick = logoutTwitch;
-            // Клик по аватарке — переход на Twitch
             const twitchProfileAvatar = document.getElementById('twitchProfileAvatar');
             if (twitchProfileAvatar) {
                 twitchProfileAvatar.onclick = () => window.open(`https://twitch.tv/${user.twitchUsername}`, '_blank');
@@ -716,7 +672,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const resp = await fetch('/api/twitch/subscriptions', { credentials: 'include' });
             if (!resp.ok) throw new Error('Ошибка Twitch API');
             const data = await resp.json();
-            // Разделяем онлайн и офлайн
             const liveIds = new Set((data.live||[]).map(s => s.user_id));
             const online = (data.subscriptions||[]).filter(s => liveIds.has(s.to_id));
             const offline = (data.subscriptions||[]).filter(s => !liveIds.has(s.to_id));
@@ -745,7 +700,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 html = '<div class="twitch-empty">Нет подписок.</div>';
             }
             twitchSubscriptionsList.innerHTML = html;
-            // После рендера подписок пересоздаём обработчик на кнопки 'Смотреть'
             Array.from(twitchSubscriptionsList.querySelectorAll('.btn-watch-stream')).forEach(btn => {
                 btn.onclick = function(e) {
                     e.preventDefault();
@@ -757,7 +711,6 @@ document.addEventListener('DOMContentLoaded', () => {
             twitchSubscriptionsList.innerHTML = '<div class="twitch-error">Ошибка загрузки подписок.</div>';
         }
     }
-    // Twitch-плеер: обработчик кнопок "Смотреть" только для онлайн
     if (twitchSubscriptionsList) {
         twitchSubscriptionsList.addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-watch-stream');
@@ -770,7 +723,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Проверяем кнопку выхода из аккаунта
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.onclick = function() {
@@ -781,17 +733,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- DONATE PAGE: ЮMoney integration ---
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pay-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             const amount = parseInt(btn.getAttribute('data-amount'));
             const coins = parseInt(btn.getAttribute('data-coins'));
             
-            // Создаем уникальный ID заказа
             const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             
-            // Сначала создаем платеж на сервере
             fetch('/api/donate/create-payment', {
                 method: 'POST',
                 headers: {
@@ -808,7 +757,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.paymentUrl) {
-                    // Открываем ЮMoney виджет
                     const checkout = new window.YooKassa.Checkout({
                         confirmation_token: data.confirmationToken,
                         return_url: window.location.origin + '/profile/donate',
@@ -820,10 +768,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     checkout.render('payment-form');
                     
-                    // Обработка успешной оплаты
                     checkout.on('success', function(event) {
                         console.log('Оплата успешна:', event);
-                        // Отправляем запрос на сервер для начисления монет
                         fetch('/api/donate/success', {
                             method: 'POST',
                             headers: {
@@ -841,7 +787,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(data => {
                             if (data.success) {
                                 showCustomNotification('Оплата прошла успешно!\nНачислено ' + coins + ' монет.', 'success');
-                                // Обновляем баланс пользователя
                                 if (currentUser) {
                                     currentUser.coins = (currentUser.coins || 0) + coins;
                                     updateUserInterface();
@@ -868,7 +813,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// === DONATE SLIDER & PACKAGES ===
 document.addEventListener('DOMContentLoaded', function() {
   const donateRange = document.getElementById('donateRange');
   const donateRangeValue = document.getElementById('donateRangeValue');
@@ -876,7 +820,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const quickBtns = document.querySelectorAll('.donate-quick-btn');
   const payBtn = document.getElementById('donatePayBtn');
 
-  // Курс: 100 монет = 50₽, 500 = 200₽, 1000 = 350₽, 2500 = 800₽, иначе 1 монета = 0.5₽
   function calcPrice(coins) {
     if (coins == 100) return 50;
     if (coins == 500) return 200;
@@ -910,8 +853,6 @@ document.addEventListener('DOMContentLoaded', function() {
     payBtn.addEventListener('click', function() {
       const amount = this.dataset.amount || calcPrice(donateRange.value);
       const coins = this.dataset.coins || donateRange.value;
-      // Здесь должна быть логика оплаты через ЮMoney с amount и coins
-      // Например: startYooKassaPayment(amount, coins);
       if (typeof startYooKassaPayment === 'function') {
         startYooKassaPayment(amount, coins);
       } else {
@@ -921,10 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// === FOOTER CONTACTS TOGGLE ===
-// Удалено: дублирующий обработчик для footerContactsBtn (оставлен только один ниже)
 
-// === CUSTOM NOTIFICATIONS ===
 (function() {
   if (document.getElementById('customNotification')) return;
   const notif = document.createElement('div');
@@ -977,7 +915,6 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 })();
 
-// === SPA Policy/Agreement Modal (исправлено, без hash, с pushState) ===
 function openPolicyModal(type, push = true) {
   const modal = document.getElementById(type === 'privacy' ? 'privacyModal' : 'agreementModal');
   if (!modal) return;
@@ -1001,7 +938,6 @@ window.addEventListener('popstate', function(e) {
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
-  // Открытие по ссылкам
   document.getElementById('closePrivacy').onclick = () => { closePolicyModal('privacy'); };
   document.getElementById('closeAgreement').onclick = () => { closePolicyModal('agreement'); };
   document.querySelectorAll('.footer-nav-link').forEach(link => {
@@ -1012,7 +948,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  // Контакты: только плавное раскрытие
   const contactsBtn = document.getElementById('footerContactsBtn');
   const contactsBlock = document.getElementById('footerContactsBlock');
   if (contactsBtn && contactsBlock) {
@@ -1032,12 +967,10 @@ document.querySelectorAll('.policy-modal').forEach(modal => {
   });
 });
 
-// Добавляю функцию выхода из Twitch
 async function logoutTwitch() {
     try {
         const resp = await fetch('/api/twitch/logout', { method: 'POST', credentials: 'include' });
         if (!resp.ok) throw new Error('Ошибка выхода из Twitch');
-        // Обновляем профиль и возвращаем на страницу аккаунта
         if (window.app?.authManager) {
             await window.app.authManager.checkServerSession();
             window.app.authManager.checkAuth();
@@ -1050,7 +983,6 @@ async function logoutTwitch() {
     }
 }
 
-// --- Модальное окно для аватарки профиля ---
 const accountAvatar = document.getElementById('accountAvatar');
 const avatarModal = document.getElementById('avatarModal');
 const avatarModalImg = document.getElementById('avatarModalImg');
@@ -1071,7 +1003,6 @@ if (accountAvatar && avatarModal && avatarModalImg) {
     });
 }
 
-// --- Twitch-плеер: модальное окно ---
 const twitchPlayerModal = document.getElementById('twitchPlayerModal');
 const twitchPlayerIframeContainer = document.getElementById('twitchPlayerIframeContainer');
 const twitchPlayerCloseBtn = document.getElementById('twitchPlayerCloseBtn');
@@ -1115,7 +1046,6 @@ if (twitchPlayerModal) {
         }
     });
 }
-// --- Кнопка 'Смотреть' ---
 if (twitchSubscriptionsList) {
     twitchSubscriptionsList.addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-watch-stream');
@@ -1128,7 +1058,6 @@ if (twitchSubscriptionsList) {
     });
 } 
 
-// --- Twitch Chat Logic ---
 const twitchChatToggle = document.getElementById('twitchChatToggle');
 const twitchChatContainer = document.getElementById('twitchChatContainer');
 const twitchChatClose = document.getElementById('twitchChatClose');
@@ -1138,7 +1067,6 @@ const twitchChatSend = document.getElementById('twitchChatSend');
 const twitchChatSticker = document.getElementById('twitchChatSticker');
 const twitchChatStickers = document.getElementById('twitchChatStickers');
 
-// Список стикеров (можно расширить)
 const stickers = ['😀','😂','😍','😎','🔥','👍','🎉','🥳','😈','💜','👾','🤘','😺','🥲','😭','😡','🤡','👻','💩','🍕'];
 
 function renderStickers() {
@@ -1201,7 +1129,6 @@ function sendMessage() {
     addMessage(text, true);
     twitchChatInput.value = '';
     twitchChatStickers.style.display = 'none';
-    // Здесь можно добавить отправку на сервер/вебсокет для live-режима
 }
 function addMessage(text, self = false) {
     const msg = document.createElement('div');

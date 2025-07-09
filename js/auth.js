@@ -1,4 +1,3 @@
-// Модуль авторизации
 class AuthManager {
     constructor() {
         this.currentUser = null;
@@ -12,16 +11,13 @@ class AuthManager {
         this.checkAuth();
     }
 
-    // Загрузка пользователя из localStorage и проверка сессии
     async loadUserFromStorage() {
         const savedUser = localStorage.getItem('arness_user');
         if (savedUser) {
             try {
                 this.currentUser = JSON.parse(savedUser);
                 this.isAuthenticated = true;
-                // Проверяем сессию на сервере
                 await this.checkServerSession();
-                // Обновляем профиль после загрузки
                 this.updateProfileDisplay();
             } catch (error) {
                 console.error('Ошибка загрузки пользователя:', error);
@@ -32,7 +28,6 @@ class AuthManager {
         }
     }
 
-    // Проверка сессии на сервере
     async checkServerSession() {
         try {
             const response = await fetch('/api/auth/check', { credentials: 'include' });
@@ -43,7 +38,6 @@ class AuthManager {
                 this.saveUserToStorage(data.user);
                 this.updateProfileDisplay();
             } else {
-                // Сессия истекла
                 this.currentUser = null;
                 this.isAuthenticated = false;
                 this.removeUserFromStorage();
@@ -55,43 +49,35 @@ class AuthManager {
         }
     }
 
-    // Сохранение пользователя в localStorage
     saveUserToStorage(user) {
         localStorage.setItem('arness_user', JSON.stringify(user));
     }
 
-    // Удаление пользователя из localStorage
     removeUserFromStorage() {
         localStorage.removeItem('arness_user');
     }
 
-    // Настройка обработчиков событий
     setupEventListeners() {
-        // Форма входа
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
 
-        // Форма регистрации
         const registerForm = document.getElementById('registerForm');
         if (registerForm) {
             registerForm.addEventListener('submit', (e) => this.handleRegister(e));
         }
 
-        // Кнопка выхода
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => this.logout());
         }
 
-        // Discord авторизация
         const discordLoginBtn = document.getElementById('discordLoginBtn');
         if (discordLoginBtn) {
             discordLoginBtn.addEventListener('click', () => this.handleDiscordLogin());
         }
 
-        // Кнопки входа/регистрации в выпадающей панели
         const loginBtnDropdown = document.getElementById('loginBtnDropdown');
         if (loginBtnDropdown) {
             loginBtnDropdown.addEventListener('click', () => {
@@ -108,7 +94,6 @@ class AuthManager {
         }
     }
 
-    // Обработка входа
     async handleLogin(e) {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value;
@@ -144,7 +129,6 @@ class AuthManager {
         }
     }
 
-    // Обработка регистрации
     async handleRegister(e) {
         e.preventDefault();
         const username = document.getElementById('registerUsername').value;
@@ -182,7 +166,6 @@ class AuthManager {
         }
     }
 
-    // Валидация формы входа
     validateLoginForm(username, password) {
         let isValid = true;
 
@@ -199,7 +182,6 @@ class AuthManager {
         return isValid;
     }
 
-    // Валидация формы регистрации
     validateRegisterForm(username, email, password, confirmPassword) {
         let isValid = true;
 
@@ -222,7 +204,6 @@ class AuthManager {
         return isValid;
     }
 
-    // Вход пользователя через API
     async loginUser(username, password) {
         try {
             const response = await fetch('/api/auth/login', {
@@ -246,7 +227,6 @@ class AuthManager {
         }
     }
 
-    // Регистрация пользователя через API
     async registerUser(username, email, password) {
         try {
             const response = await fetch('/api/auth/register', {
@@ -270,9 +250,7 @@ class AuthManager {
         }
     }
 
-    // Discord авторизация
     handleDiscordLogin() {
-        // Discord OAuth2 URL
         const clientId = '1391384219661500558'; // Discord Client ID
         const redirectUri = encodeURIComponent('https://arness-community.onrender.com/auth/discord/callback');
         const scope = 'identify email';
@@ -281,10 +259,8 @@ class AuthManager {
         window.location.href = discordAuthUrl;
     }
 
-    // Обработка Discord callback
     async handleDiscordCallback(code) {
         try {
-            // Здесь будет обмен кода на токен и получение данных пользователя
             const user = await this.exchangeDiscordCode(code);
             this.currentUser = user;
             this.isAuthenticated = true;
@@ -299,7 +275,6 @@ class AuthManager {
         }
     }
 
-    // Обмен кода Discord на токен через API
     async exchangeDiscordCode(code) {
         try {
             const response = await fetch('/api/auth/discord', {
@@ -322,31 +297,26 @@ class AuthManager {
         }
     }
 
-    // Выход
     async logout() {
         try {
-            // Отправляем запрос на сервер для выхода
-            await fetch('/api/auth/logout', {
+            const resp = await fetch('/api/auth/logout', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 credentials: 'include'
             });
-        } catch (error) {
-            console.error('Ошибка выхода:', error);
+            if (resp.ok) {
+                this.currentUser = null;
+                if (window.app) {
+                    window.app.showPage('login');
+                    if (window.app.authManager) window.app.authManager.checkAuth();
+                }
+            } else {
+                alert('Ошибка выхода из аккаунта. Попробуйте ещё раз.');
+            }
+        } catch (e) {
+            alert('Ошибка выхода из аккаунта. Проверьте соединение.');
         }
-        
-        this.currentUser = null;
-        this.isAuthenticated = false;
-        this.removeUserFromStorage();
-        
-        this.showNotification('Вы вышли из аккаунта', 'info');
-        this.checkAuth();
-        showPage('main');
     }
 
-    // Проверка авторизации
     checkAuth() {
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
@@ -359,7 +329,6 @@ class AuthManager {
             if (accountBtn) accountBtn.style.display = 'block';
             if (logoutBtn) logoutBtn.style.display = 'block';
             
-            // Обновляем данные профиля
             this.updateProfileDisplay();
         } else {
             if (loginBtn) loginBtn.style.display = 'block';
@@ -369,7 +338,6 @@ class AuthManager {
         }
     }
 
-    // Обновление отображения профиля
     updateProfileDisplay() {
         if (!this.currentUser) return;
 
@@ -388,7 +356,6 @@ class AuthManager {
         if (dateElement) dateElement.textContent = this.currentUser.registrationDate;
         if (avatarElement) avatarElement.src = this.currentUser.avatar;
 
-        // Discord
         if (discordElement && discordUsernameElement) {
             if (this.currentUser.discordId) {
                 discordElement.style.display = 'flex';
@@ -398,7 +365,6 @@ class AuthManager {
             }
         }
 
-        // Twitch
         if (twitchElement && twitchUsernameElement && twitchBtn) {
             if (this.currentUser.twitchUsername) {
                 twitchElement.style.display = 'flex';
@@ -412,7 +378,6 @@ class AuthManager {
         }
     }
 
-    // Показать уведомление
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -420,12 +385,10 @@ class AuthManager {
         
         document.body.appendChild(notification);
         
-        // Показать уведомление
         setTimeout(() => {
             notification.classList.add('show');
         }, 100);
         
-        // Скрыть уведомление
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => {
@@ -434,17 +397,14 @@ class AuthManager {
         }, 3000);
     }
 
-    // Получить текущего пользователя
     getCurrentUser() {
         return this.currentUser;
     }
 
-    // Проверить, авторизован ли пользователь
     isUserAuthenticated() {
         return this.isAuthenticated;
     }
 
-    // Сброс ошибок в формах
     clearErrors(formType) {
         const errorElements = document.querySelectorAll(`#${formType}Page .error-message`);
         errorElements.forEach(element => {
@@ -458,7 +418,6 @@ class AuthManager {
         const twitchSuccess = urlParams.get('twitch_success');
         if (twitchSuccess && this.authManager) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            // Обновляем профиль (перезагружаем данные)
             this.authManager.checkServerSession();
             this.authManager.checkAuth();
             this.authManager.updateProfileDisplay();
@@ -468,5 +427,4 @@ class AuthManager {
     }
 }
 
-// Экспорт для использования в других модулях
 window.AuthManager = AuthManager; 
