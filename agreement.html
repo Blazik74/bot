@@ -157,7 +157,6 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
     <script>
-        // Кнопка "вверх"
         const scrollBtn = document.getElementById('scrollTopBtn');
         window.addEventListener('scroll', () => {
             if(window.scrollY > 180) {
@@ -169,7 +168,6 @@
         scrollBtn.addEventListener('click', () => {
             window.scrollTo({top:0, behavior:'smooth'});
         });
-        // Анимация закрытия при возврате
         document.getElementById('agreementBack').addEventListener('click', function(e) {
             e.preventDefault();
             const cont = document.getElementById('agreementContainer');

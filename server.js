@@ -7,7 +7,6 @@ const { Pool } = require('pg');
 const pgSession = require('connect-pg-simple')(session);
 const app = express();
 
-// Получение переменных из process.env
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1391384219661500558';
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO';
 const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI || 'https://arness-community.onrender.com/auth/discord/callback';
@@ -17,12 +16,10 @@ if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
   process.exit(1);
 }
 
-// --- Twitch OAuth ---
 const TWITCH_CLIENT_ID = '7pewyshzfymoj5at2odselalrjj1gm';
 const TWITCH_CLIENT_SECRET = '8c4uuj3b4eq2v9dm6pnnowd68hgekf';
 const TWITCH_REDIRECT_URI = 'https://arness-community.onrender.com/auth/twitch/callback';
 
-// Подключение к PostgreSQL
 const pool = new Pool({
     connectionString: 'postgresql://pixel_ai_backend_user:oGyzFo623gOhMz8ZsDx1yvPF3vjJjtgO@dpg-d1ehca6uk2gs73anldu0-a/pixel_ai_backend',
     ssl: {
@@ -30,7 +27,6 @@ const pool = new Pool({
     }
 });
 
-// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 app.use(session({
@@ -47,12 +43,10 @@ app.use(session({
     }
 }));
 
-// Инициализация базы данных
 async function initDatabase() {
     try {
         const client = await pool.connect();
         
-        // Создание таблицы пользователей
         await client.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -67,14 +61,12 @@ async function initDatabase() {
             )
         `);
 
-        // Проверяем, существует ли колонка discord_id
         const columnCheck = await client.query(`
             SELECT column_name 
             FROM information_schema.columns 
             WHERE table_name = 'users' AND column_name = 'discord_id'
         `);
 
-        // Если колонки нет, добавляем её
         if (columnCheck.rows.length === 0) {
             console.log('Добавляем колонку discord_id...');
             await client.query(`
@@ -83,7 +75,6 @@ async function initDatabase() {
             `);
         }
 
-        // Создание индексов (только если они не существуют)
         try {
             await client.query(`CREATE INDEX IF NOT EXISTS idx_users_discord_id ON users(discord_id)`);
         } catch (indexError) {
@@ -96,7 +87,6 @@ async function initDatabase() {
             console.log('Индекс idx_users_email уже существует или не может быть создан');
         }
 
-        // Проверяем, есть ли колонка settings
         const settingsCol = await client.query(`
             SELECT column_name FROM information_schema.columns
             WHERE table_name = 'users' AND column_name = 'settings'
@@ -105,7 +95,6 @@ async function initDatabase() {
             await client.query(`ALTER TABLE users ADD COLUMN settings JSONB DEFAULT '{}'`);
         }
 
-        // Проверяем, есть ли колонка twitch_id
         const twitchIdCol = await client.query(`
             SELECT column_name FROM information_schema.columns
             WHERE table_name = 'users' AND column_name = 'twitch_id'
@@ -113,7 +102,6 @@ async function initDatabase() {
         if (twitchIdCol.rows.length === 0) {
             await client.query(`ALTER TABLE users ADD COLUMN twitch_id VARCHAR(255)`);
         }
-        // Проверяем, есть ли колонка twitch_username
         const twitchUsernameCol = await client.query(`
             SELECT column_name FROM information_schema.columns
             WHERE table_name = 'users' AND column_name = 'twitch_username'
@@ -122,7 +110,6 @@ async function initDatabase() {
             await client.query(`ALTER TABLE users ADD COLUMN twitch_username VARCHAR(255)`);
         }
 
-        // Создаем таблицу donations если её нет
         await client.query(`
             CREATE TABLE IF NOT EXISTS donations (
                 id SERIAL PRIMARY KEY,
@@ -137,7 +124,6 @@ async function initDatabase() {
         `);
         console.log('Таблица donations готова');
 
-        // Создаем таблицу payments если её нет
         await client.query(`
             CREATE TABLE IF NOT EXISTS payments (
                 id SERIAL PRIMARY KEY,
@@ -157,11 +143,9 @@ async function initDatabase() {
         client.release();
     } catch (error) {
         console.error('Ошибка инициализации БД:', error);
-        // Не завершаем процесс, позволяем серверу запуститься
     }
 }
 
-// Гарантируем наличие password_hash
 async function ensurePasswordHashColumn() {
     try {
         const client = await pool.connect();
@@ -173,7 +157,6 @@ async function ensurePasswordHashColumn() {
     }
 }
 
-// После инициализации базы данных создаём пользователя admin/0001, если его нет
 async function createDefaultAdmin() {
     try {
         const client = await pool.connect();
@@ -194,11 +177,9 @@ async function createDefaultAdmin() {
     }
 }
 
-// Автоматическое создание таблицы session для connect-pg-simple
 async function ensureSessionTable() {
     try {
         const client = await pool.connect();
-        // Пробуем создать таблицу session вручную, если её нет
         await client.query(`
             CREATE TABLE IF NOT EXISTS "session" (
                 "sid" varchar NOT NULL COLLATE "default",
@@ -223,17 +204,14 @@ async function ensureSessionTable() {
     }
 }
 
-// Главная страница
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API для регистрации
 app.post('/api/auth/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Валидация
         if (!username || !email || !password) {
             return res.status(400).json({ error: 'Все поля обязательны' });
         }
@@ -242,7 +220,6 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ error: 'Пароль должен быть не менее 6 символов' });
         }
 
-        // Проверка существования пользователя по email
         const existingUser = await pool.query(
             'SELECT id FROM users WHERE email = $1',
             [email]
@@ -250,7 +227,6 @@ app.post('/api/auth/register', async (req, res) => {
         if (existingUser.rows.length > 0) {
             return res.status(400).json({ error: 'Пользователь с таким email уже существует' });
         }
-        // Проверка существования пользователя по username
         const existingUsername = await pool.query(
             'SELECT id FROM users WHERE username = $1',
             [username]
@@ -259,10 +235,8 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ error: 'Пользователь с таким ником уже существует' });
         }
 
-        // Хеширование пароля
         const passwordHash = await bcrypt.hash(password, 10);
 
-        // Создание пользователя
         const newUser = await pool.query(
             `INSERT INTO users (username, name, email, password_hash, avatar_url, role) 
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, avatar_url, created_at`,
@@ -270,7 +244,6 @@ app.post('/api/auth/register', async (req, res) => {
         );
         const user = newUser.rows[0];
         
-        // Создание сессии
         req.session.userId = user.id;
         req.session.user = {
             id: user.id,
@@ -295,17 +268,14 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
-// API для входа
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Валидация
         if (!username || !password) {
             return res.status(400).json({ error: 'Ник и пароль обязательны' });
         }
 
-        // Поиск пользователя по нику
         const userResult = await pool.query(
             'SELECT * FROM users WHERE username = $1',
             [username]
@@ -317,13 +287,11 @@ app.post('/api/auth/login', async (req, res) => {
 
         const user = userResult.rows[0];
 
-        // Проверка пароля
         const isValidPassword = await bcrypt.compare(password, user.password_hash);
         if (!isValidPassword) {
             return res.status(400).json({ error: 'Неверный ник или пароль' });
         }
 
-        // Создание сессии
         req.session.userId = user.id;
         req.session.user = {
             id: user.id,
@@ -345,7 +313,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// API для выхода
 app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -355,7 +322,6 @@ app.post('/api/auth/logout', (req, res) => {
     });
 });
 
-// API для проверки авторизации
 app.get('/api/auth/check', async (req, res) => {
     if (req.session.userId) {
         try {
@@ -377,7 +343,6 @@ app.get('/api/auth/check', async (req, res) => {
                 twitchId: user.twitch_id,
                 twitchUsername: user.twitch_username
             };
-            // Обновляем сессию
             req.session.user = userObj;
             res.json({ authenticated: true, user: userObj });
         } catch (e) {
@@ -388,7 +353,6 @@ app.get('/api/auth/check', async (req, res) => {
     }
 });
 
-// Вспомогательная функция для обработки Discord пользователей
 async function handleDiscordUser(discordUser) {
     let user;
     try {
@@ -419,7 +383,6 @@ async function handleDiscordUser(discordUser) {
         }
     } catch (dbError) {
         console.error('[Discord] Ошибка работы с БД при Discord авторизации:', dbError);
-        // Если колонка discord_id не существует, создаем пользователя без неё
         try {
             const newUser = await pool.query(
                 `INSERT INTO users (username, name, email, avatar_url, role) 
@@ -443,7 +406,6 @@ async function handleDiscordUser(discordUser) {
     return user.rows[0];
 }
 
-// API для сохранения настроек
 app.post('/api/settings', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -465,7 +427,6 @@ app.post('/api/settings', async (req, res) => {
     }
 });
 
-// API для получения настроек
 app.get('/api/settings', async (req, res) => {
     try {
         if (!req.session.userId) {
@@ -484,7 +445,6 @@ app.get('/api/settings', async (req, res) => {
     }
 });
 
-// Discord OAuth2 callback
 app.get('/auth/discord/callback', async (req, res) => {
     const { code } = req.query;
     console.log('[Discord] /auth/discord/callback вызван, code:', code);
@@ -533,7 +493,6 @@ app.get('/auth/discord/callback', async (req, res) => {
     }
 });
 
-// API endpoint для обработки Discord авторизации
 app.post('/api/auth/discord', async (req, res) => {
     const { code } = req.body;
     console.log('[Discord] POST /api/auth/discord вызван, code:', code);
@@ -578,7 +537,6 @@ app.post('/api/auth/discord', async (req, res) => {
     }
 });
 
-// Middleware для проверки авторизации
 function requireAuth(req, res, next) {
     if (!req.session.userId) {
         return res.status(401).json({ error: 'Не авторизован' });
@@ -586,7 +544,6 @@ function requireAuth(req, res, next) {
     next();
 }
 
-// Защищенные маршруты
 app.get('/api/profile', requireAuth, async (req, res) => {
     try {
         const result = await pool.query(
@@ -614,19 +571,16 @@ app.get('/api/profile', requireAuth, async (req, res) => {
     }
 });
 
-// Endpoint для старта Twitch OAuth
 app.get('/auth/twitch', (req, res) => {
     const scope = 'user:read:email user:read:follows';
     const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${encodeURIComponent(TWITCH_REDIRECT_URI)}&response_type=code&scope=${scope}`;
     res.redirect(twitchAuthUrl);
 });
 
-// Callback Twitch OAuth
 app.get('/auth/twitch/callback', async (req, res) => {
     const { code } = req.query;
     if (!code) return res.redirect('/accountPage?error=twitch_no_code');
     try {
-        // Получаем user access_token
         const tokenResp = await axios.post('https://id.twitch.tv/oauth2/token', null, {
             params: {
                 client_id: TWITCH_CLIENT_ID,
@@ -638,7 +592,6 @@ app.get('/auth/twitch/callback', async (req, res) => {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         const { access_token } = tokenResp.data;
-        // Получаем данные пользователя
         const userResp = await axios.get('https://api.twitch.tv/helix/users', {
             headers: {
                 'Authorization': `Bearer ${access_token}`,
@@ -646,21 +599,17 @@ app.get('/auth/twitch/callback', async (req, res) => {
             }
         });
         const twitchUser = userResp.data.data[0];
-        // Сохраняем Twitch данные в профиле пользователя (если авторизован)
         if (req.session.userId) {
             await pool.query(
                 'UPDATE users SET twitch_id = $1, twitch_username = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3',
                 [twitchUser.id, twitchUser.login, req.session.userId]
             );
         }
-        // Обновляем сессию
         if (req.session.user) {
             req.session.user.twitchId = twitchUser.id;
             req.session.user.twitchUsername = twitchUser.login;
         }
-        // Сохраняем user access_token в сессии
         req.session.twitchUserAccessToken = access_token;
-        // Перенаправляем обратно в профиль
         res.redirect('/?twitch_success=true');
     } catch (error) {
         console.error('Twitch OAuth error:', error);
@@ -668,7 +617,6 @@ app.get('/auth/twitch/callback', async (req, res) => {
     }
 });
 
-// --- DONATE API: ЮMoney integration через axios ---
 app.post('/api/donate/create-payment', async (req, res) => {
     try {
         const { orderId, amount, coins, userId, description } = req.body;
@@ -679,7 +627,6 @@ app.post('/api/donate/create-payment', async (req, res) => {
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        // Формируем запрос к ЮKassa
         const shopId = process.env.YUMONEY_SHOP_ID;
         const secretKey = process.env.YUMONEY_SECRET_KEY;
         const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
@@ -699,7 +646,6 @@ app.post('/api/donate/create-payment', async (req, res) => {
             }
         });
         const payment = response.data;
-        // Сохраняем платеж в БД
         await pool.query(`
             INSERT INTO payments (user_id, order_id, amount, coins, payment_id, status, created_at)
             VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
@@ -725,7 +671,6 @@ app.post('/api/donate/success', async (req, res) => {
         if (user.rows.length === 0) {
             return res.json({ success: false, error: 'Пользователь не найден' });
         }
-        // Проверяем статус платежа в ЮKassa
         const shopId = process.env.YUMONEY_SHOP_ID;
         const secretKey = process.env.YUMONEY_SECRET_KEY;
         const auth = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
@@ -736,12 +681,10 @@ app.post('/api/donate/success', async (req, res) => {
         });
         const payment = paymentResp.data;
         if (payment.status === 'succeeded') {
-            // Проверяем, что донат ещё не был начислен
             const existing = await pool.query('SELECT * FROM donations WHERE order_id = $1', [orderId]);
             if (existing.rows.length > 0) {
                 return res.json({ success: false, error: 'Заказ уже обработан' });
             }
-            // Начисляем монеты
             const newCoins = (user.rows[0].coins || 0) + coins;
             await pool.query('UPDATE users SET coins = $1 WHERE id = $2', [newCoins, userId]);
             await pool.query(`
@@ -766,7 +709,6 @@ app.get('/agreement', (req, res) => {
 const TWITCH_API_BASE = 'https://api.twitch.tv/helix';
 let TWITCH_APP_TOKEN = null;
 
-// Получить app access token для Twitch API
 async function getTwitchAppToken() {
     if (TWITCH_APP_TOKEN && TWITCH_APP_TOKEN.expires > Date.now()) {
         return TWITCH_APP_TOKEN.token;
@@ -785,13 +727,11 @@ async function getTwitchAppToken() {
     return TWITCH_APP_TOKEN.token;
 }
 
-// Получить список подписок и стримов пользователя Twitch
 app.get('/api/twitch/subscriptions', async (req, res) => {
     try {
         if (!req.session.user || !req.session.user.twitchId) {
             return res.status(401).json({ error: 'Нет Twitch-профиля' });
         }
-        // Используем user access_token из сессии
         const userAccessToken = req.session.twitchUserAccessToken;
         if (!userAccessToken) {
             return res.status(401).json({ error: 'Нет Twitch access token. Переподключите Twitch.' });
@@ -799,7 +739,6 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
         const twitchId = req.session.user.twitchId;
         let follows = [];
         let liveStreams = [];
-        // Получаем список фолловингов
         const followsResp = await axios.get(`${TWITCH_API_BASE}/channels/followed`, {
             headers: {
                 'Client-ID': TWITCH_CLIENT_ID,
@@ -816,10 +755,8 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
             to_login: f.broadcaster_login,
             followed_at: f.followed_at
         }));
-        // Получаем инфу о стримах для всех followings
         const toIds = follows.map(f => f.to_id);
         if (toIds.length > 0) {
-            // Twitch API ограничивает до 100 id за раз
             const streamsResp = await axios.get(`${TWITCH_API_BASE}/streams`, {
                 headers: {
                     'Client-ID': TWITCH_CLIENT_ID,
@@ -829,10 +766,8 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
             });
             liveStreams = streamsResp.data.data;
         }
-        // Получаем инфу о каналах (users) для аватарок
         let usersInfo = [];
         if (toIds.length > 0) {
-            // Twitch API ограничивает до 100 id за раз
             const usersResp = await axios.get(`${TWITCH_API_BASE}/users`, {
                 headers: {
                     'Client-ID': TWITCH_CLIENT_ID,
@@ -842,10 +777,8 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
             });
             usersInfo = usersResp.data.data;
         }
-        // Мапа id -> userInfo
         const userInfoMap = {};
         usersInfo.forEach(u => { userInfoMap[u.id] = u; });
-        // Формируем подписки с аватарками и ссылками
         let subscriptions = follows.map(f => {
             const user = userInfoMap[f.to_id];
             return {
@@ -857,7 +790,6 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
                 twitch_url: user ? `https://twitch.tv/${user.login}` : null
             };
         });
-        // Сортируем: сначала онлайн, потом офлайн
         const liveIds = new Set(liveStreams.map(s => s.user_id));
         subscriptions = [
             ...subscriptions.filter(s => liveIds.has(s.to_id)),
@@ -873,15 +805,12 @@ app.get('/api/twitch/subscriptions', async (req, res) => {
     }
 });
 
-// API для отвязки Twitch-аккаунта
 app.post('/api/twitch/logout', async (req, res) => {
     try {
         if (!req.session.userId) {
             return res.status(401).json({ error: 'Не авторизован' });
         }
-        // Очищаем Twitch-поля в БД
         await pool.query('UPDATE users SET twitch_id = NULL, twitch_username = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1', [req.session.userId]);
-        // Очищаем Twitch-поля в сессии
         if (req.session.user) {
             delete req.session.user.twitchId;
             delete req.session.user.twitchUsername;
@@ -894,12 +823,10 @@ app.post('/api/twitch/logout', async (req, res) => {
     }
 });
 
-// SPA fallback: для всех неизвестных путей отдаём index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Инициализация и запуск сервера
 async function startServer() {
     try {
         await initDatabase().catch(error => {
@@ -920,7 +847,6 @@ async function startServer() {
     }
 }
 
-// Обработка ошибок
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
@@ -929,7 +855,6 @@ process.on('uncaughtException', (error) => {
     console.error('Uncaught Exception:', error);
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down gracefully');
     pool.end();

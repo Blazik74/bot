@@ -8,14 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/settings.css">
-    <!-- ЮMoney SDK -->
     <script src="https://yookassa.ru/integration/example/js/checkout.js"></script>
 </head>
 <body>
-    <!-- Анимированный фон -->
     <div class="bg-animation" id="bg-animation"></div>
 
-    <!-- Навигационная панель -->
     <nav class="navbar">
         <div class="nav-logo" id="navLogo">ArNess</div>
         <div class="nav-links">
@@ -42,9 +39,7 @@
         </div>
     </nav>
 
-    <!-- Главная страница -->
     <div class="main-page" id="mainPage">
-        <!-- Шапка -->
         <header>
             <div class="logo">ArNess</div>
             <div class="tagline">Тёмное сообщество для тех, кто ищет нечто большее, чем обычный Discord-сервер. Здесь вас ждут уникальные ивенты, активное общение и атмосфера загадочности.</div>
@@ -53,7 +48,6 @@
             </a>
         </header>
         <div class="container">
-            <!-- О сервере -->
             <section id="about">
                 <h2>Добро пожаловать в ArNess</h2>
                 <p>ArNess — это не просто очередной Discord-сервер. Это целая вселенная, где каждый найдет что-то по душе. Мы объединяем людей, которые ценят качественное общение, интересные дискуссии и атмосферные мероприятия.</p>
@@ -77,7 +71,6 @@
                     </div>
                 </div>
             </section>
-            <!-- Возможности -->
             <section id="features">
                 <h2>Почему стоит присоединиться?</h2>
                 <div class="features">
@@ -125,7 +118,6 @@
                     </div>
                 </div>
             </section>
-            <!-- Каналы -->
             <section id="channels">
                 <h2>Наши каналы</h2>
                 <p>ArNess предлагает разнообразные каналы для любых видов активности:</p>
@@ -195,7 +187,6 @@
                     </div>
                 </div>
             </section>
-            <!-- Команда -->
             <section id="team">
                 <h2>Наша команда</h2>
                 <p>Сервер поддерживается уникальной командой, каждый член которой вносит свой вклад в развитие ArNess:</p>
@@ -262,7 +253,6 @@
                     </div>
                 </div>
             </section>
-            <!-- FAQ -->
             <section id="faq">
                 <h2>Частые вопросы</h2>
                 <div class="rules-list">
@@ -287,7 +277,6 @@
         </div>
     </div>
 
-    <!-- Страница входа -->
     <div class="auth-page" id="loginPage">
         <div class="auth-container">
             <h2 class="auth-title">Вход в аккаунт</h2>
@@ -303,7 +292,6 @@
                     <div class="error-message" id="loginPasswordError"></div>
                 </div>
                 <button type="submit" class="form-submit">Войти</button>
-                <!-- Discord авторизация -->
                 <div class="discord-auth-section">
                     <div class="divider">
                         <span>Также можете войти через:</span>
@@ -320,7 +308,6 @@
         </div>
     </div>
 
-    <!-- Страница регистрации -->
     <div class="auth-page" id="registerPage">
         <div class="auth-container">
             <h2 class="auth-title">Регистрация</h2>
@@ -347,7 +334,6 @@
                 </div>
                 <button type="submit" class="form-submit">Зарегистрироваться</button>
                 
-                <!-- Discord авторизация -->
                 <div class="discord-auth-section">
                     <div class="divider">
                         <span>Также можете войти через:</span>
@@ -365,7 +351,6 @@
         </div>
     </div>
 
-    <!-- Страница профиля -->
     <div class="account-page" id="accountPage">
         <div class="account-container">
             <div class="account-header">
@@ -389,11 +374,9 @@
                     </div>
                 </div>
             </div>
-            <!-- Настройки будут добавлены через JavaScript -->
         </div>
     </div>
 
-    <!-- Страница доната -->
     <div class="donate-page" id="donatePage" style="display:none;">
       <div class="donate-container">
         <div class="donate-hero">
@@ -424,7 +407,6 @@
       </div>
     </div>
 
-    <!-- Модальное окно для аватарки -->
     <div id="avatarModal" class="avatar-modal" style="display:none;">
         <div class="avatar-modal-backdrop" id="avatarModalBackdrop"></div>
         <div class="avatar-modal-content">
@@ -438,7 +420,6 @@
         </div>
     </div>
 
-    <!-- Страница Twitch профиля -->
     <div class="twitch-profile-page" id="twitchProfilePage" style="display:none;">
         <div class="twitch-profile-container">
             <button class="btn btn-secondary" id="backToAccountBtn" style="margin-bottom:18px;">Назад к профилю</button>
@@ -452,7 +433,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно для Twitch-плеера -->
     <div id="twitchPlayerModal" class="twitch-player-modal" style="display:none;">
         <div class="twitch-player-backdrop"></div>
         <div class="twitch-player-content" style="display:flex;flex-direction:row;align-items:flex-start;position:relative;">
@@ -477,7 +457,6 @@
         </div>
     </div>
 
-    <!-- Подключение JavaScript файлов -->
     <script src="js/auth.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/main.js"></script>
@@ -503,7 +482,6 @@
       </button>
     </footer>
 
-    <!-- Модальные блоки политики и соглашения -->
     <div class="policy-modal" id="privacyModal" style="display:none;">
       <div class="policy-modal-content" id="privacyContent">
         <button class="policy-close" id="closePrivacy">×</button>
